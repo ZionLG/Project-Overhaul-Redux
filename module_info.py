@@ -1,6 +1,6 @@
 from compiler import *
 #Your module folder to export compiled files:
-export_dir = "e:/Games/Mount&Blade Warband/Modules/Native/"
+export_dir = "C:/Program Files (x86)/Steam/steamapps/common/MountBlade Warband/Modules/WRECKLiran/"
 
 
 
@@ -21,7 +21,7 @@ write_id_files = "ID_%s.py"     # default vanilla-compatible option
 
 # Set to True to display compiler performance information at the end of compilation. Set to False to suppress.
 
-show_performance_data = False   # default: false
+show_performance_data = True   # default: false
 
 
 
