@@ -1,5 +1,7 @@
 ################################################################################
-#                              header_operations expanded v.1.0.2 (unofficial) #
+#                                 header_operations expanded v.1.0.4 by Liran  #
+#                    based on header_operations expanded v.1.0.2 (unofficial)  #
+#                    based on header_operations expanded v.1.0.3 (by Limik)    #  
 ################################################################################
 # TABLE OF CONTENTS
 ################################################################################
@@ -95,8 +97,8 @@ this_or_next = 0x40000000  # (this_or_next|<operation_name>, ...),
 # [ Z02 ] FLOW CONTROL
 ################################################################################
 
-call_script             =    1  # (call_script, <script_id>, [<script_param>...]),
-                                # Calls specified script with or without parameters.
+call_script             =    1  # (call_script, <script_id>, [<script_param>...]),                
+                                # Calls specified script with or without parameters. Maximum number of parameters you can pass with the operation is 16.
 try_begin               =    4  # (try_begin),
                                 # Opens a conditional block.
 else_try                =    5  # (else_try),
@@ -118,13 +120,15 @@ try_for_range_backwards =    7  # (try_for_range_backwards, <destination>, <lowe
 try_for_parties         =   11  # (try_for_parties, <destination>),
                                 # Runs a cycle, iterating all parties on the map.
 try_for_agents          =   12  # (try_for_agents, <agent_no>[, <position_no>, <radius_fixed_point>]), 
-                                # Runs a cycle, iterating all agents on the scene.
+                                # Runs a cycle, iterating all active agents on the scene.
+                                # Iteration works for active agents alive and dead
                                 # The reference <agent_no> is active untill the next mission or scene is loaded.
                                 # Optional parameters allow to check agents only within specific radius around certain position.
+                                # Don't use check agent_is_active. It will always return true.
                                 # Avoid using pos0. This will pass zero to the second argument and radius and position will be skipped. Like optional arguments were ommited.
                                 # Radius can be used to break loop if assigned to 0.
 try_for_prop_instances  =   16  # (try_for_prop_instances, <instance_no>, [<object_id>][, <object_type>]),
-                                # Version 1.161+. Runs a cycle, iterating all scene prop instances on the scene.
+                                # Version 1.161+. Runs a cycle, iterating all valid scene prop instances on the scene.
                                 # <object_id> refers to <scene_prop_id> or <item_kind_id>.
                                 # If <object_id> and <object_type> is not given, it loops through all instances.
                                 # Bug: When iterating all instances sometimes it returns not valid zero instance. Zero instance usually refered to "spr_inventory".
@@ -207,6 +211,9 @@ val_max                    = 2111    # (val_max, <destination>, <value>),
                                      # Assigns the right value if the right value is greater than left.
 val_clamp                  = 2112    # (val_clamp, <destination>, <lower_bound>, <upper_bound>),
                                      # Enforces <destination> value to be within <lower_bound>..<upper_bound>-1 range.
+                                     # Whatever value the first argument may have had before, it won't be lower than the second argument (the minimum value) and it will be strictly less than the third argument (the maximum value).
+                                     # This is 100% equivalent to calling (val_min, <value>, (<upper_bound> - 1)), then (val_max, <value>, <lower_bound>).
+                                     # Instead of maintaining careful "data range integrity" throughout a series of operations, reasoning out by what means it could escape its expected bounds and covering those individually, you can insert this operation and ensure that it will produce an answer within the range you are looking for.
 val_abs                    = 2113    # (val_abs, <destination>),
                                      # Assigns <destination> := ABS (<destination>)
 
@@ -290,10 +297,13 @@ convert_from_fixed_point   = 2131    # (convert_from_fixed_point, <destination>)
 
 store_script_param_1        =   21  # (store_script_param_1, <destination>),
                                     # Retrieve the value of the first script parameter.
+                                    # If the script was called without this parameter being specified, this operation assigns a zero.
 store_script_param_2        =   22  # (store_script_param_2, <destination>),
                                     # Retrieve the value of the second script parameter.
+                                    # If the script was called without this parameter being specified, this operation assigns a zero.
 store_script_param          =   23  # (store_script_param, <destination>, <script_param_index>),
                                     # Retrieve the value of arbitrary script parameter (generally used when script accepts more than two). Parameters are enumerated starting from 1.
+                                    # Maximum are 15 parameters (16 operands maximum - 1 operand with script name). If the script was called without this parameter being specified, this operation assigns a zero.
 set_result_string           =   60  # (set_result_string, <string>),
                                     # Sets the return value of a game_* script, when a string value is expected by game engine.
 
@@ -323,19 +333,27 @@ set_trigger_result          = 2075  # (set_trigger_result, <value>),
 # Conditional operations
 
 key_is_down                     = 70  # (key_is_down, <key_code>),
-                                      # Checks that the specified key is currently pressed. See header_triggers.py for key code reference.
+                                      # Checks that the specified key is currently pressed (in the current frame). See header_triggers.py for key code reference.
 key_clicked                     = 71  # (key_clicked, <key_code>),
-                                      # Checks that the specified key has just been pressed. See header_triggers.py for key code reference.
+                                      # Checks that the specified key has just been pressed (current frame and and wasn't clicked in the previous frame). See header_triggers.py for key code reference.
+                                      # Is only true in the one frame where the engine first recognizes that the key is pressed. See header_triggers.py for key code reference. Will work reliably only on mission template triggers that happen on every frame (i.e. check interval 0) as well as on simple_triggers or old form triggers that are check interval 0 too.
 game_key_is_down                = 72  # (game_key_is_down, <game_key_code>),
-                                      # Checks that the specified game key is currently pressed. See header_triggers.py for game key code reference.
+                                      # Checks that the specified game key is currently pressed (ignoring if it was clicked in the previous frame. Is true in every frame that the key is down). See header_triggers.py for game key code reference.
 game_key_clicked                = 73  # (game_key_clicked, <game_key_code>),
-                                      # Checks that the specified key has just been pressed. See header_triggers.py for game key code reference.
+                                      # Checks that the specified key has just been pressed (current frame and and wasn't clicked in the previous frame). See header_triggers.py for game key code reference.
                                       # Doesn't work for party window on global map.
+                                      # Will work reliably only on mission template triggers that happen on every frame (i.e. check interval 0) as well as on simple_triggers or old form triggers that are check interval 0 too.
 
 # Generic operations
 
 omit_key_once                   = 77  # (omit_key_once, <key_code>),
                                       # Forces the game to ignore default bound action for the specified game key on current game frame.
+                                      # Keys that can be omited:
+                                      # gk_everyone_hear, gk_infantry_hear, gk_archers_hear, gk_cavalry_hear, gk_group0_hear = gk_infantry_hear, gk_group1_hear = gk_archers_hear, gk_group2_hear = gk_cavalry_hear
+                                      # gk_group3_hear, gk_group4_hear, gk_group5_hear, gk_group6_hear, gk_group7_hear, gk_group8_hear, gk_reverse_order_group, gk_everyone_around_hear
+                                      # gk_action (mount, dismount fail, picking weapon from the ground works), gk_kick, gk_toggle_weapon_mode, gk_sheath_weapon, gk_cam_toggle, gk_crouch (need to set can_crouch = 1 in module.ini)
+                                      # key_mouse_scroll_up, key_mouse_scroll_down, key_space, key_pad or key_xbox (from 0xF0 to 0xFF - possible works for all),
+                                      # You can bypass F1-F8 menu with the operation (close_order_menu),
 clear_omitted_keys              = 78  # (clear_omitted_keys),
                                       # Commonly called when exiting from a presentation which made any calls to (omit_key_once). However the effects of those calls disappear by the next frame, so apparently usage of this operation is not necessary. It is still recommended to be on the safe side though.
 
@@ -441,7 +459,17 @@ options_set_combat_speed              =  269  # (options_set_combat_speed, <valu
 options_get_battle_size               =  270  # (options_get_battle_size, <destination>),
                                               # Version 1.161+. Retrieves current battle size slider value (in the range of 0..1000). Note that this is the slider value, not the battle size itself.
 options_set_battle_size               =  271  # (options_set_battle_size, <value>),
-                                              # Version 1.161+. Sets battle size slider to provided value (in the range of 0..1000). Note that this is the slider value, not the battle size itself.
+                                              # Version 1.161+. Sets battle size slider to provided value (in the range of 0..1000). Note that this is the slider value, not the battle size itself.                
+                                              # To change the real battlesize the entry string at the begining of the mission templates needs to get changed. Multiplier start from 1.25 to 5.25 according to options slider.
+                                              # (1, mtef_team_0|mtef_defenders, 0, aif_start_alarmed, 40, []),
+                                              # Battle reinforcements are half of the start:
+                                              #     (store_normalized_team_count, ":num_defenders", 0),
+                                              #     (lt, ":num_defenders", 20),                         # if less than 20/40=50%
+                                              #     (add_reinforcements_to_entry, 4, 20),               # add new wave 20/40=50%
+                                              # To let options show the rigth battle size values change the entries in module.ini accordingly:
+                                              #     battle_size_min = 100 # (40+40)*1.25
+                                              #     battle_size_max = 420 # (40+40)*5.25
+                                              # The battle advantage for player is limited by the game engine. The player can only dominate with 2:1 ratio at max.
 get_average_game_difficulty           =  990  # (get_average_game_difficulty, <destination>),
                                               # Returns calculated game difficulty rating (as displayed on the Options page). Commonly used for score calculation when ending the game.
 
@@ -475,6 +503,7 @@ faction_set_slot                =  502  # (faction_set_slot, <faction_id>, <slot
 faction_get_slot                =  522  # (faction_get_slot, <destination>, <faction_id>, <slot_no>),
 faction_slot_eq                 =  542  # (faction_slot_eq, <faction_id>, <slot_no>, <value>),
 faction_slot_ge                 =  562  # (faction_slot_ge, <faction_id>, <slot_no>, <value>),
+faction_slot_lt                 = negate|faction_slot_ge  # (faction_slot_lt, <faction_id>, <slot_no>, <value>),
 
 # Generic operations
 
@@ -550,18 +579,24 @@ party_is_in_any_town                  =  131  # (party_is_in_any_town, <party_id
                                               # Checks that the party has successfully reached it's destination (after being set to ai_bhvr_travel_to_party).
 party_is_active                       =  132  # (party_is_active, <party_id>),
                                               # Checks that <party_id> is valid and not disabled.
+                                             
+party_is_disabled                     = negate|party_is_active # (party_is_dead, <party_id>),
+                                                               # Slot operations for parties and party templates
 
-# Slot operations for parties and party templates
 
 party_template_set_slot               =  504  # (party_template_set_slot, <party_template_id>, <slot_no>, <value>),
 party_template_get_slot               =  524  # (party_template_get_slot, <destination>, <party_template_id>, <slot_no>),
 party_template_slot_eq                =  544  # (party_template_slot_eq, <party_template_id>, <slot_no>, <value>),
 party_template_slot_ge                =  564  # (party_template_slot_ge, <party_template_id>, <slot_no>, <value>),
+party_template_slot_lt                = negate|party_template_slot_ge  # (party_template_slot_lt, <party_template_id>, <slot_no>, <value>),
+
+
 
 party_set_slot                        =  501  # (party_set_slot, <party_id>, <slot_no>, <value>),
 party_get_slot                        =  521  # (party_get_slot, <destination>, <party_id>, <slot_no>),
 party_slot_eq                         =  541  # (party_slot_eq, <party_id>, <slot_no>, <value>),
 party_slot_ge                         =  561  # (party_slot_ge, <party_id>, <slot_no>, <value>),
+party_slot_lt                         = negate|party_slot_ge # (party_slot_lt, <party_id>, <slot_no>, <value>),
 
 # Generic operations
 
@@ -572,7 +607,7 @@ set_spawn_radius                      = 1103  # (set_spawn_radius, <value>),
 spawn_around_party                    = 1100  # (spawn_around_party, <party_id>, <party_template_id>),
                                               # Creates a new party from a party template and puts it's <party_id> into reg0.
 disable_party                         = 1230  # (disable_party, <party_id>),
-                                              # Party disappears from the map. Note that (try_for_parties) will still iterate over disabled parties, so you need to make additional checks with (party_is_active).
+                                              # Party disappears from the map. Note that (try_for_parties) will still iterate over disabled parties, so you need to make additional checks with (party_is_active). Its slots, members and prisoners will persist, all it does is basically activating pf_disabled mid-game.
 enable_party                          = 1231  # (enable_party, <party_id>),
                                               # Reactivates a previously disabled party.
 remove_party                          = 1232  # (remove_party, <party_id>),
@@ -635,14 +670,17 @@ store_faction_of_party                = 2204  # (store_faction_of_party, <destin
 store_random_party_in_range           = 2254  # (store_random_party_in_range, <destination>, <lower_bound>, <upper_bound>),
                                               # Retrieves one random party from the range. Generally used only for predefined parties (towns, villages etc).
 store01_random_parties_in_range       = 2255  # (store01_random_parties_in_range, <lower_bound>, <upper_bound>),
+
+store_random_parties_in_range = store01_random_parties_in_range # (store_random_parties_in_range, <lower_bound>, <upper_bound>),
                                               # Stores two random, different parties in a range to reg0 and reg1. Generally used only for predefined parties (towns, villages etc).
 store_distance_to_party_from_party    = 2281  # (store_distance_to_party_from_party, <destination>, <party_id>, <party_id>),
                                               # Retrieves distance between two parties on the global map.
+                                              # Extremely unprecise as it does not use a fixed point multiplier at all and 1 distance unit is quite a noticeable distance on the map. Instead of making decisions based on the output of this operation, first use it to measure distances between various parties on the map and print the results with display_message in order to get a feeling for this function.
 
 store_num_parties_of_template         = 2310  # (store_num_parties_of_template, <destination>, <party_template_id>),
                                               # Stores number of active parties which were created using specified party template.
 store_random_party_of_template        = 2311  # (store_random_party_of_template, <destination>, <party_template_id>),
-                                              # Retrieves one random party which was created using specified party template. Fails if no party exists with provided template.
+                                              # Retrieves one random party which was created using specified party template. Fails if no party exists with provided template. (expensive) 
 
 store_num_parties_created             = 2300  # (store_num_parties_created, <destination>, <party_template_id>),
                                               # Stores the total number of created parties of specified type. Not used in Native.
@@ -676,6 +714,7 @@ party_add_leader                      = 1612  # (party_add_leader, <party_id>, <
                                               # Adds troop(s) to the party and makes it party leader.
 party_force_add_members               = 1613  # (party_force_add_members, <party_id>, <troop_id>, <number>),
                                               # Adds troops to party ignoring party size limits. Mostly used to add hero troops.
+                                              #  Only works if the party does not yet have any troops of the specified type.
 party_force_add_prisoners             = 1614  # (party_force_add_prisoners, <party_id>, <troop_id>, <number>),
                                               # Adds prisoners to party ignoring party size limits. Mostly used to add hero prisoners. Doesn't add if troop already exists in the party.
 party_add_template                    = 1675  # (party_add_template, <party_id>, <party_template_id>, [reverse_prisoner_status]),
@@ -778,7 +817,7 @@ party_wound_members                   = 1618  # (party_wound_members, <party_id>
 party_remove_members_wounded_first    = 1619  # (party_remove_members_wounded_first, <party_id>, <troop_id>, <number>),
                                               # Removes a certain number of troops from the party, starting with wounded. Stores total number removed in reg0.
 party_quick_attach_to_current_battle  = 1663  # (party_quick_attach_to_current_battle, <party_id>, <side>),
-                                              # Adds any party into current encounter at specified side (0 = ally, 1 = enemy).
+                                              # Adds any party into current encounter at specified side (0 = ally, 1 = enemy, 2 = enemy if (neq, "$g_enemy_party", "$g_encountered_party"),).
 party_leave_cur_battle                = 1666  # (party_leave_cur_battle, <party_id>),
                                               # Forces the party to leave it's current battle (if it's engaged).
 party_set_next_battle_simulation_time = 1667  # (party_set_next_battle_simulation_time, <party_id>, <next_simulation_time_in_hours>),
@@ -901,6 +940,7 @@ troop_set_slot                           =  500  # (troop_set_slot, <troop_id>, 
 troop_get_slot                           =  520  # (troop_get_slot, <destination>, <troop_id>, <slot_no>),
 troop_slot_eq                            =  540  # (troop_slot_eq, <troop_id>, <slot_no>, <value>),
 troop_slot_ge                            =  560  # (troop_slot_ge, <troop_id>, <slot_no>, <value>),
+troop_slot_lt                            = negate|troop_slot_ge  # (troop_slot_lt, <troop_id>, <slot_no>, <value>),
 
 # Troop attributes and skills
 
@@ -914,6 +954,7 @@ troop_get_class                          = 1516  # (troop_get_class, <destinatio
                                                  # Retrieves troop class. Returns values in range 0..8.
 class_set_name                           = 1837  # (class_set_name, <sub_class>, <string_id>),
                                                  # Sets a new name for troop class (aka "Infantry", "Cavalry", "Custom Group 3"...).
+                                                 # While manually you can rename class only up to 28 characters via in-game button, the operation is able to assign any string or quick string and even supports multi-line with ^ symbol. However, the game seems to be able to display only up to 291 characters from the feed message, and long class names aren't readable or viable but are definitely possible. Keep in mind that 10 characters are required for ", hear me!" to show up so the actual max length for class name is 281.
 add_xp_to_troop                          = 1062  # (add_xp_to_troop, <value>, [troop_id]),
                                                  # Adds some xp points to troop. Only makes sense for player and hero troops. Default troop_id is player. Amount of xp can be negative.
 add_xp_as_reward                         = 1064  # (add_xp_as_reward, <value>),
@@ -935,6 +976,7 @@ troop_raise_proficiency                  = 1522  # (troop_raise_proficiency, <tr
                                                  # Weapon Master skill. When used on non-hero troop, will affect all instances of that troop.
 troop_raise_proficiency_linear           = 1523  # (troop_raise_proficiency_linear, <troop_id>, <proficiency_no>, <value>),
                                                  # Same as (troop_raise_proficiency), but does not take Weapon Master skill into account (i.e. can increase proficiencies indefinitely).
+                                                 # Will accept and handle negative values as well.
 troop_add_proficiency_points             = 1525  # (troop_add_proficiency_points, <troop_id>, <value>),                    
                                                  # Adds some proficiency points to a hero troop which can later be distributed by player.
 store_troop_health                       = 2175  # (store_troop_health, <destination>, <troop_id>, [absolute]), # set absolute to 1 to get actual health; otherwise this will return percentage health in range (0-100)
@@ -979,7 +1021,7 @@ troop_add_items                          = 1535  # (troop_add_items, <troop_id>,
 troop_remove_items                       = 1536  # (troop_remove_items, <troop_id>, <item_id>, <number>),
                                                  # Removes multiple items of specified type from the troop. Total price of actually removed items will be stored in reg0. Doesn't take item modifiers into account. Will not fail if <troop_id> does not have the required items.
 troop_loot_troop                         = 1539  # (troop_loot_troop, <target_troop>, <source_troop_id>, <probability>), 
-                                                 # Adds to target_troop's inventory some items from source_troop's equipment and inventory with some probability. Does not actually remove items from source_troop. Commonly used in Native to generate random loot after the battle.
+                                                 # Adds to target_troop's inventory some items from source_troop's equipment and inventory with some probability. (If an item is added to the target troop, it is given a random modifier from the item's imod list.) Does not actually remove items from source_troop. Commonly used in Native to generate random loot after the battle.
 troop_get_inventory_capacity             = 1540  # (troop_get_inventory_capacity, <destination>, <troop_id>),
                                                  # Returns the total inventory capacity (number of inventory slots) for the specified troop. Note that this number will include equipment slots as well. Substract num_equipment_kinds (see header_items.py) to get the number of actual *inventory* slots.
 troop_get_inventory_slot                 = 1541  # (troop_get_inventory_slot, <destination>, <troop_id>, <inventory_slot_no>),
@@ -1005,6 +1047,7 @@ set_price_rate_for_item_type        = 1172  # (set_price_rate_for_item_type, <it
                                             # Sets individual price rate for entire item class (see header_items.py for itp_type_* constants). Normal price rate is 100. Deprecated, as Warband uses (game_get_item_[buy/sell]_price_factor) scripts instead.
 set_merchandise_modifier_quality    = 1490  # (set_merchandise_modifier_quality, <value>),
                                             # Affects the probability of items with quality modifiers appearing in merchandise. Value is percentage, standard value is 100.
+                                            # 100 gives completely random items, <100 gives more items with bad imods, and >100 gives more items with good imods.
 set_merchandise_max_value           = 1491  # (set_merchandise_max_value, <value>),
                                             # Not used in Native. Apparently prevents items with price higher than listed from being generated as merchandise.
 reset_item_probabilities            = 1492  # (reset_item_probabilities, <value>),
@@ -1113,6 +1156,7 @@ quest_set_slot                =  506  # (quest_set_slot, <quest_id>, <slot_no>, 
 quest_get_slot                =  526  # (quest_get_slot, <destination>, <quest_id>, <slot_no>),
 quest_slot_eq                 =  546  # (quest_slot_eq, <quest_id>, <slot_no>, <value>),
 quest_slot_ge                 =  566  # (quest_slot_ge, <quest_id>, <slot_no>, <value>),
+quest_slot_lt                 = negate|quest_slot_ge  # (quest_slot_lt, <quest_id>, <slot_no>, <value>),
 
 # Quest management
 
@@ -1186,6 +1230,7 @@ item_set_slot                       =  507  # (item_set_slot, <item_id>, <slot_n
 item_get_slot                       =  527  # (item_get_slot, <destination>, <item_id>, <slot_no>),
 item_slot_eq                        =  547  # (item_slot_eq, <item_id>, <slot_no>, <value>),
 item_slot_ge                        =  567  # (item_slot_ge, <item_id>, <slot_no>, <value>),
+item_slot_lt                        = negate|item_slot_ge  # (item_slot_lt, <item_id>, <slot_no>, <value>),
 
 # Generic item operations
 
@@ -1201,7 +1246,8 @@ store_random_armor                  = 2259  # (store_random_armor, <destination>
                                             # Deprecated since early M&B days.
 
 cur_item_add_mesh                   = 1964  # (cur_item_add_mesh, <mesh_name_string>, [<lod_begin>], [<lod_end>], [<color>]),
-                                            # Version 1.161+. Only call inside ti_on_init_item trigger. Adds another mesh to item, allowing the creation of combined items. Parameter <mesh_name_string> should contain mesh name itself, NOT a mesh reference. LOD values are optional. If <lod_end> is used, it will not be loaded.
+                                            # Version 1.161+. Only call inside ti_on_init_item trigger. Adds another mesh to item, allowing the creation of combined items. Note that in Native the operation (or more precisely the trigger it works in) is for helmets and armor only, it will not trigger for horses, gloves and boots (it works for all items in inventory but it doesn't get called in missions). Parameter <mesh_name_string> should contain mesh name itself, NOT a mesh reference. LOD values are optional at single-mesh items and mandatory at multi-mesh items. If <lod_end> is used, it will not be loaded.
+                                            
 cur_item_set_material               = 1978  # (cur_item_set_material, <string_no>, <sub_mesh_no>, [<lod_begin>], [<lod_end>]),
                                             # Version 1.161+. Only call inside ti_on_init_item trigger. Replaces material that will be used to render the item mesh. Works only for main meta-mesh, so not for scabbards, etc., and does not work for horses, gloves and boots. Use 0 for <sub_mesh_no> to replace material for base mesh. LOD values are optional. If <lod_end> is used, it will not be loaded.
 
@@ -1290,6 +1336,8 @@ store_last_sound_channel =  615  # (store_last_sound_channel, <destination>),
                                  # Sounds with <sf_stream_from_hd> flag will not occupy channel, i.e. operand return -1.
 stop_sound_channel       =  616  # (stop_sound_channel, <sound_channel_no>),
                                  # Version 1.153+. UNTESTED. Stops sound playing on specified sound channel.
+                                 # Used to fix bug with looping sounds in Viking Conquest.
+                                 # There are 256 sound channels. The closest agent has 0 channel. The farthest agents will rewrite last 10 channels.
 
 ################################################################################
 # [ Z14 ] POSITIONS
@@ -1340,6 +1388,7 @@ stop_sound_channel       =  616  # (stop_sound_channel, <sound_channel_no>),
 
 init_position                               =  701  # (init_position, <position>),
                                                     # Sets position coordinates to [0,0,0], without any rotation and default scale.
+                                                    # not initialized position has the values (-1000,-1000,0, 0,0,0); fpm=1 (x,y,z, x-rot,y-rot,z-rot).
 copy_position                               =  700  # (copy_position, <position_target>, <position_source>),
                                                     # Makes a duplicate of position_source.
 position_copy_origin                        =  719  # (position_copy_origin, <position_target>, <position_source>),
@@ -1378,9 +1427,9 @@ position_move_z                             =  722  # (position_move_z, <positio
 position_set_z_to_ground_level              =  791  # (position_set_z_to_ground_level, <position>),
                                                     # This will bring the position Z coordinate so it rests on the ground level (i.e. an agent could stand on that position). This takes scene props with their collision meshes into account. Only works during a mission, so you can't measure global map height using this.
 position_get_distance_to_terrain            =  792  # (position_get_distance_to_terrain, <distance_fixed_point>, <position>),
-                                                    # This will measure the distance between position and terrain below, ignoring all scene props and their collision meshes. Operation only works on the scenes and cannot be used on the global map.
+                                                    # This will measure the distance (in a fixed point value) between position and terrain below, ignoring all scene props and their collision meshes. Retrieves a negative value if underground. Operation only works on the scenes and cannot be used on the global map.
 position_get_distance_to_ground_level       =  793  # (position_get_distance_to_ground_level, <distance_fixed_point>, <position>),
-                                                    # This will measure the distance between position and the ground level, taking scene props and their collision meshes into account. Operation only works on the scenes and cannot be used on the global map.
+                                                    # This will measure the distance (in a fixed point value) between position and the ground level, taking scene props and their collision meshes into account. Retrieves a negative value if underground. Operation only works on the scenes and cannot be used on the global map.
 
 # Position rotation
 
@@ -1402,7 +1451,7 @@ position_rotate_x_floating                  =  738  # (position_rotate_x_floatin
                                                     # Same as (position_rotate_x), but takes fixed point value as parameter, allowing for more precise rotation.
 position_rotate_y_floating                  =  739  # (position_rotate_y_floating, <position>, <angle_fixed_point>),
                                                     # Same as (position_rotate_y), but takes fixed point value as parameter, allowing for more precise rotation.
-position_rotate_z_floating                  =  734  # (position_rotate_z_floating, <position_no>, <angle_fixed_point>),
+position_rotate_z_floating                  =  734  # (position_rotate_z_floating, <position_no>, <angle_fixed_point>,),
                                                     # Version 1.161+. Same as (position_rotate_z), but takes fixed point value as parameter, allowing for more precise rotation.
 
 # Position scale
@@ -1442,7 +1491,8 @@ get_sq_distance_between_position_heights    =  715  # (get_sq_distance_between_p
 position_normalize_origin                   =  741  # (position_normalize_origin, <destination_fixed_point>, <position>),
                                                     # What this operation seems to do is calculate the distance between the zero point [0,0,0] and the point with position's coordinates. Can be used to quickly calculate distance to relative positions.
 position_get_screen_projection              =  750  # (position_get_screen_projection, <position_screen>, <position_world>),
-                                                    # Calculates the screen coordinates of the position and stores it as position_screen's X and Y coordinates.
+                                                    # Calculates the screen coordinates of the position and stores it as position_screen's X and Y coordinates. Works in missions. Not sure if it works on global map.
+                                                    # <position> coordinates transform so distance becomes 1 meter. Then x,y coordinates can be multiplied, for example, by 10 and new position will be 10 meters in that direction.
 
 # Global map positions
 
@@ -1480,42 +1530,49 @@ add_troop_note_tableau_mesh     = 1108 # (add_troop_note_tableau_mesh, <troop_id
                                        # Adds graphical elements to the troop's information page (usually banner and portrait).
 add_troop_note_from_dialog      = 1114 # (add_troop_note_from_dialog, <troop_id>, <note_slot_no>, <expires_with_time>),
                                        # Adds current dialog text to troop notes. Each troop has 16 note slots. Last parameter is used to mark the note as time-dependent, if it's value is 1, then the note will be marked ("Report is current") and will be updated appropriately as the game progresses ("Report is X days old").
+                                      # Official: (add_troop_note_from_dialog,<troop_id>,<note_slot_no>, <value>), There are maximum of 8 slots. value = 1 -> shows when the note is added
 add_troop_note_from_sreg        = 1117 # (add_troop_note_from_sreg, <troop_id>, <note_slot_no>, <string_id>, <expires_with_time>),
                                        # Adds any text stored in string register to troop notes. Each troop has 16 note slots. Last parameter is used to mark the note as time-dependent, if it's value is 1, then the note will be marked ("Report is current") and will be updated appropriately as the game progresses ("Report is X days old").
-
+                                       # Official: (add_troop_note_from_sreg,<troop_id>,<note_slot_no>,<string_id>, <value>), There are maximum of 8 slots value = 1 -> shows when the note is added
 faction_set_note_available      = 1096 # (faction_set_note_available, <faction_id>, <value>), #1 = available, 0 = not available
                                        # Enables (value = 1) or disables (value = 0) faction's page in the Notes / Characters section.
 add_faction_note_tableau_mesh   = 1109 # (add_faction_note_tableau_mesh, <faction_id>, <tableau_material_id>),
                                        # Adds graphical elements to the faction's information page (usually graphical collage).
 add_faction_note_from_dialog    = 1115 # (add_faction_note_from_dialog, <faction_id>, <note_slot_no>, <expires_with_time>),
                                        # Adds current dialog text to faction notes. Each faction has 16 note slots. Last parameter is used to mark the note as time-dependent, if it's value is 1, then the note will be marked ("Report is current") and will be updated appropriately as the game progresses ("Report is X days old").
+                                      # Official: (add_faction_note_from_dialog,<faction_id>,<note_slot_no>, <value>), There are maximum of 8 slots value = 1 -> shows when the note is added
 add_faction_note_from_sreg      = 1118 # (add_faction_note_from_sreg, <faction_id>, <note_slot_no>, <string_id>, <expires_with_time>),
                                        # Adds any text stored in string register to faction notes. Each faction has 16 note slots. Last parameter is used to mark the note as time-dependent, if it's value is 1, then the note will be marked ("Report is current") and will be updated appropriately as the game progresses ("Report is X days old").
-
+                                       # Official: (add_faction_note_from_sreg,<faction_id>,<note_slot_no>,<string_id>, <value>), #There are maximum of 8 slots value = 1 -> shows when the note is added
 party_set_note_available        = 1097 # (party_set_note_available, <party_id>, <value>), #1 = available, 0 = not available
                                        # Enables (value = 1) or disables (value = 0) party's page in the Notes / Characters section.
 add_party_note_tableau_mesh     = 1110 # (add_party_note_tableau_mesh, <party_id>, <tableau_material_id>),
                                        # Adds graphical elements to the party's information page (usually map icon).
 add_party_note_from_dialog      = 1116 # (add_party_note_from_dialog, <party_id>, <note_slot_no>, <expires_with_time>),
                                        # Adds current dialog text to party notes. Each party has 16 note slots. Last parameter is used to mark the note as time-dependent, if it's value is 1, then the note will be marked ("Report is current") and will be updated appropriately as the game progresses ("Report is X days old").
+                                       # Official: (add_party_note_from_dialog,<party_id>,<note_slot_no>, <value>), #There are maximum of 8 slots value = 1 -> shows when the note is added
 add_party_note_from_sreg        = 1119 # (add_party_note_from_sreg, <party_id>, <note_slot_no>, <string_id>, <expires_with_time>),
                                        # Adds any text stored in string register to party notes. Each party has 16 note slots. Last parameter is used to mark the note as time-dependent, if it's value is 1, then the note will be marked ("Report is current") and will be updated appropriately as the game progresses ("Report is X days old").
-
+                                       # Official: (add_party_note_from_sreg,<party_id>,<note_slot_no>,<string_id>, <value>), #There are maximum of 8 slots value = 1 -> shows when the note is added
 quest_set_note_available        = 1098 # (quest_set_note_available, <quest_id>, <value>), #1 = available, 0 = not available
                                        # Enables (value = 1) or disables (value = 0) quest's page in the Notes / Characters section.
 add_quest_note_tableau_mesh     = 1111 # (add_quest_note_tableau_mesh, <quest_id>, <tableau_material_id>),
                                        # Adds graphical elements to the quest's information page (not used in Native).
 add_quest_note_from_dialog      = 1112 # (add_quest_note_from_dialog, <quest_id>, <note_slot_no>, <expires_with_time>),
                                        # Adds current dialog text to quest notes. Each quest has 16 note slots. Last parameter is used to mark the note as time-dependent, if it's value is 1, then the note will be marked ("Report is current") and will be updated appropriately as the game progresses ("Report is X days old").
+                                       # Official: (add_quest_note_from_dialog,<quest_id>,<note_slot_no>, <value>), #There are maximum of 8 slots value = 1 -> shows when the note is added
 add_quest_note_from_sreg        = 1113 # (add_quest_note_from_sreg, <quest_id>, <note_slot_no>, <string_id>, <expires_with_time>),
                                        # Adds any text stored in string register to quest notes. Each quest has 16 note slots. Last parameter is used to mark the note as time-dependent, if it's value is 1, then the note will be marked ("Report is current") and will be updated appropriately as the game progresses ("Report is X days old").
+                                       # Official: (add_quest_note_from_sreg,<quest_id>,<note_slot_no>,<string_id>, <value>), #There are maximum of 8 slots value = 1 -> shows when the note is added
 
 add_info_page_note_tableau_mesh = 1090 # (add_info_page_note_tableau_mesh, <info_page_id>, <tableau_material_id>),
                                        # Adds graphical elements to the info page (not used in Native).
 add_info_page_note_from_dialog  = 1091 # (add_info_page_note_from_dialog, <info_page_id>, <note_slot_no>, <expires_with_time>),
                                        # Adds current dialog text to info page notes. Each info page has 16 note slots. Last parameter is used to mark the note as time-dependent, if it's value is 1, then the note will be marked ("Report is current") and will be updated appropriately as the game progresses ("Report is X days old").
+                                       # Official: (add_info_page_note_from_dialog,<info_page_id>,<note_slot_no>, <value>), #There are maximum of 8 slots value = 1 -> shows when the note is added
 add_info_page_note_from_sreg    = 1092 # (add_info_page_note_from_sreg, <info_page_id>, <note_slot_no>, <string_id>, <expires_with_time>),
                                        # Adds any text stored in string register to info page notes. Each info page has 16 note slots. Last parameter is used to mark the note as time-dependent, if it's value is 1, then the note will be marked ("Report is current") and will be updated appropriately as the game progresses ("Report is X days old").
+                                      # Official: (add_info_page_note_from_sreg,<info_page_id>,<note_slot_no>,<string_id>, <value>), #There are maximum of 8 slots value = 1 -> shows when the note is added
 
 ################################################################################
 # [ Z16 ] TABLEAUS AND HERALDICS
@@ -1622,8 +1679,10 @@ str_store_item_name             = 2325  # (str_store_item_name, <string_register
                                         # Stores singular item name in referenced string register.
 str_store_item_name_plural      = 2326  # (str_store_item_name_plural, <string_register>, <item_id>),
                                         # Stores plural item name in referenced string register.
+                                        # Plural names need first to be activated (altering process_items.py and setting up plural names at module_items).
 str_store_item_name_by_count    = 2327  # (str_store_item_name_by_count, <string_register>, <item_id>),
                                         # Stores singular or plural item name with number of items ("11 Swords", "1 Bottle of Wine").
+                                        # Counting does always work, plural names need first to be activated (altering process_items.py and setting up plural names at module_items).
 str_store_party_name            = 2330  # (str_store_party_name, <string_register>, <party_id>),
                                         # Stores party name in referenced string register.
 str_store_agent_name            = 2332  # (str_store_agent_name, <string_register>, <agent_id>),
@@ -1673,6 +1732,11 @@ str_encode_url                  = 2355  # (str_encode_url, <string_register>),
   # (displayed as a chat-like series of text strings in the bottom-left part of
   # the screen), while most others will be displaying various types of dialog
   # boxes. You can also ask a question to player using these operations.
+  # You can clear message list in right bottom corner by dislpaing an empty string. Also when spaming messages shut down the display log it will be visible again.
+  # (display_message, "@{!}"),
+  # This will create a quick string. Another approach is to display an empty string register.
+  # (str_clear, s0), (display_message),
+  # (display_message), without parameters displays the s0 string register. It should be initialisized, i.e. it is necessary to (str_clear, s0), even at the begining of the game.
 
 display_debug_message               = 1104  # (display_debug_message, <string_id>, [hex_colour_code]),
                                             # Displays a string message, but only in debug mode, using provided color (hex-coded 0xRRGGBB). The message is additionally written to rgl_log.txt file in both release and debug modes when edit mode is enabled.
@@ -1688,12 +1752,14 @@ dialog_box                          = 1120  # (dialog_box, <text_string_id>, [ti
                                             # Displays a popup window with the text message and an optional caption.
 question_box                        = 1121  # (question_box, <string_id>, [<yes_string_id>], [<no_string_id>]),
                                             # Displays a popup window with the text of the question and two buttons (Yes and No by default, but can be overridden). When the player selects one of possible responses, a ti_question_answered trigger will be executed.
+                                            # Works inside a mission template and in the map window, presentations cannot be used at the same time.
 tutorial_message                    = 1122  # (tutorial_message, <string_id>, [color], [auto_close_time]),
                                             # Displays a popup window with tutorial text stored in referenced string or string register. Use -1 to close any currently open tutorial box. Optional parameters allow you to define text color and time period after which the tutorial box will close automatically. Works also at the world map.
 tutorial_message_set_position       = 1123  # (tutorial_message_set_position, <position_x>, <position_y>), 
                                             # Defines screen position for the tutorial box. Assumes screen size is 1000*750.
 tutorial_message_set_size           = 1124  # (tutorial_message_set_size, <size_x>, <size_y>), 
-                                            # Defines size of the tutorial box. Assumes screen size is 1000*750.
+                                            # Defines the font size of the tutorial box. Assumes screen size is 1000*750.
+                                            # The size of the tutorial box is always the same, depending how much text it has (one can see it with background on 1, it has always full width).
 tutorial_message_set_center_justify = 1125  # (tutorial_message_set_center_justify, <value>),
                                             # Sets tutorial box to be center justified (value = 1), or use positioning dictated by tutorial_message_set_position (value = 0).
 tutorial_message_set_background     = 1126  # (tutorial_message_set_background, <value>),
@@ -1737,6 +1803,7 @@ encountered_party_is_attacker         =   39  # (encountered_party_is_attacker),
 conversation_screen_is_active         =   42  # (conversation_screen_is_active),
                                               # Checks that the player is currently in dialogue with some agent. Can only be used in triggers of module_mission_templates.py file.
 in_meta_mission                       =   44  # (in_meta_mission),
+                                              # Works only in conversations. Indicates whether dialogue is taking place in meta mission or in current scene.
                                               # Deprecated, do not use.
 
 # Game hardcoded windows and related operations
@@ -1771,7 +1838,8 @@ change_screen_map                     = 2052  # (change_screen_map),
 change_screen_notes                   = 2053  # (change_screen_notes, <note_type>, <object_id>),
                                               # Opens the Notes screen, in the selected category (note_type: 1=troops, 2=factions, 3=parties, 4=quests, 5=info_pages) and for the specified object in that category.
 change_screen_quit                    = 2055  # (change_screen_quit),
-                                              # Quits the game to the main menu.
+                                              # Quits the game to the main menu. 
+                                              # Most probably needs to be called from module_game_menus.
 change_screen_give_members            = 2056  # (change_screen_give_members, [party_id]),
                                               # Opens the Give Troops to Another Party interface. Party_id parameter is optional during an encounter and will use encountered party as default value.
 change_screen_controls                = 2057  # (change_screen_controls),
@@ -1781,13 +1849,15 @@ change_screen_options                 = 2058  # (change_screen_options),
 
 set_mercenary_source_party            = 1320  # (set_mercenary_source_party, <party_id>),
                                               # Defines the party from which the player will buy mercenaries with (change_screen_buy_mercenaries).
-start_map_conversation                = 1025  # (start_map_conversation, <troop_id>, [troop_dna]),
+start_map_conversation                = 1025  # (start_map_conversation,<troop_id>),
+                                              # Old syntax: (start_map_conversation, <troop_id>, [troop_dna]),
                                               # Starts a conversation with the selected troop. Can be called directly from global map or game menus. Troop DNA parameter allows you to randomize non-hero troop appearances.
 
 # Game menus
 
 set_background_mesh                   = 2031  # (set_background_mesh, <mesh_id>),
                                               # Sets the specified mesh as the background for the current menu. Possibly can be used for dialogs or presentations, but was not tested.
+                                              # UPDATE: Not working for presentations, not tested yet for dialogs.
 set_game_menu_tableau_mesh            = 2032  # (set_game_menu_tableau_mesh, <tableau_material_id>, <value>, <position_register_no>),
                                               # Adds a tableau to the current game menu screen. Position (X,Y) coordinates define mesh position, Z coordinate defines scaling. Parameter <value> will be passed as tableau_material script parameter.
 jump_to_menu                          = 2060  # (jump_to_menu, <menu_id>),
@@ -1798,7 +1868,7 @@ disable_menu_option                   = 2061  # (disable_menu_option),
 # Game encounter handling operations
 
 set_party_battle_mode                 = 1020  # (set_party_battle_mode),
-                                              # Used before or during the mission to start battle mode (and apparently make agents use appropriate AI).
+                                              # Used before or during the mission to start battle mode. Enables that any party you encouter will permanently take away player's health, can loot the defeated player and various things like that. Basically makes a party encounter like a proper battle (and apparently make agents use appropriate AI). not just a training run where the player gains back again all his health after the battle.
 finish_party_battle_mode              = 1019  # (finish_party_battle_mode),
                                               # Used during the mission to stop battle mode.
 
@@ -1863,13 +1933,18 @@ talk_info_set_line                    = 2022  # (talk_info_set_line, <line_no>, 
 all_enemies_defeated                  = 1003  # (all_enemies_defeated, [time-value]),
                                               # Checks if all agents from the enemy are defeated. When a time value x (in seconds) is given the operation only succeeds if the last status change (dead, alive, wounded...) happened more than (or exactly) x seconds ago.
 race_completed_by_player              = 1004  # (race_completed_by_player),
-                                              # Not documented. Not used in Native. Apparently deprecated.
+                                              # Not documented. Not used in Native. Apparently deprecated, doesn't do anything, only returns true.
 num_active_teams_le                   = 1005  # (num_active_teams_le, <value>),
                                               # Checks that the number of active teams (i.e. teams with at least one active agent) is less than or equal to given value.
+num_active_teams_gt                   = negate|num_active_teams_le  # (num_active_teams_gt, <value>),
+                                                                    # Checks if the number of active teams is bigger than given value.                                              
 main_hero_fallen                      = 1006  # (main_hero_fallen),
-                                              # Checks that the player has been knocked out.
+                                              # Checks that the player has been knocked out.                                           
+main_hero_alive                       = negate|main_hero_fallen  # (main_hero_alive),
+                                                                 # Checks if the player is alive and not knocked out.
 scene_allows_mounted_units            = 1834  # (scene_allows_mounted_units),
                                               # Not documented. Used in multiplayer, but it's not clear where horses could be disallowed in the first place. 4research.
+                                              # UPDATE: Checks if scene entry has the flag sf_no_horses.
 is_zoom_disabled                      = 2222  # (is_zoom_disabled),
                                               # Version 1.153+. Checks that the zoom is currently disabled in the module.ini by setting the parameter disable_zoom = 1.
 mission_tpl_are_all_agents_spawned    = 1943  # (mission_tpl_are_all_agents_spawned), #agents >300 may keep spawning after ti_after_mission_start (still fires .1 second too early) 
@@ -1880,6 +1955,7 @@ scene_set_slot                               =  503  # (scene_set_slot, <scene_i
 scene_get_slot                               =  523  # (scene_get_slot, <destination>, <scene_id>, <slot_no>),
 scene_slot_eq                                =  543  # (scene_slot_eq, <scene_id>, <slot_no>, <value>),
 scene_slot_ge                                =  563  # (scene_slot_ge, <scene_id>, <slot_no>, <value>),
+scene_slot_lt                                = negate|scene_slot_ge  # (scene_slot_lt, <scene_id>, <slot_no>, <value>),
 
 # Scene visitors handling operations
 
@@ -1892,22 +1968,20 @@ modify_visitors_at_site                      = 1261  # (modify_visitors_at_site,
                                                      # Declares the scene which visitors will be modified from that moment on. Can be called inside mission or at global map.
 reset_visitors                               = 1262  # (reset_visitors),
                                                      # If the scene defined in previous operand is not loaded yet all visitors will be removed.
-set_visitor                                  = 1263  # (set_visitor, <entry_no>, <troop_id>, [<dna>]),
-                                                     # Adds the specified troop as the visitor to the entry point of the scene defined with (modify_visitors_at_site).
-                                                     # Entry point must have mtef_visitor_source type. Optional DNA parameter allows for randomization of non-hero agent looks.
-                                                     # Default team is 7 wich can be overridden by <entry_no> flags. 7 team is hardcoded neutral for everyone and this couldn't be changed.
-set_visitors                                 = 1264  # (set_visitors, <entry_no>, <troop_id>, <number_of_troops>),
+set_visitor                                  = 1263  # (set_visitor, <mission_template_spawn_record>, <troop_id>, [<dna>]),
+                                                     # Adds the specified troop as the visitor to the specified spawn record (not the entry point) of the scene defined with (modify_visitors_at_site). Entry point must have mtef_visitor_source type. Optional DNA parameter allows for randomization of agent looks (only applies to non-hero troops).                                                                               
+set_visitors                                 = 1264  # (set_visitors, <mission_template_spawn_record>, <troop_id>, <number_of_troops>),
                                                      # Same as (set_visitors), but spawns an entire group of some troop type.
-add_visitors_to_current_scene                = 1265  # (add_visitors_to_current_scene, <entry_no>, <troop_id>, <number_of_troops>[, <team_no>, <group_no>]),
-                                                     # Adds a number of troops to the specified entry point when the scene is already loaded. Optional <team_no> and <group_no> parameters are used 
-                                                     # in multiplayer mode only, singleplayer mode uses selected entry point settings.
-                                                     # Default team is 7 wich can be overridden by <entry_no> flags. 7 team is hardcoded neutral for everyone and this couldn't be changed.
+add_visitors_to_current_scene                = 1265  # (add_visitors_to_current_scene, <mission_template_spawn_record>, <troop_id>, <number_of_troops>[, <team_no>, <group_no>]),
+                                                     # Adds a number of troops to the specified spawn record (not the entry point) when the scene is already loaded. Requires the entry point to have the flag mtef_visitor_source. Team and group parameters are used in multiplayer mode only, singleplayer mode uses team settings for selected entry point as defined in module_mission_templates.py.
 mission_tpl_entry_set_override_flags         = 1940  # (mission_tpl_entry_set_override_flags, <mission_template_id>, <entry_no>, <value>),
                                                      # Allows modder to use a different set of equipment override flags (see af_* constants in header_mission_templates.py) for the selected entry point.
 mission_tpl_entry_clear_override_items       = 1941  # (mission_tpl_entry_clear_override_items, <mission_template_id>, <entry_no>),
                                                      # Clears the list of override equipment provided by the entry point definition in module_mission_templates.py.
 mission_tpl_entry_add_override_item          = 1942  # (mission_tpl_entry_add_override_item, <mission_template_id>, <entry_no>, <item_kind_id>),
-                                                     # Specified item will be added to any agent spawning on specified entry point.
+                                                     # Specified item will be added to any agent spawning on specified entry point. Must be used after using the set_jump_mission to define the context, otherwise it won't work properly.
+mission_tpl_are_all_agents_spawned           = 1943  # (mission_tpl_are_all_agents_spawned), 
+                                                     # Agents >300 may keep spawning after ti_after_mission_start (fires .1 second too early) if there is not enough space to spawn for agents.
 
 # Mission/scene general operations
 
@@ -2014,7 +2088,7 @@ is_camera_in_first_person                    = 61  # (is_camera_in_first_person)
 set_camera_in_first_person                   = 62  # (set_camera_in_first_person, <value>), # 1 = first, 0 = third person
 
 mission_cam_set_mode                         = 2001  # (mission_cam_set_mode, <mission_cam_mode>, <duration-in-1/1000-seconds>, <value>),
-                                                     # Not documented. Changes main camera mode. Camera mode is 0 for automatic and 1 for manual (controlled by code). Duration parameter is used when switching from manual to auto, to determine how long will camera move to it's new position. If value = 0, then camera velocity will be linear. Else it will be non-linear.
+                                                     # Not documented. Changes main camera mode. Camera mode is 0 for automatic and 1 for manual (controlled by code). Duration parameter is used when switching from manual to auto, to determine how long will camera move to it's new position. If value = 0, then camera velocity will be linear. Else it will be non-linear. Otherwise the third parameter is not documented.
 mission_cam_set_screen_color                 = 2008  # (mission_cam_set_screen_color, <value>),
                                                      # Not documented. Paints the screen with solid color. Parameter <value> contains color code with alpha component. Can be used to block screen entirely, add tint etc.
 mission_cam_animate_to_screen_color          = 2009  #(mission_cam_animate_to_screen_color, <value>, <duration-in-1/1000-seconds>),
@@ -2027,9 +2101,9 @@ mission_cam_set_position                     = 2011  # (mission_cam_set_position
 mission_cam_animate_to_position              = 2012  # (mission_cam_animate_to_position, <position_register_no>, <duration-in-1/1000-seconds>, <value>),
                                                      # Moves the camera to the specified position smoothly. Second parameter determines how long it will take camera to move to destination, third parameter determines whether camera velocity will be linear (value = 0) or non-linear (value = 1).
 mission_cam_get_aperture                     = 2013  # (mission_cam_get_aperture, <destination>),
-                                                     # Not documented. View angle?
+                                                     # If player is holding shift for zooming aperture = 37, normal aperture = 75. When player dies with shift holding mission cam aperture don't return to normal.
 mission_cam_set_aperture                     = 2014  # (mission_cam_set_aperture, <value>),
-                                                     # Not documented.
+                                                     # Set aperture for cam.
 mission_cam_animate_to_aperture              = 2015  # (mission_cam_animate_to_aperture, <value>, <duration-in-1/1000-seconds>, <value>),
                                                      # Not documented. if value = 0, then camera velocity will be linear. else it will be non-linear
 mission_cam_animate_to_position_and_aperture = 2016  # (mission_cam_animate_to_position_and_aperture, <position_register_no>, <value>, <duration-in-1/1000-seconds>, <value>),
@@ -2044,15 +2118,16 @@ mission_cam_set_animation                    = 2019  # (mission_cam_set_animatio
 mouse_get_world_projection                   =  751  # (mouse_get_world_projection, <position_no_1>, <position_no_2>),
                                                      # Version 1.161+. Returns current camera coordinates (first position) and mouse projection to the back of the world (second position). Rotation data of resulting positions seems unreliable.
 cast_ray                                     = 1900  # (cast_ray, <destination>, <hit_position_register>, <ray_position_register>, [<ray_length_fixed_point>]),
-                                                     # Version 1.161+. Casts a ray starting from <ray_position_register> and stores the closest hit position into <hit_position_register>.
+                                                     # Version 1.161+. Casts a ray starting from <ray_position_register> and stores the closest hit position into <hit_position_register>. (fails if no hits). Rotations of hit position will be normal to the surface, i.e. perpendicular.
                                                      # Only checks collisions with collision bodies, scene props with collision, and terrain. Fails if no collision is made. Collision with terrain and trees returns -1 as result.
                                                      # Collision face's normals are stored in <hit_position_register> rotation with Y+ being the outward facing.
                                                      # If the body hit is a scene prop, its instance id will be stored into <destination>, otherwise it will store -1 and fail code below.
+                                                     # Optional <ray_length> parameter seems to have no effect.
                                                      # Doesn't collide with agents. Longer rays are computationally more expensive.
 set_postfx                                   = 2386  # (set_postfx, <postfx_params-ID>)
                                                      # Sets the respective postfx effect for the current scene. Count through your post_fx-settings beginning from 0 to get the ID 
                                                      # for the effect or put the line 'ID_postfx_params import *' at the top to use directly the ID-name. Not used in Native.
-                                                     # Can get called with all mission triggers, even when already in the scene. However, in latter case a delay can be noticed
+                                                     # Can get called with all mission triggers, even when already in the scene. However, in latter case a delay can be noticed 
                                                      # when the postfx switches. Appearantly a manually set postfx disappears if HDR gets toggled on/off in the graphic options.
 set_river_shader_to_mud                      = 2387  # (set_river_shader_to_mud),
                                                      # Changes river material for muddy shader variant affecting visibility and color (drastically darker). Cannot be undone.
@@ -2066,7 +2141,7 @@ set_shader_param_float                       = 2401  # (set_shader_param_float, 
 set_shader_param_float4                      = 2402  # (set_shader_param_float4, <parameter_name>, <valuex>, <valuey>, <valuez>, <valuew>),
                                                      # Version 1.153+. Allows direct manupulation of shader parameters. Operation scope is unknown, possibly global. Parameter is a set of 4 float values.
 set_shader_param_float4x4                    = 2403  # (set_shader_param_float4x4, <parameter_name>, [0][0], [0][1], [0][2], [1][0], [1][1], [1][2], [2][0], [2][1], [2][2], [3][0], [3][1], [3][2]),
-                                                     # Version 1.153+. Sets the float4x4 shader parameter <parameter_name> to the given values .w components are 0001 by default. Operation scope is unknown, possibly global.
+                                                     # Version 1.153+. Sets the float4x4 shader parameter <parameter_name> to the given values .w components are 0001 by default. Operation scope is unknown, possibly global. 
 
 ################################################################################
 # [ Z21 ] SCENE PROPS, SCENE ITEMS, LIGHT SOURCES AND PARTICLE SYSTEMS
@@ -2100,9 +2175,9 @@ prop_instance_is_valid                      = 1838  # (prop_instance_is_valid, <
 prop_instance_is_animating                  = 1862  # (prop_instance_is_animating, <destination>, <scene_prop_id>),
                                                     # Checks that the scene prop instance is currently animating.
 prop_instance_intersects_with_prop_instance = 1880  # (prop_instance_intersects_with_prop_instance, <checked_scene_prop_id>, <scene_prop_id>),
-                                                    # Checks if two scene props are intersecting (i.e. collided). Useful when animating scene props movement. Pass -1 for second parameter to check the prop against all other props on the scene. Cannot check polygon-to-polygon physics models, but can check any other combinations between sphere, capsule and polygon physics models.
+                                                    # Checks if two scene props are intersecting (i.e. collided). Useful when animating scene props movement. Pass -1 for second parameter to check the prop against all other props on the scene.  Scene props must have active collision meshes.Cannot check polygon-to-polygon physics models, but can check any other combinations between sphere, capsule and polygon physics models.
 scene_prop_has_agent_on_it                  = 1801  # (scene_prop_has_agent_on_it, <scene_prop_instance_id>, <agent_id>),
-                                                    # Checks that the specified agent is standing on the scene prop instance.
+                                                    # Checks that the specified agent is above the scene prop instance. scene_prop_has_agent_over_it would be a more appropriate name for the operation.
 
 # Scene prop instance slot operations
 
@@ -2126,7 +2201,7 @@ scene_prop_enable_after_time                = 1800  # (scene_prop_enable_after_t
 set_spawn_position                          = 1970  # (set_spawn_position, <position>),
                                                     # Defines the position which will later be used by (spawn_scene_prop), (spawn_scene_item), (spawn_agent) and (spawn_horse) operations.
 spawn_scene_prop                            = 1974  # (spawn_scene_prop, <scene_prop_id>),
-                                                    # Spawns a new scene prop instance of the specified type at the position defined by the last call to (set_spawn_position) and saves the reference to the new prop in reg0.
+                                                    # Spawns a new scene prop instance of the specified type at the position defined by the last call to (set_spawn_position) (Operation stores the prop_instance_id of the spawned position in reg0. Be aware: it is not possible to unspawn a scene prop while a mission is running.)
 
 prop_instance_get_variation_id              = 1840  # (prop_instance_get_variation_id, <destination>, <scene_prop_id>),
                                                     # Retrieves the first variation ID number for the specified scene prop instance.
@@ -2151,7 +2226,7 @@ prop_instance_set_material                  = 2617  # (prop_instance_set_materia
 scene_prop_get_visibility                   = 1812  # (scene_prop_get_visibility, <destination>, <scene_prop_id>),
                                                     # Retrieves the current visibility state of the scene prop instance (1 = visible, 0 = invisible).
 scene_prop_set_visibility                   = 1813  # (scene_prop_set_visibility, <scene_prop_id>, <value>),
-                                                    # Shows (value = 1) or hides (value = 0) the scene prop instance. Collision remains on invisible props.
+                                                    # Shows (value = 1) or hides (value = 0) the scene prop instance. Collision remains on invisible props.  (The collision mesh remains, so you need to always run a seperate operation (prop_instance_enable_physics) to turn on and off to match the collision mesh. Use (rebuild_shadow_map), afterwards to remove prop shadows (Will stutter for a frame))
 scene_prop_get_hit_points                   = 1815  # (scene_prop_get_hit_points, <destination>, <scene_prop_id>),
                                                     # Retrieves current number of hit points that the scene prop instance has.
 scene_prop_get_max_hit_points               = 1816  # (scene_prop_get_max_hit_points, <destination>, <scene_prop_id>),
@@ -2176,7 +2251,8 @@ prop_instance_get_position                  = 1850  # (prop_instance_get_positio
 prop_instance_get_starting_position         = 1851  # (prop_instance_get_starting_position, <position>, <scene_prop_id>),
                                                     # Retrieves the prop instance starting position on the scene (i.e. the place where it was positioned when initialized).
 prop_instance_set_position                  = 1855  # (prop_instance_set_position, <scene_prop_id>, <position>, [dont_send_to_clients]),
-                                                    # Teleports prop instance to another position. Optional flag dont_send_to_clients can be used on the server to prevent position change from being replicated to client machines (useful when doing some calculations which require to move the prop temporarily to another place).
+                                                    # Teleports prop instance to another position. Optional flag dont_send_to_clients can be used on the server to prevent position change from being replicated to client machines (useful when doing some calculations which require to move the prop temporarily to another place). 
+                                                    # Gets synchronized by game engine automatically if called on server. Each time you call this operation the game sends a network event to all clients. Too many calls will fresh or mess up the client completely, so the only solution is not calling them 20 times per frame.
 prop_instance_animate_to_position           = 1860  # (prop_instance_animate_to_position, <scene_prop_id>, position, <duration-in-1/100-seconds>),
                                                     # Moves prop instance to another position during the specified time frame (i.e. animates). Time is specified in 1/100th of second.
                                                     # Prop is moving each frame after mission timer triggers.
@@ -2192,7 +2268,7 @@ prop_instance_get_scale                     = 1852  # (prop_instance_get_scale, 
 prop_instance_set_scale                     = 1854  # (prop_instance_set_scale, <scene_prop_id>, <value_x_fixed_point>, <value_y_fixed_point>, <value_z_fixed_point>),
                                                     # Sets new scaling factors for the scene prop.
 prop_instance_enable_physics                = 1864  # (prop_instance_enable_physics, <scene_prop_id>, <value>),
-                                                    # Enables (value = 1) or disables (value = 0) physics calculation (gravity, collision checks) for the scene prop instance.
+                                                    # Enables (value = 1) or disables (value = 0) physics calculation (gravity, collision checks and objects) for the scene prop instance.
 prop_instance_initialize_rotation_angles    = 1866  # (prop_instance_initialize_rotation_angles, <scene_prop_id>),
                                                     # Should be called to initialize the scene prop instance prior to any calls to (prop_instance_rotate_to_position).
 prop_instance_rotate_to_position            = 1865  # (prop_instance_rotate_to_position, <scene_prop_id>, <position>, <duration-in-1/100-seconds>, <total_rotate_angle_fixed_point>),
@@ -2202,13 +2278,16 @@ prop_instance_clear_attached_missiles       = 1885  # (prop_instance_clear_attac
 
 prop_instance_dynamics_set_properties       = 1871  # (prop_instance_dynamics_set_properties, <scene_prop_id>, <position>),
                                                     # Initializes physical parameters of a scene prop. Position (X,Y) coordinates are used to store object's mass and friction coefficient. Coordinate Z is reserved (set it to zero just in case). Scene prop must be defined as sokf_moveable|sokf_dynamic_physics, and a call to (prop_instance_enable_physics) must be previously made.
+                                                    # Official: (prop_instance_dynamics_set_properties,<scene_prop_id>,mass_friction),
 prop_instance_dynamics_set_velocity         = 1872  # (prop_instance_dynamics_set_velocity, <scene_prop_id>, <position>),
                                                     # Sets current movement speed for a scene prop. Position's coordinates define velocity along corresponding axis. Same comments as for (prop_instance_dynamics_set_properties).
+                                                    # Official: (prop_instance_dynamics_set_velocity,<scene_prop_id>,linear_velocity),
 prop_instance_dynamics_set_omega            = 1873  # (prop_instance_dynamics_set_omega, <scene_prop_id>, <position>),
                                                     # Sets current rotation speed for a scene prop. Position's coordinates define rotational speed around corresponding axis. Same comments as for (prop_instance_dynamics_set_properties).
+                                                    # Official: (prop_instance_dynamics_set_omega,<scene_prop_id>,angular_velocity),
 prop_instance_dynamics_apply_impulse        = 1874  # (prop_instance_dynamics_apply_impulse, <scene_prop_id>, <position>),
                                                     # Applies an impulse of specified scale to the scene prop. Position's coordinates define instant change in movement speed along corresponding axis. Same comments as for (prop_instance_dynamics_set_properties).
-
+                                                    # Official: (prop_instance_dynamics_apply_impulse,<scene_prop_id>,impulse_force),
 prop_instance_deform_to_time                = 2610  # (prop_instance_deform_to_time, <prop_instance_no>, <value>),
                                                     # Version 1.161+. Deforms a vertex-animated scene prop to specified vertex time. If you open the mesh in OpenBrf, right one of "Time of frame" boxes contains the relevant value. If value is 0 will deform to time 1 instead, so make sure to duplicate 0 frame as last one if you want it to be accessible for deform.
 prop_instance_deform_in_range               = 2611  # (prop_instance_deform_in_range, <prop_instance_no>, <start_frame>, <end_frame>, <duration-in-1/1000-seconds>),
@@ -2256,6 +2335,7 @@ add_point_light                             = 1960  # (add_point_light, [flicker
                                                     # Adds a point light source to an object with optional flickering magnitude (range 0..100) and flickering interval (in 1/100th of second). Uses position offset and color provided to previous calls to (set_position_delta) and (set_current_color). Can only be used in item triggers.
 add_point_light_to_entity                   = 1961  # (add_point_light_to_entity, [flicker_magnitude], [flicker_interval]),
                                                     # Adds a point light source to an object with optional flickering magnitude (range 0..100) and flickering interval (in 1/100th of second). Uses position offset and color provided to previous calls to (set_position_delta) and (set_current_color). Can only be used in scene prop triggers.
+                                                    # [?] Attaches an emissive into any [Item] or [Scene Prop] when putting this into their functions. Doesn't work on the Original Game.
 particle_system_add_new                     = 1965  # (particle_system_add_new, <par_sys_id>,[position]),
                                                     # Adds a new particle system to an object. Uses position offset and color provided to previous calls to (set_position_delta) and (set_current_color). Can only be used in item/prop triggers.
 particle_system_emit                        = 1968  # (particle_system_emit, <par_sys_id>, <value_num_particles>, <value_period>),
@@ -2299,6 +2379,7 @@ prop_instance_stop_all_particle_systems     = 1887  # (prop_instance_stop_all_pa
 
 agent_is_in_special_mode                 = 1693  # (agent_is_in_special_mode, <agent_no>),
                                                  # Checks that the agent is currently in scripted mode.
+                                                 # It's set after executing agent_set_scripted_destination or agent_set_scripted_destination_no_attack and is cleared with agent_clear_scripted_mode.
 agent_is_routed                          = 1699  # (agent_is_routed, <agent_no>),
                                                  # Checks that the agent has fled from the map (i.e. reached the edge of the map in fleeing mode and then faded).
 agent_is_alive                           = 1702  # (agent_is_alive, <agent_no>),
@@ -2307,15 +2388,22 @@ agent_is_wounded                         = 1703  # (agent_is_wounded, <agent_no>
                                                  # Checks that the agent has been knocked unconscious. Alive agents return 0 even with zero hit points.
 agent_is_human                           = 1704  # (agent_is_human, <agent_no>),
                                                  # Checks that the agent is human (i.e. not horse).
+agent_is_horse                           = negate|agent_is_human     
+                                                 # (agent_is_horse, <agent_id>),
 agent_is_ally                            = 1706  # (agent_is_ally, <agent_no>),
                                                  # Checks that the agent is allied to the player (belongs to player's party or allied party in current encounter).
                                                  # Fails if player agent hasn't spawned yet.
+agent_is_enemy                           = negate|agent_is_ally
+                                                 # (agent_is_enemy, <agent_id>),                                 
 agent_is_non_player                      = 1707  # (agent_is_non_player, <agent_no>),
                                                  # Checks that the agent is not a player.
 agent_is_defender                        = 1708  # (agent_is_defender, <agent_no>),
                                                  # Checks that the agent belongs to the defending side (see encounter operations for details).
+agent_is_attacker                        = negate|agent_is_defender 
+                                                 # (agent_is_attacker, <agent_id>),                                             
 agent_is_active                          = 1712  # (agent_is_active, <agent_no>),
-                                                 # Checks that the <agent_no> reference is active i.e. agent is valid. This will always succeed inside try_for_agents loop.
+                                                 # Checks that the <agent_no> reference is active i.e. agent is valid (inc. dead or routed agents). This will always succeed inside try_for_agents loop.
+                                                 # Engine will delete agent reference aproximatly 30 sec after his death.
 agent_has_item_equipped                  = 1729  # (agent_has_item_equipped, <agent_no>, <item_id>),
                                                  # Checks that the agent has a specific item equipped.
 agent_is_in_parried_animation            = 1769  # (agent_is_in_parried_animation, <agent_no>),
@@ -2337,16 +2425,16 @@ team_set_slot                            =  509  # (team_set_slot, <team_id>, <s
 team_get_slot                            =  529  # (team_get_slot, <destination>, <player_id>, <slot_no>),
 team_slot_eq                             =  549  # (team_slot_eq, <team_id>, <slot_no>, <value>),
 team_slot_ge                             =  569  # (team_slot_ge, <team_id>, <slot_no>, <value>),
-
+team_slot_lt                             = negate|team_slot_ge   # (team_slot_lt, <team_id>, <slot_no>, <value>),
 agent_set_slot                           =  505  # (agent_set_slot, <agent_id>, <slot_no>, <value>),
 agent_get_slot                           =  525  # (agent_get_slot, <destination>, <agent_id>, <slot_no>),
 agent_slot_eq                            =  545  # (agent_slot_eq, <agent_id>, <slot_no>, <value>),
 agent_slot_ge                            =  565  # (agent_slot_ge, <agent_id>, <slot_no>, <value>),
-
+agent_slot_lt                            = negate|agent_slot_ge  # (agent_slot_lt, <agent_id>, <slot_no>, <value>),
 # Agent spawning, removal and general operations
 
-add_reinforcements_to_entry              = 1930  # (add_reinforcements_to_entry, <mission_template_entry_no>, <wave_size>),
-                                                 # For battle missions, adds reinforcement wave to the specified entry point. Additional parameter determines relative wave size. Agents in reinforcement wave are taken from all parties of the side that the entry point belongs to due to mtef_team_* flags.
+add_reinforcements_to_entry              = 1930  # (add_reinforcements_to_entry, <mission_template_spawn_record>, <wave_size>),
+                                                 # For battle missions, adds reinforcement wave to the specified spawn record (not the entry point). Additional parameter determines relative wave size. Agents in reinforcement wave are taken from all parties of the side that the entry point belongs to due to mtef_team_* flags.
 set_spawn_position                       = 1970  # (set_spawn_position, <position>), ## DUPLICATE ENTRY
                                                  # Defines the position which will later be used by (spawn_scene_prop), (spawn_scene_item), (spawn_agent) and (spawn_horse) operations.
 spawn_agent                              = 1972  # (spawn_agent, <troop_id>),
@@ -2355,13 +2443,16 @@ spawn_horse                              = 1973  # (spawn_horse, <item_kind_id>,
                                                  # Spawns a new horse (with any modifier) in the specified position and saves the reference to the new agent in reg0.
 remove_agent                             = 1755  # (remove_agent, <agent_id>),
                                                  # Instantly kills or wounds an agent (will emit dying sound). Decreases party size.
+                                                 # [CLARIFICATION NEEDDED] Dead agents can't be removed of the game, they have to be alive. (from v1.0.3 by Limik)
 agent_fade_out                           = 1749  # (agent_fade_out, <agent_id>),
                                                  # Fades out the agent from the scene (same effect as fleeing enemies when they get to the edge of map).
                                                  # They will be counted as dead (agent_is_alive) and not routed (agent_is_routed). This will not decrease party size.
+                                                 # [CLARIFICATION NEEDDED] They will be counted as alive for battle missions. Dead agents can't be faded out of the game, they have to be alive. (from v1.0.3 by Limik)
                                                  # Doesn't work on ragdolls.
                                                  # Doesn't fire trigger ti_on_agent_killed_or_wounded.
 agent_play_sound                         = 1750  # (agent_play_sound, <agent_id>, <sound_id>),
                                                  # Makes the agent emit the specified sound.
+                                                 # Gets synchronized by game engine automatically if called on server. Works appearantly the same way as with particle effects, it's getting cut off at a specific distance, up4research.
 agent_stop_sound                         = 1808  # (agent_stop_sound, <agent_id>),
                                                  # Stops whatever sound agent is currently performing. Only the reference to the last used sound channel is stored, it is impossible to know which ones were used before for a certain agent.
 agent_set_visibility                     = 2096  # (agent_set_visibility, <agent_id>, <value>),
@@ -2374,6 +2465,10 @@ agent_get_kill_count                     = 1723  # (agent_get_kill_count, <desti
                                                  # Doesn't count agent's horse kills.
 agent_get_position                       = 1710  # (agent_get_position, <position>, <agent_id>),
                                                  # Retrieves the position of the specified agent on the scene.
+                                                 # X, Y, Z - fixed point values, rotation - integer values in degrees from 0 to 359.
+                                                 # Position is at ground level even when agent is jumping.
+                                                 # Sets X-rotation = 0, Y-rotation = 0. Y-rotation can change from 340 to 20 (aproximately) when turning mounted.
+                                                 # Horse and rider have the same position and speed-position.
 agent_set_position                       = 1711  # (agent_set_position, <agent_id>, <position>),
                                                  # Teleports the agent to specified position on the scene, sets to ground level automatically if dynamics are not turned off before setting agent position (agent_set_no_dynamics). Be careful with riders - you must teleport the horse, not the rider for the operation to work correctly! Does not properly set the rotation of players in MP Warband as their mouse-look direction overrides it. Gets synchronized by game engine automatically if called on server. Each time you call this operation the game sends a network event to all clients. Too many calls will fresh or mess up the client completely, so the only solution is not calling them 20 times per frame. Doesn't work on conversation partner during dialogs.
 agent_get_horse                          = 1714  # (agent_get_horse, <destination>, <agent_id>),
@@ -2392,20 +2487,29 @@ agent_get_item_id                        = 1719  # (agent_get_item_id, <destinat
 # Agent combat parameters and stats
 
 store_agent_hit_points                   = 1720  # (store_agent_hit_points, <destination>, <agent_id>, [absolute]),
-                                                 # Retrieves current agent health. Optional last parameter determines whether actual health (absolute = 1) or relative percentile health (absolute = 0) is returned. Default is relative.
+                                                 # Retrieves current agent health. Optional last parameter determines whether actual health (absolute = 1) or relative percentile health (absolute = 0) is returned. Default is relative. 
 agent_set_hit_points                     = 1721  # (agent_set_hit_points, <agent_id>, <value>,[absolute]),
-                                                 # Sets new value for agent health. Optional last parameter determines whether the value is interpreted as actual health (absolute = 1) or relative percentile health (absolute = 0). Default is relative.
+                                                 # Sets new value for agent health. Optional last parameter determines whether the value is interpreted as actual health (absolute = 1) or relative percentile health (absolute = 0). Default is relative. Gets synchronized by game engine automatically if called on server.
 agent_set_max_hit_points                 = 2090  # (agent_set_max_hit_points, <agent_id>, <value>, [absolute]),
                                                  # Version 1.153+. Changes agent's max hit points. Optional flag [absolute] determines if <value> is an absolute number of his points, or relative percentage (0..1000) of default value. Treated as percentage by default.
+                                                 # Official: range [0..100], can be exceeded when using absolute values(?)
 agent_deliver_damage_to_agent            = 1722  # (agent_deliver_damage_to_agent, <agent_id_deliverer>, <agent_id>, [damage_amount], [weapon_item_id]),
+                                                
                                                  # Makes one agent deal damage to another. Parameter damage_amount is optional, if it is skipped or <= 0, then damage will be calculated using attacker's weapon item and stats (like a normal weapon attack). Optional parameter weapon_item_id was added in 1.153 and will force the game the calculate the damage using this weapon.
+                                                 # damage value was optional?
+                                                 # Official: (agent_deliver_damage_to_agent, <agent_id_deliverer>, <agent_id>, <value>, [item_id]),
 agent_deliver_damage_to_agent_advanced   = 1827  # (agent_deliver_damage_to_agent_advanced, <destination>, <attacker_agent_id>, <agent_id>, <value>, [weapon_item_id]),
                                                  # Version 1.153+. Same as (agent_deliver_damage_to_agent), but resulting damage is returned. Also operation takes relations between agents into account, which may result in no damage, or even damage to attacker due to friendly fire rules. If value <= 0, then damage will be calculated using the weapon item.
+                                                 # Official: (agent_deliver_damage_to_agent_advanced, <destination>, <agent_id_deliverer>, <agent_id>, <value>, [item_id]),
+                                                 # if value <= 0, then damage will be calculated using the weapon item.
+                                                 # item_id is the item that the damage is delivered. can be ignored. #this advanced mode of agent_deliver_damage_to_agent has 2 differences. 1- the delivered damage is returned. 2- the damage delivery is done after checking the relationship between agents. this might cause no damage, or even damage to the shooter agent because of a friendly fire.
 add_missile                              = 1829  # (add_missile, <agent_id>, <starting_position>, <starting_speed_fixed_point>, <weapon_item_id>, <weapon_item_modifier>, <missile_item_id>, <missile_item_modifier>),
                                                  # Version 1.153+. Creates a missile with specified parameters. Note that <starting_position> parameter also determines the direction in which missile flies.
 
 agent_get_speed                          = 1689  # (agent_get_speed, <position>, <agent_id>),
-                                                 # Retrieves agent speed to (X,Y) coordinates of the position register. What do these mean - speed by world axis?
+                                                 # Retrieves agent speed to (X,Y) coordinates of the position register. 
+                                                 # Speed is local position to agent.
+                                                 # X, Y - fixed point values. Sets Z = 0, rotation of <position> doesn't affected. Cavalry don't have x-coordinate. Their position-y-rotation leans to left or right.
 agent_get_damage_modifier                = 2065  # (agent_get_damage_modifier, <destination>, <agent_id>),
                                                  # Version 1.157+. output value is in percentage, 100 is default, value can be between [0..1000]
 agent_get_accuracy_modifier              = 2066  # (agent_get_accuracy_modifier, <destination>, <agent_id>),
@@ -2453,11 +2557,11 @@ agent_get_ammo                           = 1727  # (agent_get_ammo, <destination
 agent_get_item_cur_ammo                  = 1977  # (agent_get_item_cur_ammo, <destination>, <agent_id>, <slot_no>),
                                                  # Version 1.153+. Returns remaining ammo for specified agent's item.
 agent_refill_ammo                        = 1728  # (agent_refill_ammo, <agent_id>),
-                                                 # Refills all ammo and throwing weapon stacks that the agent has in his equipment.
+                                                 # Refills all ammo and throwing weapon stacks that the agent has in his equipment. Doesn't work at items with the flag itp_remove_item_on_use.
 agent_set_wielded_item                   = 1747  # (agent_set_wielded_item, <agent_id>, <item_id>),
                                                  # Forces the agent to wield the specified item. Agent must have that item in his equipment for this to work. Use item_id = -1 to unwield any currently wielded item.
-agent_equip_item                         = 1779  # (agent_equip_item, <agent_id>, <item_id>, [weapon_slot_no]),
-                                                 # Adds the specified item to agent and forces him to equip it. Optional weapon_slot_no parameter is only used with weapons and will put the newly added item to that slot (range 1..4). If it is omitted with a weapon item, then the agent must have an empty weapon slot for the operation to succeed.
+agent_equip_item                         = 1779  # (agent_equip_item, <agent_id>, <item_id>, [weapon_slot_no], [modifier]),
+                                                 # Adds the specified item to agent and forces him to equip it. Optional weapon_slot_no parameter is only used with weapons and will put the newly added item to that slot (range 1..4) and with optional modifier. If it is omitted with a weapon item, then the agent must have an empty weapon slot for the operation to succeed. Gets synchronized (for weapons, not for armor) by game engine automatically if called on server. Weapons and shields should only be equipped on the server but armor should be equipped on the server for the damage calculations and also on all the clients for the visible meshes.
 agent_unequip_item                       = 1774  # (agent_unequip_item, <agent_id>, <item_id>, [weapon_slot_no]),
                                                  # Removes the specified item from the agent. Optional parameter weapon_slot_no is in range 1..4 and determines what weapon slot to remove (item_id must still be set correctly).
 agent_set_ammo                           = 1776  # (agent_set_ammo, <agent_id>, <item_id>, <value>),
@@ -2471,12 +2575,13 @@ agent_get_ammo_for_slot                  = 1825  # (agent_get_ammo_for_slot, <de
 # Agent animations
 
 agent_set_no_dynamics                    = 1762  # (agent_set_no_dynamics, <agent_id>, <value>),
-                                                 # Makes the agent stand on the spot (value = 1) or move normally (value = 0). When frozen on the spot the agent can still turn around and fight if necessary. Used in Native for the wedding scene (required for cut-scenes).
+                                                 # Makes the agent stand on the spot (value = 1) or move normally (value = 0). When frozen on the spot the agent can still turn around and fight if necessary. Used in Native for the wedding scene (required for cut-scenes). Agent will have collision and physics disabled on it if dynamics are turned off, allowing for (agent_set_position) to teleport them to any location, as well as allowing for a scripted no clipping flight mode ala Half-Life.
 
 agent_get_animation                      = 1768  # (agent_get_animation, <destination>, <agent_id>, <body_part>),
                                                  # Retrieves current agent animation for specified body part (0 = lower, 1 = upper).
 agent_set_animation                      = 1740  # (agent_set_animation, <agent_id>, <anim_id>, [channel_no]),
                                                  # Forces the agent to perform the specified animation. Optional channel_no parameter determines whether upper body (value = 1) or lower body (value = 0, default) is affected by animation.
+                                                 # Gets synchronized by game engine automatically if called on server and if the animation doesn't have the amf_client_prediction flag. Some animations might still need a server event, might be influenced by the flags amf_client_owner_prediction and amf_client_prediction, up4research.
 agent_set_stand_animation                = 1741  # (agent_set_stand_animation, <agent_id>, <anim_id>),
                                                  # Defines the animation that this agent will use when standing still. Does not force the agent into actually doing this animation.
 agent_set_walk_forward_animation         = 1742  # (agent_set_walk_forward_animation, <agent_id>, <anim_id>),
@@ -2493,7 +2598,7 @@ agent_set_crouch_mode                    = 2098  # (agent_set_crouch_mode, <agen
 agent_get_attached_scene_prop            = 1756  # (agent_get_attached_scene_prop, <destination>, <agent_id>),
                                                  # Retrieves the reference to scene prop instance which is attached to the agent, or -1 if there isn't any.
 agent_set_attached_scene_prop            = 1757  # (agent_set_attached_scene_prop, <agent_id>, <scene_prop_id>),
-                                                 # Attaches the specified prop instance to the agent. Used in multiplayer CTF missions to attach flags to players. The scale factor at the skin entry gets applied to the scene prop.
+                                                 # Attaches the specified prop instance to the agent. Used in multiplayer CTF missions to attach flags to players. Does not get synchronized by game engine automatically if called on server. The scale factor at the skin entry gets applied to the scene prop.
 agent_set_attached_scene_prop_x          = 1758  # (agent_set_attached_scene_prop_x, <agent_id>, <value>),
                                                  # Offsets the position of the attached scene prop in relation to agent, in centimeters, along the X axis (left/right).
 agent_set_attached_scene_prop_y          = 1809  # (agent_set_attached_scene_prop_y, <agent_id>, <value>),
@@ -2523,7 +2628,7 @@ agent_ai_get_num_cached_enemies          = 2670  # (agent_ai_get_num_cached_enem
 agent_ai_get_cached_enemy                = 2671  # (agent_ai_get_cached_enemy, <destination>, <agent_no>, <cache_index>),
                                                  # Version 1.165+. Return agent reference from AI's list of cached enemies, from nearest to farthest.
                                                  # Returns -1 if the cached enemy from index is not exist.
-
+                                                # Max slots are 16. Every 2 seconds renew cashed enemies in order from nearest to farthest.
 agent_get_attack_action                  = 1763  # (agent_get_attack_action, <destination>, <agent_id>),
                                                  # Retrieves agent's current attack action. Possible values: free = 0, readying_attack = 1, releasing_attack = 2, completing_attack_after_hit = 3, attack_parried = 4, reloading = 5, after_release = 6, cancelling_attack = 7.
 agent_get_defend_action                  = 1764  # (agent_get_defend_action, <destination>, <agent_id>),
@@ -2538,7 +2643,8 @@ agent_set_defend_action                  = 1746  # (agent_set_defend_action, <ag
                                                  # Forces the agent to perform a defend action. Possible values: -2 = cancel any action (1.153+), 0 = defend_down, 1 = defend_right, 2 = defend_left, 3 = defend_up. Does time value determine delay, speed or duration? 4research.
 
 agent_set_scripted_destination           = 1730  # (agent_set_scripted_destination, <agent_id>, <position>, [auto_set_z_to_ground_level], [no_rethink]),
-                                                 # Forces the agent to travel to specified position and stay there until new behavior is set or scripted mode cleared. First optional parameter determines whether the position Z coordinate will be automatically set to ground level (value = 1) or not (value = 0). Second optional parameter added in 1.165 patch, set it to 1 to save resources.
+                                                 # Forces the agent to travel to specified position and stay there until new behavior is set or scripted mode cleared. First optional parameter determines whether the position Z coordinate will be automatically set to ground level (value = 1) or not (value = 0). Second optional parameter added in 1.165 patch, set it to 1 to save resources. It works also for AI cavalry riders and riderless horses.
+                                                 # Official: (agent_set_scripted_destination, <agent_id>, <position_no>, <auto_set_z_to_ground_level>, <no_rethink>),
 agent_set_scripted_destination_no_attack = 1748  # (agent_set_scripted_destination_no_attack, <agent_id>, <position>, <auto_set_z_to_ground_level>),
                                                  # Same as above, but the agent will not attack his enemies.
 agent_get_scripted_destination           = 1731  # (agent_get_scripted_destination, <position>, <agent_id>),
@@ -2566,7 +2672,7 @@ agent_get_combat_state                   = 1739  # (agent_get_combat_state, <des
 agent_ai_get_move_target                 = 2081  # (agent_ai_get_move_target, <destination>, <agent_id>),
                                                  # Version 1.153+. UNTESTED. Supposedly returns the enemy agent to whom the agent is currently moving to.
 agent_get_look_position                  = 1709  # (agent_get_look_position, <position>, <agent_id>),
-                                                 # Retrieves the coordinates of the agent position and currently looking angles.
+                                                 # Retrieves the coordinates of the agent position and currently looking angles. It is a position that is located centrally horizontally and vertically on the bottom of the model. Basically, it is a position rotated with the agents direction but located underneath the feet.
 agent_set_look_target_position           = 1744  # (agent_set_look_target_position, <agent_id>, <position>),
                                                  # Forces an agent to look at the specified position (turn his head as necessary).
                                                  # Non alarmed agents will look for a short amount of time.
@@ -2578,7 +2684,7 @@ agent_set_look_target_agent              = 1713  # (agent_set_look_target_agent,
 agent_start_running_away                 = 1751  # (agent_start_running_away, <agent_id>, [<position_no>]),
                                                  # Makes the agent flee the battlefield, ignoring everything else and not attacking. If the agent reaches the edge of map in this mode,
                                                  # he will fade out. Optional position_no parameter added in 1.153 and will make the agent flee to specified position instead 
-                                                 # (pos0 is not allowed and will be ignored). When used on a mounted horse makes the agent 'fall off' instantly and the horse will run away
+                                                 # (pos0 is not allowed and will be ignored). When used on a mounted horse makes the agent 'fall off' instantly and the horse will run away 
                                                  # (works for player too). Falling off from horse doesn't fire 'ti_on_agent_dismount' trigger.
                                                  # Agents left the map in this mode will be counted as routed (agent_is_routed) and dead (agent_is_alive). But they will not decrease party size.
                                                  # Riderless horses don't start running away. Use <agent_set_scripted_destination, horse, border_pos>. The horse will fade out when reached border.
@@ -2599,10 +2705,11 @@ agent_check_offer_from_agent             = 1778  # (agent_check_offer_from_agent
 # Team operations
 
 agent_get_group                          = 1765  # (agent_get_group, <destination>, <agent_id>),
-                                                 # Retrieves reference to player who is currently the leader of specified bot agent. Only works in multiplayer.
+                                                 # In multiplayer: Retrieves reference to player who is currently the leader of specified bot agent.                                              
+                                                 # In singleplayer: Retrieves agent group which is the same as agent team.
 agent_set_group                          = 1766  # (agent_set_group, <agent_id>, <player_leader_id>),
-                                                 # Puts the bot agent under command of specified player. Only works in multiplayer.
-
+                                                 # In multiplayer: Puts the bot agent under command of specified player.
+                                                 # In singleplayer: Change the group. Agent team is not changed. Use agent_set_team.
 agent_get_team                           = 1770  # (agent_get_team, <destination>, <agent_id>),
                                                  # Retrieves the team that the agent belongs to.
 agent_set_team                           = 1771  # (agent_set_team, <agent_id>, <value>),
@@ -2635,6 +2742,9 @@ team_get_order_position                  = 1794  # (team_get_order_position, <po
                                                  # Retrieves position which is used for specified team/division current orders.
 team_set_order_listener                  = 1795  # (team_set_order_listener, <team_no>, <division>, [add_to_listeners]),
                                                  # Set the specified division as the one which will be following orders issued by the player (assuming the player is on the same team). If optional parameter add_to_listeners is greater than 0, then the operation will instead *add* specified division to order listeners. If division number is -1, then list of order listeners is cleared. If division number is 9, then all divisions will listen to player's orders.
+                                                 # Official: (team_set_order_listener, <team_no>, <sub_class>, <value>), 
+                                                 # merge with old listeners if value is non-zero 
+                                                 # clear listeners if sub_class is less than zero
 team_set_relation                        = 1796  # (team_set_relation, <team_no>, <team_no_2>, <value>),
                                                  # Sets relations between two teams. Possible values: enemy (-1) (default), neutral (0) and friendly (1).
                                                  # Doesn't work for 7 team. It's hardcoded neutral to everyone.
@@ -2657,6 +2767,8 @@ store_attacker_count                     = 2384  # (store_attacker_count, <desti
                                                  # No longer used in Native. Apparently stores total number of active agents on attacker's side. Possibly deprecated. 4research.
 store_normalized_team_count              = 2385  # (store_normalized_team_count, <destination>, <team_no>),
                                                  # Stores the number of agents belonging to specified team, normalized according to battle_size and advantage. Commonly used to calculate advantage and possibly reinforcement wave sizes.
+                                                 
+                                                 # 100% is equal to relative spawn agents count on mission start. For example if spawn point have 40 then 50% will be 20.
 
 ################################################################################
 # [ Z23 ] PRESENTATIONS
@@ -2797,7 +2909,7 @@ overlay_set_position                              =  926  # (overlay_set_positio
                                                           # If overlay inside container position will be relative to left-bottom corner (0,0) of container. But when you get overlay position
                                                           # it will be in absolute coordinates - lef-bottom (0,0) of screen corner and can change depending on slider.
 overlay_set_size                                  =  925  # (overlay_set_size, <overlay_id>, <position>),
-                                                          # Sets the overlay size, using position's X and Y coordinates. Note that the screen size in Warband is (1.00,0.75), further modified by fixed point multiplier. Also see (overlay_set_area_size).
+                                                          # Sets the overlay size, using position's X and Y coordinates. For meshes, button overlays, etc. the operation will modify the actual size of the overlay, whereas for text overlays it will dictate the font size the overlay will use. The default font size is X = 1000, Y = 1000 (with a fixed_point_multiplier of 1000). Note that the screen size in Warband is (1.00,0.75), further modified by fixed point multiplier. Also see (overlay_set_area_size).
 overlay_set_area_size                             =  929  # (overlay_set_area_size, <overlay_id>, <position>),
                                                           # Defines the actual area on the screen used to display the overlay. If it's size is greater than area size, it will create a scrollable area with appropriate scrollbars. Can be used to create scrollable areas for large text, or scrollable containers with many children elements (see Host Game screen for a typical example).
 overlay_set_additional_render_height              =  952  # (overlay_set_additional_render_height, <overlay_id>, <height_adder>),
@@ -2822,6 +2934,7 @@ overlay_animate_to_color                          =  932  # (overlay_animate_to_
                                                           # Changes overlay's color during a specified timeframe, specified in 1/000th of second.
 overlay_animate_to_alpha                          =  933  # (overlay_animate_to_alpha, <overlay_id>, <duration-in-1/1000-seconds>, <color>),
                                                           # Changes overlay's alpha during a specified timeframe, specified in 1/000th of second. Doesn't work with text overlays with <tf_with_outline>.
+                                                          # overlay_set_alpha doesn't work when animating is processed. Use overlay_animate_to_alpha with 0 msec.
 overlay_animate_to_highlight_color                =  934  # (overlay_animate_to_highlight_color, <overlay_id>, <duration-in-1/1000-seconds>, <color>),
                                                           # Highlights overlay to specified color during a specified timeframe, specified in 1/000th of second.
 overlay_animate_to_highlight_alpha                =  935  # (overlay_animate_to_highlight_alpha, <overlay_id>, <duration-in-1/1000-seconds>, <color>),
@@ -2853,6 +2966,11 @@ show_troop_details                                = 2388  # (show_troop_details,
 
   # This section is eagerly waiting for someone to write documentation comments.
 
+  # Regarding the player ID: The singleplayer does not have player ids, it has 
+  # agents IDs instead of player IDs. Therefore get_player_agent_no is the operation
+  # to go with there. All player related operations won't work in singleplayer,
+  # the operations will display a script warning and do nothing.
+  
 # Conditional operations
 
 player_is_active                             =  401  # (player_is_active, <player_id>),
@@ -2868,6 +2986,7 @@ player_is_admin                              =  430  # (player_is_admin, <player
 player_is_busy_with_menus                    =  438  # (player_is_busy_with_menus, <player_id>),
                                                      # This one is used when a player presses a hotkey like TAB or ESC to check if he doesn't have any kind of presentation open, however, it works strangely and is almost always acompannied by some sort of (neg|is_presentation_active, "prst"), in native
                                                      # Research: Is actually not getting used together with (neg|is_presentation_active, "prst"). It is getting called on the server and isn't synched with clients. Used in multiplayer to prevent the spawning of a player agent if the player is still busy with the menus (and might still change the loadout of the agent).
+                                                     # Undocumented. Educated guess is it's true when player is running a presentation without prsntf_read_only flag.
 
 player_item_slot_is_picked_up                =  461  # (player_item_slot_is_picked_up, <player_id>, <item_slot_no>),
                                                      # Checks that the specified player's equipment slot contains an item that the player has picked up from ground instead of buying.
@@ -2961,19 +3080,19 @@ player_get_banner_id                         =  423  # (player_get_banner_id, <d
 player_set_is_admin                          =  429  # (player_set_is_admin, <player_id>, <value>),
                                                      # Server operation. Set the current player as admin (value = 1) or not (value = 0).
 player_get_score                             =  431  # (player_get_score, <destination>, <player_id>),
-                                                     #
+                                                     # Gets the current score of the player.
 player_set_score                             =  432  # (player_set_score, <player_id>, <value>),
-                                                     #
+                                                     # Sets the score of the player.
 player_get_kill_count                        =  433  # (player_get_kill_count, <destination>, <player_id>),
-                                                     #
+                                                     # Gets the current kill count of the player.
 player_set_kill_count                        =  434  # (player_set_kill_count, <player_id>, <value>),
-                                                     #
+                                                     # Sets the kill count of the player.
 player_get_death_count                       =  435  # (player_get_death_count, <destination>, <player_id>),
-                                                     #
+                                                     # Gets the current death count of the player.
 player_set_death_count                       =  436  # (player_set_death_count, <player_id>, <value>),
-                                                     #
+                                                     # Sets the death count of the player.
 player_get_ping                              =  437  # (player_get_ping, <destination>, <player_id>),
-                                                     #
+                                                     # Gets the current ping of the player.
 player_get_is_muted                          =  439  # (player_get_is_muted, <destination>, <player_id>),
                                                      # Sets if a player gets muted (1) or unmuted (0). mute_for_everyone is an optional parameter and should be set to 1 if player is muted for everyone (this works only on server).
 player_set_is_muted                          =  440  # (player_set_is_muted, <player_id>, <value>, [mute_for_everyone]),
@@ -2984,8 +3103,8 @@ player_get_gender                            =  442  # (player_get_gender, <dest
                                                      # Gets the current player gender/skin, in Native 0 for the male and 1 for the female skin. Take note that Native can only process two genders/skins in multiplayer.
 
 player_save_picked_up_items_for_next_spawn   =  459  # (player_save_picked_up_items_for_next_spawn, <player_id>),
-                                                     #
-player_get_value_of_original_items           =  460  # (player_get_value_of_original_items, <player_id>),
+                                                     # Allows the player to keep the stuff he/she picked up during current round.
+player_get_value_of_original_items           =  460  # (player_get_value_of_original_items,  <destination>, <player_id>),
                                                      # Undocumented. Official docs: this operation returns values of the items, but default troop items will be counted as zero (except horse)
 
 profile_get_banner_id                        =  350  # (profile_get_banner_id, <destination>),
@@ -2996,31 +3115,30 @@ profile_set_banner_id                        =  351  # (profile_set_banner_id, <
 # Team handling operations
 
 team_get_bot_kill_count                      =  450  # (team_get_bot_kill_count, <destination>, <team_id>),
-                                                     #
+                                                     # Gets the current kill count of the bots being part of the team.
 team_set_bot_kill_count                      =  451  # (team_get_bot_kill_count, <destination>, <team_id>),
-                                                     #
+                                                     # Sets the kill count of the bots being part of the team.
 team_get_bot_death_count                     =  452  # (team_get_bot_death_count, <destination>, <team_id>),
-                                                     #
+                                                     # Gets the current death count of the bots being part of the team.
 team_set_bot_death_count                     =  453  # (team_get_bot_death_count, <destination>, <team_id>),
-                                                     #
+                                                     # Sets the death count of the bots being part of the team.
 team_get_kill_count                          =  454  # (team_get_kill_count, <destination>, <team_id>),
-                                                     #
+                                                     # Get the current kill count of the team.
 team_get_score                               =  455  # (team_get_score, <destination>, <team_id>),
-                                                     #
+                                                     # Get the current score of the team.
 team_set_score                               =  456  # (team_set_score, <team_id>, <value>),
-                                                     #
+                                                     # Set the current score of the team.
 team_set_faction                             =  457  # (team_set_faction, <team_id>, <faction_id>),
-                                                     #
+                                                     # Set the faction of the team.
 team_get_faction                             =  458  # (team_get_faction, <destination>, <team_id>),
-                                                     #
+                                                     # Gets the current faction of the team.
 
 # General scene and mission handling operations
 
 multiplayer_clear_scene                      =  416  # (multiplayer_clear_scene),
-                                                     #
+                                                     # Restarts the game mode from the beginning (respawns all players and the 3...2...1... countdown), removing all items on the ground.
 multiplayer_find_spawn_point                 =  425  # (multiplayer_find_spawn_point, <destination>, <team_no>, <examine_all_spawn_points>, <is_horseman>), 
-                                                     #
-# These two are used in capture the flag and similar game modes to make players of a certain team tend to spawn nearer to those scene props                                                     
+                                                     # set_spawn_effector_scene_prop_kind, set_spawn_effector_scene_prop_id - These two are used in capture the flag and similar game modes to make players of a certain team tend to spawn nearer to those scene props                                                     
 set_spawn_effector_scene_prop_kind           =  426  # (set_spawn_effector_scene_prop_kind, <team_no>, <scene_prop_kind_no>),
                                                      # Specifies some scene prop kind as one of the teams' spawn effector, making players of that team more likely to spawn closer to the specified effector prop instances. Use -1 to disable spawn effector for a team.
 set_spawn_effector_scene_prop_id             =  427  # (set_spawn_effector_scene_prop_id, <team_no>, <scene_prop_id>),
@@ -3041,9 +3159,8 @@ ban_player_using_saved_ban_info              =  468  # (ban_player_using_saved_b
                                                      #
 
 server_add_message_to_log                    =  473  # (server_add_message_to_log, <string_id>),
-                                                     #
 
-# Both of these get the values for dedicated servers which have commands to run on the console to (dis)allowing them																																																
+                                                     # server_get_renaming_server_allowed, server_get_changing_game_type_allowed - Both of these get the values for dedicated servers which have commands to run on the console to (dis)allowing them																																																
 server_get_renaming_server_allowed           =  475  # (server_get_renaming_server_allowed, <destination>),
                                                      # Official docs: 0-1
 server_get_changing_game_type_allowed        =  476  # (server_get_changing_game_type_allowed, <destination>),
@@ -3052,7 +3169,8 @@ server_get_combat_speed                      =  478  # (server_get_combat_speed,
                                                      # Official docs: 0-2
 server_set_combat_speed                      =  479  # (server_set_combat_speed, <value>),
                                                      # Official docs: 0-2
-												                             # Unofficial: <value> is actually 0-4, going from slowest to fastest, you can see it's used in module_presentations from 0 to 4																															
+												                             # Unofficial: <value> is actually 0-4, going from slowest to fastest, you can see it's used in module_presentations from 0 to 4		
+                                                     # Sets the combat speed at the server.						
 server_get_friendly_fire                     =  480  # (server_get_friendly_fire, <destination>),
                                                      # Gets if friendly fire is enabled (1) or not (0).
 server_set_friendly_fire                     =  481  # (server_set_friendly_fire, <value>),
@@ -3062,7 +3180,7 @@ server_get_control_block_dir                 =  482  # (server_get_control_block
 server_set_control_block_dir                 =  483  # (server_set_control_block_dir, <value>),
                                                      # Official docs: 0 = automatic, 1 = by mouse movement
 server_set_password                          =  484  # (server_set_password, <string_id>),
-                                                     #
+                                                     # Sets the password for the server.
 server_get_add_to_game_servers_list          =  485  # (server_get_add_to_game_servers_list, <destination>),
                                                      # Gets if server is added to game servers list (1) or not (0).
 server_set_add_to_game_servers_list          =  486  # (server_set_add_to_game_servers_list, <value>),
@@ -3072,15 +3190,16 @@ server_get_ghost_mode                        =  487  # (server_get_ghost_mode, <
 server_set_ghost_mode                        =  488  # (server_set_ghost_mode, <value>),
                                                      # Sets if dead players are allowed to move their camera freely (0), sticked to any player (1), sticked to team members (2), sticked to team members' view (3).
 server_set_name                              =  489  # (server_set_name, <string_id>),
-                                                     #
+                                                     # Sets the name of the server.
 server_get_max_num_players                   =  490  # (server_get_max_num_players, <destination>),
-                                                     #
+                                                     # Gets the maximum number of players allowed on the server.
 server_set_max_num_players                   =  491  # (server_set_max_num_players, <value>),
-                                                     #
+                                                     # Sets the maximum number of players allowed on the server.
 server_set_welcome_message                   =  492  # (server_set_welcome_message, <string_id>),
-                                                     #
+                                                     # Sets the welcome message which players can see when they join the server.
 server_get_melee_friendly_fire               =  493  # (server_get_melee_friendly_fire, <destination>),
                                                      # Gets if melee friendly fire is enabled (1) or not (0).
+                                                     # Official docs: 0 = off, 1 = on
 server_set_melee_friendly_fire               =  494  # (server_set_melee_friendly_fire, <value>),
                                                      # Sets if melee friendly fire is enabled (1) or not (0).
 server_get_friendly_fire_damage_self_ratio   =  495  # (server_get_friendly_fire_damage_self_ratio, <destination>),
@@ -3092,10 +3211,12 @@ server_get_friendly_fire_damage_friend_ratio =  497  # (server_get_friendly_fire
                                                      # Gets the percentage of damage received by friend when player hits a friend (0-100).
 server_set_friendly_fire_damage_friend_ratio =  498  # (server_set_friendly_fire_damage_friend_ratio, <value>),
                                                      # Sets the percentage of damage received by friend when player hits a friend (0-100).
+                                                     # Official docs: 0-100
 server_get_anti_cheat                        =  499  # (server_get_anti_cheat, <destination>),
                                                      # Gets if valve anti cheat is enabled (1) or not (0).
 server_set_anti_cheat                        =  477  # (server_set_anti_cheat, <value>),
                                                      # Sets if valve anti cheat is enabled (1) or not (0).
+                                                     # Official docs: 0 = off, 1 = on
 
 ################################################################################
 # [ Z25 ] REMAINING ESOTERIC STUFF (NO IDEA WHAT IT DOES)
