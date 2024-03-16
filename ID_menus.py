@@ -216,5 +216,4 @@ mnu_lost_tavern_duel = 214
 mnu_establish_court = 215
 mnu_notification_relieved_as_marshal = 216
 mnu_deer_herd = 217
-mnu_deer_herd_kill = 218
-mnu_deer_herd_kill_end = 219
+mnu_deer_herd_kill_end = 218
