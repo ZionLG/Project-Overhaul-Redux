@@ -1077,4 +1077,5 @@ trp_animation_duration = 1075
 trp_troop_flags = 1076
 trp_overlay_storage = 1077
 trp_scripted_overlay_storage = 1078
-trp_triggers_data = 1079
+trp_deer = 1079
+trp_triggers_data = 1080

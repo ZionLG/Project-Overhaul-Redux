@@ -106,6 +106,7 @@ acf_enforce_lowerbody        = 0x00000100
 acf_enforce_rightside        = 0x00000200
 acf_enforce_all              = 0x00000400
 acf_lock_rotation            = 0x00000800 # WSE: lock agent rotation
+acf_apply_slope_for_human      = 0x00000004 # WSE: apply slope for human agent same as horse (requires WSE2)
 acf_parallels_for_look_slope = 0x00001000
 acf_lock_camera              = 0x00002000
 acf_displace_position        = 0x00004000

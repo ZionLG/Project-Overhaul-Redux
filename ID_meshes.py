@@ -565,3 +565,4 @@ mesh_ui_btn_drop_h = 563
 mesh_ui_btn_dropchild_u = 564
 mesh_ui_btn_dropchild_d = 565
 mesh_ui_btn_dropchild_h = 566
+mesh_pic_extra_caza = 567

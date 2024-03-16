@@ -793,7 +793,6 @@ scripts = [
         (eq, ":random_value", 0),
         (spawn_around_party, ":cur_village", "pt_looters"),
       (try_end),
-
       (call_script, "script_update_mercenary_units_of_towns"),
       (call_script, "script_update_companion_candidates_in_taverns"),
       (call_script, "script_update_ransom_brokers"),
@@ -3003,6 +3002,7 @@ scripts = [
          (else_try),
            (party_slot_eq, "$g_encountered_party", slot_party_type, spt_cattle_herd),
            (jump_to_menu, "mnu_cattle_herd"),
+          inject('animals_encountered_party'),
          (else_try),
            (is_between, "$g_encountered_party", training_grounds_begin, training_grounds_end),
            (jump_to_menu, "mnu_training_ground"),
@@ -6207,7 +6207,8 @@ scripts = [
       
       (item_set_slot, "itm_wine", slot_item_food_bonus, 5),
       (item_set_slot, "itm_ale", slot_item_food_bonus, 4),
-
+      
+      inject('wild_animals_food_bonus'),
 	  #Item economic settings	  
 	  (item_set_slot, "itm_grain", slot_item_urban_demand, 20),
       (item_set_slot, "itm_grain", slot_item_rural_demand, 20),
@@ -17447,7 +17448,7 @@ scripts = [
 			(neq, ":cur_goods", "itm_cattle_meat"),
 			(neq, ":cur_goods", "itm_chicken"),
 			(neq, ":cur_goods", "itm_pork"),
-			
+			inject('wild_animal_food'),
             (store_add, ":cur_goods_price_slot", ":cur_goods", ":item_to_price_slot"),
 			(party_get_slot, ":origin_price", ":town_no", ":cur_goods_price_slot"),
 			(party_get_slot, ":destination_price", ":cur_town", ":cur_goods_price_slot"),
@@ -33597,7 +33598,7 @@ scripts = [
 ##         (display_message, "@{reg1} Deserters spawned from {s1}, near {s2}."),
        (try_end),
      (try_end), #deserters ends
-	 
+      inject('spawn_wild_animals'),
 	 
 	 #Spawn bandit lairs
 	(try_for_range, ":bandit_template", "pt_steppe_bandits", "pt_deserters"),

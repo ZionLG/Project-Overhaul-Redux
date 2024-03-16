@@ -2347,6 +2347,7 @@ simple_triggers = [
        (troop_get_inventory_slot, ":item_id", "trp_player", ":i_slot"),
        (this_or_next|eq, ":item_id", "itm_cattle_meat"),
        (this_or_next|eq, ":item_id", "itm_chicken"),
+       inject('wild_animal_food_modifier'),
 		(eq, ":item_id", "itm_pork"),
 		
        (troop_get_inventory_slot_modifier, ":modifier", "trp_player", ":i_slot"),
@@ -4022,6 +4023,7 @@ simple_triggers = [
       
       (item_set_slot, "itm_wine", slot_item_food_bonus, 5),
       (item_set_slot, "itm_ale", slot_item_food_bonus, 4),
+      inject('wild_animals_food_bonus')
    ]),
   (24,
    []),

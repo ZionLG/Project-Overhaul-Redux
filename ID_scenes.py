@@ -553,4 +553,5 @@ scn_enterprise_linen_weavery = 550
 scn_enterprise_wool_weavery = 551
 scn_enterprise_brewery = 552
 scn_enterprise_oil_press = 553
+scn_random_scene_plain_forest2 = 554
 scn_exit = 100000

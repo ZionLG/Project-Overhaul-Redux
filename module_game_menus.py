@@ -33,7 +33,30 @@ game_menus = [
     "Welcome, adventurer, to Mount and Blade: Warband. Before beginning the game you must create your character. Remember that in the traditional medieval society depicted in the game, war and politics are usually dominated by male members of the nobility. That does not however mean that you should not choose to play a female character, or one who is not of noble birth. Male nobles may have a somewhat easier start, but women and commoners can attain all of the same goals -- and in fact may have a much more interesting if more challenging early game.",
     "none",
     [],
-    [
+    [ 
+     ("start_mod",[],"Quick Character (for mod testing)",
+      [
+        (troop_set_type,"trp_player",0),
+        (assign,"$character_gender",tf_male),
+        (set_show_messages, 0),
+        (troop_add_gold, "trp_player", 80000),
+        (troop_add_item, "trp_player","itm_leather_jerkin",0),
+        (troop_add_item, "trp_player","itm_leather_boots",0),
+       
+        (troop_add_item, "trp_player","itm_sword_medieval_a", 0),
+        (troop_add_item, "trp_player","itm_saddle_horse",0),
+        (troop_add_item, "trp_player","itm_smoked_fish",0),
+
+        (troop_raise_attribute, "trp_player",ca_strength,100),
+        (troop_raise_attribute, "trp_player",ca_agility,100),
+        (troop_raise_skill, "trp_player","skl_power_strike",10),
+        (troop_raise_skill, "trp_player","skl_riding",10),
+        (troop_raise_skill, "trp_player","skl_pathfinding",10),
+        (troop_raise_skill, "trp_player","skl_spotting",10),
+        (troop_raise_skill, "trp_player","skl_athletics",10),
+        (troop_equip_items,"trp_player"),
+        (change_screen_map),
+       ]),
      ("continue",[],"Continue...",
        [(jump_to_menu, "mnu_start_game_1"),
         ]
@@ -538,7 +561,7 @@ game_menus = [
        [(jump_to_menu, "mnu_faction_orders"),
         ]
        ),
-	   
+      inject('view_troop_tree'),
       ("view_character_report",[],"View character report.",
        [(jump_to_menu, "mnu_character_report"),
         ]
@@ -3612,8 +3635,6 @@ game_menus = [
     [
       ]
   ),
-
-
   ("arena_duel_fight",0,
    "You and your opponent prepare to duel.",
    "none",

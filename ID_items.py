@@ -603,3 +603,5 @@ itm_kicking_boots = 601
 itm_restore_health_armour = 602
 itm_javelin_bow_ammo = 603
 itm_ccoop_new_items_end = 604
+itm_deer_meat = 605
+itm_deer = 606
