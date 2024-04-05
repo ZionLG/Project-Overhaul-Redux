@@ -6,8 +6,119 @@ from compiler import * # should be after all imports
 # 1) Script id: The prefix "script_" will be inserted when referencing scripts.
 # 2) Operation block: This must be a valid operation block. See header_operations.py for reference.
 ####################################################################################################################
+# Table of Contents:
+#
+#   _ZA_ - Hardcoded Game Scripts
+# [ ZA01 ] - Main Menu
+# [ ZA02 ] - Encounters
+# [ ZA03 ] - Trade Menu
+# [ ZA04 ] - Party Menu
+# [ ZA05 ] - Notes Menu
+# [ ZA06 ] - Other Strings
+# [ ZA07 ] - Cheat Mode
+#
+#   _ZB_ - Economy and Trade
+# [ ZB01 ] - Initialization
+# [ ZB02 ] - Trade Prices
+# [ ZB03 ] - Supply and Demand
+# [ ZB04 ] - Player Enterprise
+# [ ZB05 ] - Caravans and Villagers
+# [ ZB06 ] - Merchant Inventories
+# [ ZB07 ] - Cattle Herds
+#
+#   _ZC_ - Parties
+# [ ZC01 ] - Kingdom Lords
+# [ ZC02 ] - Player Party
+# [ ZC03 ] - Outlaws
+# [ ZC04 ] - Helper Scripts
+#
+#   _ZD_ - Centers
+# [ ZD01 ] - Initialization
+# [ ZD02 ] - Sieges
+# [ ZD03 ] - Villages
+# [ ZD04 ] - Taverns
+# [ ZD05 ] - Town Scene Setup
+# [ ZD06 ] - Town Walkers
+# [ ZD07 ] - Streetfights
+# [ ZD08 ] - Scene Props
+# [ ZD09 ] - Ownership
+# [ ZD10 ] - Finding and Picking
+#
+#   _ZE_ - Encounters
+# [ ZE01 ] - Parlay
+# [ ZE02 ] - Siege Battles
+# [ ZE03 ] - Battle Setup
+# [ ZE04 ] - Battle AI
+# [ ZE05 ] - Battle Orders
+# [ ZE06 ] - Battle End
+# [ ZE07 ] - Battle Aftermath
+#
+#   _ZF_ - Factions
+# [ ZF01 ] - Troop Types
+# [ ZF02 ] - Allegiance
+# [ ZF03 ] - Diplomacy
+# [ ZF04 ] - Internal Politics
+# [ ZF05 ] - Selection
+#
+#   _ZG_ - Quests
+# [ ZG01 ] - Generating Quests
+# [ ZG02 ] - Marshal Quests
+# [ ZG03 ] - Starting and Ending
+# [ ZG04 ] - Quest Troops
+#
+#   _ZH_ - Heroes
+# [ ZH01 ] - Aristocracy
+# [ ZH02 ] - Relations
+# [ ZH03 ] - Personality Issues
+# [ ZH04 ] - Rebellion
+# [ ZH05 ] - Ladies and Romance
+# [ ZH06 ] - Companions
+# [ ZH07 ] - Locations
+# [ ZH08 ] - Prisoners
+# [ ZH09 ] - Finding and Picking
+# [ ZH10 ] - Misc
+#
+#   _ZI_ - Campaign AI
+# [ ZI01 ] - Kingdom Hero Parties
+# [ ZI02 ] - Faction Decisions
+# [ ZI03 ] - Information Gathering
+#
+#   _ZJ_ - Notes and Information
+#
+#   _ZK_ - Music
+#
+#   _ZL_ - Banners and Profiles
+#
+#   _ZM_ - Tutorial and Training Grounds
+#
+#   _ZN_ - Tournaments
+#
+#   _ZO_ - Quick Battle
+#
+#
+####################################################################################################################
+# Appendices:
+#
+#   _ZY_ - Helper Scripts
+#
+#   _ZZ_ - Common Warband ARray Processing
+# [ ZZ01 ] - Data and Algorithms
+# [ ZZ02 ] - Printing Numbers
+# [ ZZ03 ] - More Printing 
+# [ ZZ04 ] - Comparing and Filtering
+####################################################################################################################
 
 scripts = [
+
+####################################################################################################################
+# _ZA_ - Hardcoded Game Scripts
+# Called directly from the game engine, removing them will crash the game when they are called
+####################################################################################################################
+
+####################################################################################################################
+# [ ZA01 ] - Main Menu
+# Called directly from the main menu
+####################################################################################################################
 
 
   #script.game_start:
