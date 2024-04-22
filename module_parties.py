@@ -317,6 +317,10 @@ parties = [
   ("desert_bandit_spawn_point"  ,"the deserts",pf_disabled|pf_is_static, no_menu, pt.none, fac.outlaws,0,ai_bhvr_hold,0,(110, -100),[(trp.looter,15,0)]),
  # add extra towns before this point 
   ("spawn_points_end"                  ,"{!}last_spawn_point",    pf_disabled|pf_is_static, no_menu, pt.none, fac.commoners,0,ai_bhvr_hold,0,(0., 0),[(trp.looter,15,0)]),
+  # Used by Warband ARray Processing
+  ("warp_output"                 ,"{!}WARP_output_array",pf_disabled|pf_is_static, no_menu, pt.none, fac.commoners,0,ai_bhvr_hold,0,(0., 0),[]),
+  ("warp_temp"                   ,"{!}WARP_temp_array",  pf_disabled|pf_is_static, no_menu, pt.none, fac.commoners,0,ai_bhvr_hold,0,(0., 0),[]),
+# The reserved slots may be useful for maintaining savegame compatibility, since dynamic parties get IDs starting at the end of this file
   ("reserved_1"                  ,"{!}last_spawn_point",    pf_disabled|pf_is_static, no_menu, pt.none, fac.commoners,0,ai_bhvr_hold,0,(0., 0),[(trp.looter,15,0)]),
   ("reserved_2"                  ,"{!}last_spawn_point",    pf_disabled|pf_is_static, no_menu, pt.none, fac.commoners,0,ai_bhvr_hold,0,(0., 0),[(trp.looter,15,0)]),
   ("reserved_3"                  ,"{!}last_spawn_point",    pf_disabled|pf_is_static, no_menu, pt.none, fac.commoners,0,ai_bhvr_hold,0,(0., 0),[(trp.looter,15,0)]),

@@ -1884,6 +1884,7 @@ troops = [
    [itm.battle_axe,itm.scimitar,itm.lance,itm.tab_shield_kite_cav_a,
      itm.studded_leather_coat,itm.lamellar_vest,itm.nomad_boots,itm.spiked_helmet,itm.saddle_horse],
    def_attrib|level(19),wp(100),knows_riding_4|knows_ironflesh_4|knows_power_strike_4|knows_shield_3,vaegir_face_young_1, vaegir_face_older_2],
+  # keep! used in quick battle
   ["khergit_dismounted_lancer_multiplayer_ai","Khergit Dismounted Lancer","Khergit Dismounted Lancer",tf_guarantee_all_wo_ranged,0,0,fac.kingdom_3,
    [itm.sword_khergit_4,itm.spiked_mace,itm.one_handed_war_axe_b,itm.one_handed_war_axe_a,itm.hafted_blade_a,itm.hafted_blade_b,itm.heavy_lance,itm.lance,
     itm.khergit_cavalry_helmet,itm.khergit_war_helmet,itm.lamellar_vest_khergit,itm.tribal_warrior_outfit,itm.khergit_leather_boots,itm.splinted_leather_greaves,itm.leather_gloves,itm.mail_mittens,itm.tab_shield_small_round_b,itm.tab_shield_small_round_c],

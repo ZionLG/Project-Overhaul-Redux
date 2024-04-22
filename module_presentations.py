@@ -12712,7 +12712,7 @@ presentations = [
         (assign, ":offer_value", reg0),
         (val_div, ":offer_value", 2),
         (val_add, ":offer_value", 30),
-        (call_script, "script_round_value", ":offer_value"),
+        (call_script, "script_round", ":offer_value"),
         (val_add, ":net_change", reg0),
         (create_text_overlay, reg1, "@{!}{reg0}", tf_right_align|tf_single_line),
         (position_set_x, pos1, 900),

@@ -464,9 +464,9 @@ mission_templates = [
 injection = {
     "animals_encountered_party": [
         (else_try),
-        (party_get_template_id, l.party_template, g.g_encountered_party),
-        (eq, l.party_template, pt.deer_herd),
-        (jump_to_menu, mnu.deer_herd),
+          (party_get_template_id, l.party_template, g.g_encountered_party),
+          (eq, l.party_template, pt.deer_herd),
+          (jump_to_menu, mnu.deer_herd),
     ],
     "wild_animals_food_bonus": [
         (item_set_slot, itm.deer_meat, slot_item_food_bonus, 10),

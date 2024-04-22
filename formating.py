@@ -1,24 +1,35 @@
-def format_warband_script(script):
+def indent_blocks(input_file, output_file):
     indent_level = 0
-    formatted_script = ""
-    for line in script.splitlines():
-        stripped = line.lstrip()
-        leading_spaces = len(line) - len(stripped)
-        if stripped in ["(try_begin),", "(else_try),"]:
-            formatted_script += " " * leading_spaces + "\t" * indent_level + stripped + "\n"
-            indent_level += 1
-        elif stripped == "(try_end),":
-            indent_level -= 1
-            formatted_script += " " * leading_spaces + "\t" * indent_level + stripped + "\n"
-        else:
-            formatted_script += " " * leading_spaces + "\t" * indent_level + stripped + "\n"
-    return formatted_script
+    block_start = ["try_begin", "try_for_range", "try_for_range_backwards", 
+                   "try_for_parties", "try_for_agents", "try_for_prop_instances", "try_for_players"]
+    block_end = ["try_end", "end_try"]
+    block_else = ["else_try", "else_try_begin"]
+    block_start_open = False
 
-def format_file(filename):
-    with open(filename, 'r') as file:
-        content = file.read()
-    formatted_content = format_warband_script(content)
-    with open(filename, 'w') as file:
-        file.write(formatted_content)
+    with open(input_file, 'r') as in_file, open(output_file, 'w') as out_file:
+        for line in in_file:
+            stripped = line.lstrip()
+            if block_start_open:
+                out_file.write("\t" * indent_level + line)
+                if ")" in stripped:
+                    block_start_open = False
+                    indent_level += 1
+            elif any(bs in stripped for bs in block_start):
+                if ")" in stripped:
+                    out_file.write("\t" * indent_level + line)
+                    indent_level += 1
+                else:
+                    out_file.write("\t" * indent_level + line)
+                    block_start_open = True
+            elif any(be in stripped for be in block_end):
+                indent_level -= 1
+                out_file.write("\t" * indent_level + line)
+            elif any(be in stripped for be in block_else):
+                indent_level -= 1
+                out_file.write("\t" * indent_level + line)
+                indent_level += 1
+            else:
+                out_file.write("\t" * indent_level + line)
 
-format_file('module_scripts.py')
+# Usage:
+indent_blocks('temp_scripts_formatted.py', 'module_scripts.py')
