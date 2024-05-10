@@ -62,3 +62,5 @@ pt_looter_lair = 60
 pt_bandit_lair_templates_end = 61
 pt_leaded_looters = 62
 pt_deer_herd = 63
+pt_peasant_rebels = 64
+pt_noble_refugees = 65

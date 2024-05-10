@@ -473,12 +473,12 @@ injection = {
     ],
     "spawn_wild_animals": [
         (try_begin),
-        (store_num_parties_of_template, l.num_parties, pt.deer_herd),
-        (lt, l.num_parties, 6),
-        (store_random, l.spawn_point, num_mountain_bandit_spawn_points),
-        (val_add, l.spawn_point, p.forest_bandit_spawn_point),
-        (set_spawn_radius, 25),
-        (spawn_around_party, l.spawn_point, pt.deer_herd),
+          (store_num_parties_of_template, l.num_parties, pt.deer_herd),
+          (lt, l.num_parties, 6),
+          (store_random, l.spawn_point, num_mountain_bandit_spawn_points),
+          (val_add, l.spawn_point, p.forest_bandit_spawn_point),
+          (set_spawn_radius, 25),
+          (spawn_around_party, l.spawn_point, pt.deer_herd),
         (try_end),
     ],
     "wild_animal_food": [

@@ -1,0 +1,153 @@
+from compiler import *
+
+from module_troops import *
+
+register_plugin(__name__)
+
+factions = [
+    (
+        "peasant_rebels",
+        "{!}Peasant Rebels",
+        0,
+        1.0,
+        [("noble_refugees", -1.0)],
+        [],
+    ),
+    ("noble_refugees", "{!}Noble Refugees", 0, 0.5, [], []),
+]
+
+troops = [
+    [
+        "peasant_rebel",
+        "Peasant Rebel",
+        "Peasant Rebels",
+        tf_guarantee_armor,
+        0,
+        reserved,
+        fac.peasant_rebels,
+        [
+            itm.cleaver,
+            itm.knife,
+            itm.pitch_fork,
+            itm.sickle,
+            itm.club,
+            itm.stones,
+            itm.leather_cap,
+            itm.felt_hat,
+            itm.felt_hat,
+            itm.linen_tunic,
+            itm.coarse_tunic,
+            itm.nomad_boots,
+            itm.wrapping_boots,
+        ],
+        def_attrib | level(4),
+        wp(60),
+        knows_common,
+        vaegir_face1,
+        vaegir_face2,
+    ],
+    [
+        "noble_refugee",
+        "Noble Refugee",
+        "Noble Refugees",
+        tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.noble_refugees,
+        [
+            itm.sword_medieval_a,
+            itm.leather_jacket,
+            itm.hide_boots,
+            itm.saddle_horse,
+            itm.leather_jacket,
+            itm.leather_cap,
+        ],
+        def_attrib | level(9),
+        wp(100),
+        knows_common,
+        swadian_face1,
+        swadian_face2,
+    ],
+    [
+        "noble_refugee_woman",
+        "Noble Refugee Woman",
+        "Noble Refugee Women",
+        tf_female | tf_guarantee_armor | tf_guarantee_boots,
+        0,
+        0,
+        fac.noble_refugees,
+        [
+            itm.knife,
+            itm.dagger,
+            itm.hunting_crossbow,
+            itm.dress,
+            itm.robe,
+            itm.woolen_dress,
+            itm.headcloth,
+            itm.woolen_hood,
+            itm.wrapping_boots,
+        ],
+        def_attrib | level(3),
+        wp(45),
+        knows_common,
+        refugee_face1,
+        refugee_face2,
+    ],
+]
+
+party_templates = [
+    (
+        "peasant_rebels",
+        "Peasant Rebels",
+        icon.peasant,
+        0,
+        fac.peasant_rebels,
+        bandit_personality,
+        [(trp.peasant_rebel, 33, 97)],
+    ),
+    (
+        "noble_refugees",
+        "Noble Refugees",
+        icon.gray_knight | carries_goods(12) | pf_quest_party,
+        0,
+        fac.noble_refugees,
+        merchant_personality,
+        [(trp.noble_refugee, 3, 5), (trp.noble_refugee_woman, 5, 7)],
+    ),
+]
+
+dialogs = [
+    [
+        party_tpl | pt.peasant_rebels,
+        "start",
+        [],
+        "TODO: What.",
+        "peasant_rebel_talk",
+        [],
+    ],
+    [anyone | plyr, "peasant_rebel_talk", [], "TODO: Die.", "close_window", []],
+    [
+        anyone | plyr,
+        "peasant_rebel_talk",
+        [],
+        "TODO: Nothing.",
+        "close_window",
+        [(assign, "$g_leave_encounter", 1)],
+    ],
+    [
+        party_tpl | pt.noble_refugees,
+        "start",
+        [],
+        "TODO: What.",
+        "noble_refugee_talk",
+        [],
+    ],
+    [
+        anyone | plyr,
+        "noble_refugee_talk",
+        [],
+        "TODO: Nothing.",
+        "close_window",
+        [(assign, "$g_leave_encounter", 1)],
+    ],
+]

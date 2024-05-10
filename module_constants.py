@@ -36,9 +36,6 @@ slot_item_tied_to_good_price       = 20 #ie, weapons and metal armor to tools, p
 slot_item_num_positions            = 22
 slot_item_positions_begin          = 23 #reserve around 5 slots after this
 
-
-slot_item_multiplayer_faction_price_multipliers_begin = 30 #reserve around 10 slots after this
-
 slot_item_primary_raw_material    		= 50
 slot_item_is_raw_material_only_for      = 51
 slot_item_input_number                  = 52 #ie, how many items of inputs consumed per run
@@ -48,13 +45,7 @@ slot_item_output_per_run                = 55 #number of items produced per run
 slot_item_overhead_per_run              = 56 #labor and overhead per run
 slot_item_secondary_raw_material        = 57 #in this case, the amount used is only one
 slot_item_enterprise_building_cost      = 58 #enterprise building cost
-#INVASION MODE START
-slot_item_ccoop_has_ammo                = 59 #should be set to 1 for Invasion item drops that have an additional item for ammunition (e.g. Javelin Bow)
-#INVASION MODE END
 
-
-slot_item_multiplayer_item_class   = 60 #temporary, can be moved to higher values
-slot_item_multiplayer_availability_linked_list_begin = 61 #temporary, can be moved to higher values
 
 
 ########################################################
@@ -86,13 +77,7 @@ slot_agent_in_duel_with           = 21
 slot_agent_duel_start_time        = 22
 
 slot_agent_walker_occupation      = 25
-#Equipment cost fix
-slot_agent_bought_horse           = 26
-###
-#INVASION MODE START
-slot_agent_doom_javelin_count     = 27
-slot_agent_doom_javelin_attacker  = 28
-#INVASION MODE END
+slot_agent_bought_horse           = 26 # Equipment cost fix
     
 ########################################################
 ##  FACTION SLOTS          #############################
@@ -117,7 +102,6 @@ slot_faction_number_of_parties    = 20
 slot_faction_state                = 21
 
 slot_faction_adjective            = 22
-
 
 slot_faction_player_alarm         		= 30
 slot_faction_last_mercenary_offer_time 	= 31
@@ -153,11 +137,6 @@ slot_faction_town_spy_female_troop       = 58
 slot_faction_has_rebellion_chance = 60
 
 slot_faction_instability          = 61 #last time measured
-
-
-#UNIMPLEMENTED FEATURE ISSUES
-slot_faction_war_damage_inflicted_when_marshal_appointed = 62 #Probably deprecate
-slot_faction_war_damage_suffered_when_marshal_appointed  = 63 #Probably deprecate
 
 slot_faction_political_issue 							 = 64 #Center or marshal appointment
 slot_faction_political_issue_time 						 = 65 #Now is used
@@ -632,9 +611,6 @@ pis_ship                        = 2
 ##  SCENE SLOTS            #############################
 ########################################################
 slot_scene_visited               = 0
-#INVASION MODE START
-slot_scene_ccoop_disallow_horses = 1 #should be set to 1 for scenes that should be played dismounted in Invasion mode (e.g. Forest Hideout)
-#INVASION MODE END
 slot_scene_belfry_props_begin    = 10
 
 
@@ -899,7 +875,7 @@ slot_troop_payment_request 				= 141
 slot_troop_kingsupport_state			= 142
 slot_troop_kingsupport_argument			= 143
 slot_troop_kingsupport_opponent			= 144
-slot_troop_kingsupport_objection_state  = 145 #0, default, 1, needs to voice, 2, has voiced
+slot_troop_kingsupport_objection_state  = 145 # 0 = default, 1 = needs to voice, 2 = has voiced
 
 slot_troop_days_on_mission		        = 150
 slot_troop_current_mission			    = 151
@@ -934,10 +910,6 @@ slot_troop_recent_offense_type 	           = 151 #failure to join army, failure 
 slot_troop_recent_offense_object           = 152 #to whom it happened
 slot_troop_recent_offense_time             = 153
 slot_troop_stance_on_faction_issue         = 154 #when it happened
-#INVASION MODE START
-slot_troop_coop_lord_spawned               = 155 #used to keep track of lords spawning in Invasion mode
-slot_troop_mp_squad_type                   = 156 #used while generating waves for Invasion mode
-#INVASION MODE END
 
 tro_failed_to_join_army                    = 1
 tro_failed_to_support_colleague            = 2
@@ -988,31 +960,7 @@ slot_player_bot_type_2_wanted                  = 36
 slot_player_bot_type_3_wanted                  = 37
 slot_player_bot_type_4_wanted                  = 38
 slot_player_spawn_count                        = 39
-#INVASION MODE START
-slot_player_ccoop_drop_item_1                  = 40
-slot_player_ccoop_drop_item_2                  = 41
-slot_player_companion_ids_locked               = 42
-slot_player_companion_ids_begin                = 43
-slot_player_companion_ids_end                  = slot_player_companion_ids_begin + 2 # there are 2 companions for each player
-slot_player_companion_classes_begin            = slot_player_companion_ids_end
-slot_player_companion_classes_end              = slot_player_companion_classes_begin + 2
-slot_player_companion_levels_begin             = slot_player_companion_classes_end
-slot_player_companion_levels_end               = slot_player_companion_levels_begin + 2
-slot_player_coop_dropped_item                  = slot_player_companion_levels_end
-slot_player_coop_opened_chests_begin           = slot_player_coop_dropped_item + 1
-slot_player_coop_opened_chests_end             = slot_player_coop_opened_chests_begin + 10
-#INVASION MODE END
 
-########################################################
-##  TEAM SLOTS             #############################
-########################################################
-
-slot_team_flag_situation                       = 0
-
-
-
-
-#Rebellion changes end
 # character backgrounds
 cb_noble = 1
 cb_merchant = 2
@@ -1130,10 +1078,6 @@ scene_prop_number_of_agents_pushing = 3 #for belfries only
 scene_prop_next_entry_point_id      = 4 #for belfries only
 scene_prop_belfry_platform_moved    = 5 #for belfries only
 scene_prop_slots_end                = 6
-#INVASION MODE START
-scene_prop_ccoop_item_drop_start    = 7 #For keeping track of who has opened drop chests in Invasion mode
-scene_prop_ccoop_item_drop_end      = scene_prop_ccoop_item_drop_start + 10
-#INVASION MODE END
 
 ########################################################
 rel_enemy   = 0
@@ -1397,6 +1341,7 @@ active_npcs_begin = "trp_npc1"
 active_npcs_end = kingdom_ladies_begin
 #"active_npcs_begin replaces kingdom_heroes_begin to allow for companions to become lords. Includes anyone who may at some point lead their own party: the original kingdom heroes, companions who may become kingdom heroes, and pretenders. (slto_kingdom_hero as an occupation means that you lead a party on the map. Pretenders have the occupation "slto_inactive_pretender", even if they are part of a player's party, until they have their own independent party)
 #If you're a modder and you don't want to go through and switch every kingdom_heroes to active_npcs, simply define a constant: kingdom_heroes_begin = active_npcs_begin., and kingdom_heroes_end = active_npcs_end. I haven't tested for that, but I think it should work.
+# TODO: It does not work. Fix, maybe?
 
 active_npcs_including_player_begin = "trp_kingdom_heroes_including_player_begin"
 original_kingdom_heroes_begin = "trp_kingdom_1_lord"
@@ -1430,64 +1375,6 @@ ransom_brokers_end   = tavern_travelers_begin
 
 mercenary_troops_begin = "trp_watchman"
 mercenary_troops_end = "trp_mercenaries_end"
-
-multiplayer_troops_begin = "trp_swadian_crossbowman_multiplayer"
-multiplayer_troops_end = "trp_multiplayer_end"
-
-#INVASION MODE start
-ccoop_companion_sounds_start = "snd_ccoop_spawn_companion_0"
-ccoop_companion_sounds_end = "snd_ccoop_nobleman_taunt"
-
-ccoop_noble_sounds_start = "snd_ccoop_nobleman_taunt"
-ccoop_noble_sounds_end = "snd_ccoop_looter_taunt_0"
-
-ccoop_looter_sounds_start = "snd_ccoop_looter_taunt_0"
-ccoop_looter_sounds_end = "snd_ccoop_bandit_taunt_0"
-
-ccoop_bandit_sounds_start = "snd_ccoop_bandit_taunt_0"
-ccoop_bandit_sounds_end = "snd_ccoop_sea_raider_taunt_0"
-
-ccoop_sea_raider_sounds_start = "snd_ccoop_sea_raider_taunt_0"
-ccoop_sea_raider_sounds_end = "snd_sounds_end"
-
-multiplayer_coop_class_templates_begin = "trp_swadian_crossbowman_multiplayer_coop_tier_1"
-multiplayer_coop_class_templates_end = "trp_coop_faction_troop_templates_end"
-
-multiplayer_coop_companion_equipment_sets_begin = "trp_npc1_1"
-multiplayer_coop_companion_first_equipment_sets_end = "trp_npc1_2"
-multiplayer_coop_companion_equipment_sets_end = "trp_coop_companion_equipment_sets_end"
-
-multiplayer_coop_companion_description_strings_begin = "str_npc1_1"
-#INVASION MODE end
-
-multiplayer_ai_troops_begin = "trp_swadian_crossbowman_multiplayer_ai"
-multiplayer_ai_troops_end = multiplayer_troops_begin
-
-#INVASION MODE START
-captain_multiplayer_troops_begin = "trp_farmer"
-captain_multiplayer_troops_end = "trp_swadian_crossbowman"
-
-captain_multiplayer_new_troops_begin = "trp_swadian_crossbowman"
-captain_multiplayer_new_troops_end = "trp_khergit_lancer"
-
-captain_multiplayer_coop_new_troops_begin = "trp_khergit_lancer"
-captain_multiplayer_coop_new_troops_end = "trp_slaver_chief"
-#INVASION MODE END
-
-multiplayer_scenes_begin = "scn_multi_scene_1"
-multiplayer_scenes_end = "scn_multiplayer_maps_end"
-
-multiplayer_scene_names_begin = "str_multi_scene_1"
-multiplayer_scene_names_end = "str_multi_scene_end"
-
-multiplayer_flag_projections_begin = "mesh_flag_project_sw"
-multiplayer_flag_projections_end = "mesh_flag_projects_end"
-
-multiplayer_flag_taken_projections_begin = "mesh_flag_project_sw_miss"
-multiplayer_flag_taken_projections_end = "mesh_flag_project_misses_end"
-
-multiplayer_game_type_names_begin = "str_multi_game_type_1"
-multiplayer_game_type_names_end = "str_multi_game_types_end"
 
 quick_battle_troops_begin = "trp_quick_battle_troop_1"
 quick_battle_troops_end = "trp_quick_battle_troops_end"
@@ -1657,18 +1544,6 @@ armors_end = "itm_wooden_stick"
 shields_begin = "itm_wooden_shield"
 shields_end = ranged_weapons_begin
 
-#INVASION MODE START
-coop_drops_begin = "itm_javelin_bow"
-coop_drops_end = "itm_javelin_bow_ammo"
-coop_new_items_end = "itm_ccoop_new_items_end"
-
-ccoop_max_num_players = 12
-
-coop_drops_descriptions_begin = "str_javelin_bow"
-coop_drops_descriptions_end = "str_npc1_1"
-#INVASION MODE END
-
-
 # Banner constants
 
 banner_meshes_begin = "mesh_banner_a01"
@@ -1676,24 +1551,6 @@ banner_meshes_end_minus_one = "mesh_banner_f21"
 
 arms_meshes_begin = "mesh_arms_a01"
 arms_meshes_end_minus_one = "mesh_arms_f21"
-
-custom_banner_charges_begin = "mesh_custom_banner_charge_01"
-custom_banner_charges_end = "mesh_tableau_mesh_custom_banner"
-
-custom_banner_backgrounds_begin = "mesh_custom_banner_bg"
-custom_banner_backgrounds_end = custom_banner_charges_begin
-
-custom_banner_flag_types_begin = "mesh_custom_banner_01"
-custom_banner_flag_types_end = custom_banner_backgrounds_begin
-
-custom_banner_flag_map_types_begin = "mesh_custom_map_banner_01"
-custom_banner_flag_map_types_end = custom_banner_flag_types_begin
-
-custom_banner_flag_scene_props_begin = "spr_custom_banner_01"
-custom_banner_flag_scene_props_end = "spr_banner_a"
-
-custom_banner_map_icons_begin = "icon_custom_banner_01"
-custom_banner_map_icons_end = "icon_banner_01"
 
 banner_map_icons_begin = "icon_banner_01"
 banner_map_icons_end_minus_one = "icon_banner_136"
@@ -1872,20 +1729,6 @@ ACHIEVEMENT_MANIFEST_DESTINY = 53,
 ACHIEVEMENT_CONCILIO_CALRADI = 54,
 ACHIEVEMENT_VICTUM_SEQUENS = 55,
 
-#MULTIPLAYER ACHIEVEMENTS:
-ACHIEVEMENT_THIS_IS_OUR_LAND = 56,
-ACHIEVEMENT_SPOIL_THE_CHARGE = 57,
-ACHIEVEMENT_HARASSING_HORSEMAN = 58,
-ACHIEVEMENT_THROWING_STAR = 59,
-ACHIEVEMENT_SHISH_KEBAB = 60,
-ACHIEVEMENT_RUIN_THE_RAID = 61,
-ACHIEVEMENT_LAST_MAN_STANDING = 62,
-ACHIEVEMENT_EVERY_BREATH_YOU_TAKE = 63,
-ACHIEVEMENT_CHOPPY_CHOP_CHOP = 64,
-ACHIEVEMENT_MACE_IN_YER_FACE = 65,
-ACHIEVEMENT_THE_HUSCARL = 66,
-ACHIEVEMENT_GLORIOUS_MOTHER_FACTION = 67,
-ACHIEVEMENT_ELITE_WARRIOR = 68,
 
 #COMBINED ACHIEVEMENTS
 ACHIEVEMENT_SON_OF_ODIN = 69,

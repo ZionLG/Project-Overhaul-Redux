@@ -21,7 +21,7 @@ write_id_files = "ID_%s.py"     # default vanilla-compatible option
 
 # Set to True to display compiler performance information at the end of compilation. Set to False to suppress.
 
-show_performance_data = True   # default: false
+show_performance_data = False   # default: False
 
 
 
