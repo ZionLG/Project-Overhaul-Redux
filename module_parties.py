@@ -3443,4 +3443,17 @@ parties = [
         (0.0, 0),
         [(trp.looter, 15, 0)],
     ),
+    (
+        "static_parties_end",
+        "{!}reserved",
+        pf_disabled | pf_is_static,
+        no_menu,
+        pt.none,
+        fac.commoners,
+        0,
+        ai_bhvr_hold,
+        0,
+        (0.0, 0),
+        [(trp.looter, 15, 0)],
+    ),
 ]

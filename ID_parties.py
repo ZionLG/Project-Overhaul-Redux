@@ -240,3 +240,4 @@ p_reserved_2 = 238
 p_reserved_3 = 239
 p_reserved_4 = 240
 p_reserved_5 = 241
+p_static_parties_end = 242

@@ -1,5 +1,5 @@
 from compiler import *
-register_plugin(__name__)
+register_plugin(__name__) # v1
 
 presentations = [
     ("faction_troop_trees", 0, 0, [

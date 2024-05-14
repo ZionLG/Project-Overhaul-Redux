@@ -1,9 +1,9 @@
-from compiler import *  # should be after all imports
+from compiler import *
 
 ####################################################################################################################
 #  Each item record contains the following fields:
 #  1) Item id: used for referencing items in other files.
-#     The prefix itm_ is automatically added before each item id.
+#     The prefix itm. is automatically added before each item id.
 #  2) Item name. Name of item as it'll appear in inventory window
 #  3) List of meshes.  Each mesh record is a tuple containing the following fields:
 #    3.1) Mesh name.
@@ -18,97 +18,6 @@ from compiler import *  # should be after all imports
 #  9) [Optional] Triggers: List of simple triggers to be associated with the item.
 #  10) [Optional] Factions: List of factions that item can be found as merchandise.
 ####################################################################################################################
-
-# Based on Overhaul Module's module_items.py
-# Table of Contents, faction merchandise adjustments and bug fixes by: Liran
-
-# Table of Contents:
-#
-#   _ZA_ - Tutorial Items
-#
-#   _ZB_ - Practice Items
-#
-#   _ZC_ - Arena Items
-# [ ZC01 ] - Arena Weapons
-# [ ZC02 ] - Arena Body Armor
-# [ ZC03 ] - Arena Head Armor
-# [ ZC04 ] - Arena Shields
-#
-#   _ZD_ - Books
-#
-#   _ZE_ - Goods
-# [ ZE01 ] - Household Goods
-# [ ZE02 ] - Trade Goods
-# [ ZE03 ] - Food
-#
-#   _ZF_ - Quest Items
-#
-#   _ZG_ - Mounts
-# [ ZG01 ] - Unarmored
-# [ ZG02 ] - Armored
-#
-#   _ZH_ - Ammunition
-#
-#   _ZI_ - Armor
-# [ ZI01 ] - Gloves
-# [ ZI02 ] - Footwear
-# [ ZI03 ] - Bodywear
-# [ ZI04 ] - Headwear
-#
-#   _ZJ_ - Special Sets
-#
-#   _ZK_ - Melee Weapons
-# [ ZK01 ] - Clubs and Maces
-# [ ZK02 ] - Hammers and Picks
-# [ ZK03 ] - Blades
-# [ ZK04 ] - One-Handed Swords (Shared)
-# [ ZK05 ] - One-Handed Swords (Khergit)
-# [ ZK06 ] - One-Handed Swords (Nordic and Vaegir)
-# [ ZK07 ] - One-Handed Swords (Rhodok)
-# [ ZK08 ] - One-Handed Swords (Sarranid)
-# [ ZK09 ] - One-Handed Swords (Exotic)
-# [ ZK10 ] - One-Handed Axes (Shared)
-# [ ZK11 ] - One-Handed Axes (Nordic and Vaegir)
-# [ ZK12 ] - One-Handed Axes (Sarranid)
-# [ ZK13 ] - One/Two-Handed Weapons
-# [ ZK14 ] - Two-Handed Blunts
-# [ ZK15 ] - Two-Handed Swords
-# [ ZK16 ] - Two-Handed Axes
-# [ ZK17 ] - Two-Handed Long Axes
-# [ ZK18 ] - Two-Handed Shortened Polearms
-# [ ZK19 ] - Polearms
-# [ ZK20 ] - Spears (Polearms)
-# [ ZK21 ] - Lances (Polearms)
-# [ ZK22 ] - Pikes (Polearms)
-# [ ZK23 ] - Hammers (Polearms)
-# [ ZK24 ] - Maces (Polearms)
-# [ ZK25 ] - Axes (Polearms)
-# [ ZK26 ] - Blades (Polearms)
-# [ ZK27 ] - Forks (Polearms)
-#
-#   _ZL_ - Shields
-# [ ZL01 ] - Large Round Shields
-# [ ZL02 ] - Small Round Shields
-# [ ZL03 ] - Generic Heater Shields
-# [ ZL04 ] - Nordic Round Shields
-# [ ZL05 ] - Vaegir Kite Shields (also Sarranid Infantry)
-# [ ZL06 ] - Swadian Heater Shields
-# [ ZL07 ] - Rhodok Board Shields
-# [ ZL08 ] - Khergit Cavalry Shields (also Sarranid Cavalry)
-# [ ZL09 ] - Obsolete Shields
-# [ ZL10 ] - Faction Heater Shield
-# [ ZL11 ] - Decoration Kite Shields
-#
-#   _ZM_ - Ranged Weapons
-# [ ZM01 ] - Throwing Spears
-# [ ZM02 ] - Other Throwing Weapons
-# [ ZM03 ] - Bows
-# [ ZM04 ] - Crossbows
-# [ ZM05 ] - Firearms
-#
-#   _ZN_ - Random Stuff
-
-
 
 # Some constants for ease of use.
 imodbits_none = 0
@@ -129,6 +38,7 @@ imodbits_cloth = (
     | imodbit_thick
     | imodbit_hardened
 )
+imodbits_clothes = imodbit_tattered | imodbit_ragged | imodbit_sturdy | imodbit_thick
 imodbits_armor = (
     imodbit_rusty
     | imodbit_battered
@@ -159,6 +69,7 @@ imodbits_sword_high = (
     | imodbit_masterwork
 )
 imodbits_axe = imodbit_rusty | imodbit_chipped | imodbit_heavy
+imodbits_axe_minus_heavy = imodbit_rusty | imodbit_chipped
 imodbits_mace = imodbit_rusty | imodbit_chipped | imodbit_heavy
 imodbits_pick = imodbit_rusty | imodbit_chipped | imodbit_balanced | imodbit_heavy
 imodbits_bow = imodbit_cracked | imodbit_bent | imodbit_strong | imodbit_masterwork
@@ -177,10 +88,8 @@ imodbits_bad = (
     | imodbit_cracked
     | imodbit_bent
 )
-# Replace winged mace/spiked mace with: Flanged mace / Knobbed mace?
-# Fauchard (majowski glaive)
+
 items = [
-    # item_name, mesh.name, item_properties, item_capabilities, slot_no, cost, bonus_flags, weapon_flags, scale, view_dir, pos_offset
     # ************************************************************************************************
     # ITEMS in this range are hardcoded into item_codes.h and their order should not be changed!
     # ************************************************************************************************
@@ -198,9 +107,7 @@ items = [
         | thrust_damage(10, blunt),
         imodbits_none,
     ],
-    ####################################################################################################################
-    # _ZA_ - Tutorial Items
-    ####################################################################################################################
+    # Tutorial Items
     [
         "tutorial_spear",
         "Spear",
@@ -451,7 +358,25 @@ items = [
         | thrust_damage(10, blunt),
         imodbits_none,
     ],
-    # Horse Meat
+    [
+        "practice_spear",
+        "Practice Spear",
+        [("arena_lance", 0)],
+        itp_type_polearm
+        | itp_offset_lance
+        | itp_primary
+        | itp_penalty_with_shield
+        | itp_wooden_parry
+        | itp_no_blur,
+        itc_spear | itcf_carry_spear,
+        90,
+        weight(2.5)
+        | spd_rtng(96)
+        | weapon_length(150)
+        | swing_damage(20, blunt)
+        | thrust_damage(25, blunt),
+        imodbits_polearm,
+    ],
     [
         "horse_meat",
         "Horse Meat",
@@ -462,10 +387,6 @@ items = [
         weight(40) | food_quality(30) | max_ammo(40),
         imodbits_none,
     ],
-    # Items before this point are hardwired and their order should not be changed!
-    ####################################################################################################################
-    # _ZB_ - Practice Items
-    ####################################################################################################################
     [
         "practice_sword",
         "Practice Sword",
@@ -539,16 +460,65 @@ items = [
         imodbits_axe,
     ],
     [
-        "practice_spear",
-        "Practice Spear",
+        "arena_axe",
+        "Axe",
+        [("arena_axe", 0)],
+        itp_type_one_handed_wpn
+        | itp_primary
+        | itp_secondary
+        | itp_bonus_against_shield
+        | itp_wooden_parry,
+        itc_scimitar | itcf_carry_axe_left_hip,
+        137,
+        weight(1.5)
+        | spd_rtng(100)
+        | weapon_length(69)
+        | swing_damage(24, blunt)
+        | thrust_damage(0, pierce),
+        imodbits_axe,
+    ],
+    [
+        "arena_sword",
+        "Sword",
+        [
+            ("arena_sword_one_handed", 0),
+            ("sword_medieval_b_scabbard", ixmesh_carry),
+        ],
+        itp_type_one_handed_wpn | itp_primary,
+        itc_longsword | itcf_carry_sword_left_hip | itcf_show_holster_when_drawn,
+        243,
+        weight(1.5)
+        | spd_rtng(99)
+        | weapon_length(95)
+        | swing_damage(22, blunt)
+        | thrust_damage(20, blunt),
+        imodbits_sword_high,
+    ],
+    [
+        "arena_sword_two_handed",
+        "Two Handed Sword",
+        [("arena_sword_two_handed", 0)],
+        itp_type_two_handed_wpn | itp_two_handed | itp_primary,
+        itc_greatsword | itcf_carry_sword_back,
+        670,
+        weight(2.75)
+        | spd_rtng(93)
+        | weapon_length(110)
+        | swing_damage(30, blunt)
+        | thrust_damage(24, blunt),
+        imodbits_sword_high,
+    ],
+    [
+        "arena_lance",
+        "Lance",
         [("arena_lance", 0)],
-        itp_type_polearm
+        itp_couchable
+        | itp_type_polearm
         | itp_offset_lance
         | itp_primary
         | itp_penalty_with_shield
-        | itp_wooden_parry
-        | itp_no_blur,
-        itc_spear | itcf_carry_spear,
+        | itp_wooden_parry,
+        itc_staff | itcf_carry_spear,
         90,
         weight(2.5)
         | spd_rtng(96)
@@ -789,83 +759,6 @@ items = [
         weight(1) | abundance(100) | head_armor(0) | body_armor(0) | leg_armor(10),
         imodbits_cloth,
     ],
-    ####################################################################################################################
-    # _ZC_ - Arena Items
-    ####################################################################################################################
-    ####################################################################################################################
-    # [ ZC01 ] - Arena Weapons
-    ####################################################################################################################
-    [
-        "arena_axe",
-        "Axe",
-        [("arena_axe", 0)],
-        itp_type_one_handed_wpn
-        | itp_primary
-        | itp_secondary
-        | itp_bonus_against_shield
-        | itp_wooden_parry,
-        itc_scimitar | itcf_carry_axe_left_hip,
-        137,
-        weight(1.5)
-        | spd_rtng(100)
-        | weapon_length(69)
-        | swing_damage(24, blunt)
-        | thrust_damage(0, pierce),
-        imodbits_axe,
-    ],
-    [
-        "arena_sword",
-        "Sword",
-        [
-            ("arena_sword_one_handed", 0),
-            ("sword_medieval_b_scabbard", ixmesh_carry),
-        ],
-        itp_type_one_handed_wpn | itp_primary,
-        itc_longsword | itcf_carry_sword_left_hip | itcf_show_holster_when_drawn,
-        243,
-        weight(1.5)
-        | spd_rtng(99)
-        | weapon_length(95)
-        | swing_damage(22, blunt)
-        | thrust_damage(20, blunt),
-        imodbits_sword_high,
-    ],
-    [
-        "arena_sword_two_handed",
-        "Two Handed Sword",
-        [("arena_sword_two_handed", 0)],
-        itp_type_two_handed_wpn | itp_two_handed | itp_primary,
-        itc_greatsword | itcf_carry_sword_back,
-        670,
-        weight(2.75)
-        | spd_rtng(93)
-        | weapon_length(110)
-        | swing_damage(30, blunt)
-        | thrust_damage(24, blunt),
-        imodbits_sword_high,
-    ],
-    [
-        "arena_lance",
-        "Lance",
-        [("arena_lance", 0)],
-        itp_couchable
-        | itp_type_polearm
-        | itp_offset_lance
-        | itp_primary
-        | itp_penalty_with_shield
-        | itp_wooden_parry,
-        itc_staff | itcf_carry_spear,
-        90,
-        weight(2.5)
-        | spd_rtng(96)
-        | weapon_length(150)
-        | swing_damage(20, blunt)
-        | thrust_damage(25, blunt),
-        imodbits_polearm,
-    ],
-    ####################################################################################################################
-    # [ ZC02 ] - Arena Body Armor
-    ####################################################################################################################
     [
         "red_tourney_armor",
         "Red Tourney Armor",
@@ -905,6 +798,86 @@ items = [
         152,
         weight(15.0) | body_armor(20) | leg_armor(6),
         imodbits_none,
+    ],
+    [
+        "red_tourney_helmet",
+        "Red Tourney Helmet",
+        [("flattop_helmet", 0)],
+        itp_type_head_armor,
+        0,
+        126,
+        weight(2) | head_armor(16),
+        imodbits_none,
+    ],
+    [
+        "blue_tourney_helmet",
+        "Blue Tourney Helmet",
+        [("segmented_helm", 0)],
+        itp_type_head_armor,
+        0,
+        126,
+        weight(2) | head_armor(16),
+        imodbits_none,
+    ],
+    [
+        "green_tourney_helmet",
+        "Green Tourney Helmet",
+        [("hood_c", 0)],
+        itp_type_head_armor,
+        0,
+        126,
+        weight(2) | head_armor(16),
+        imodbits_none,
+    ],
+    [
+        "gold_tourney_helmet",
+        "Gold Tourney Helmet",
+        [("hood_a", 0)],
+        itp_type_head_armor,
+        0,
+        126,
+        weight(2) | head_armor(16),
+        imodbits_none,
+    ],
+    [
+        "arena_shield_red",
+        "Arena Shield",
+        [("arena_shield_red", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        42,
+        weight(2) | hit_points(360) | body_armor(1) | spd_rtng(100) | weapon_length(60),
+        imodbits_shield,
+    ],
+    [
+        "arena_shield_blue",
+        "Arena Shield",
+        [("arena_shield_blue", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        42,
+        weight(2) | hit_points(360) | body_armor(1) | spd_rtng(100) | weapon_length(60),
+        imodbits_shield,
+    ],
+    [
+        "arena_shield_green",
+        "Arena Shield",
+        [("arena_shield_green", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        42,
+        weight(2) | hit_points(360) | body_armor(1) | spd_rtng(100) | weapon_length(60),
+        imodbits_shield,
+    ],
+    [
+        "arena_shield_yellow",
+        "Arena Shield",
+        [("arena_shield_yellow", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        42,
+        weight(2) | hit_points(360) | body_armor(1) | spd_rtng(100) | weapon_length(60),
+        imodbits_shield,
     ],
     [
         "arena_armor_white",
@@ -1005,49 +978,6 @@ items = [
         27,
         weight(2) | abundance(100) | head_armor(0) | body_armor(16) | leg_armor(6),
         imodbits_cloth,
-    ],
-    ####################################################################################################################
-    # [ ZC03 ] - Arena Head Armor
-    ####################################################################################################################
-    [
-        "red_tourney_helmet",
-        "Red Tourney Helmet",
-        [("flattop_helmet", 0)],
-        itp_type_head_armor,
-        0,
-        126,
-        weight(2) | head_armor(16),
-        imodbits_none,
-    ],
-    [
-        "blue_tourney_helmet",
-        "Blue Tourney Helmet",
-        [("segmented_helm", 0)],
-        itp_type_head_armor,
-        0,
-        126,
-        weight(2) | head_armor(16),
-        imodbits_none,
-    ],
-    [
-        "green_tourney_helmet",
-        "Green Tourney Helmet",
-        [("hood_c", 0)],
-        itp_type_head_armor,
-        0,
-        126,
-        weight(2) | head_armor(16),
-        imodbits_none,
-    ],
-    [
-        "gold_tourney_helmet",
-        "Gold Tourney Helmet",
-        [("hood_a", 0)],
-        itp_type_head_armor,
-        0,
-        126,
-        weight(2) | head_armor(16),
-        imodbits_none,
     ],
     [
         "arena_helmet_red",
@@ -1229,54 +1159,6 @@ items = [
         weight(1.25) | abundance(100) | head_armor(26) | body_armor(0) | leg_armor(0),
         imodbits_plate,
     ],
-    ####################################################################################################################
-    # [ ZC04 ] - Arena Shields
-    ####################################################################################################################
-    [
-        "arena_shield_red",
-        "Arena Shield",
-        [("arena_shield_red", 0)],
-        itp_type_shield | itp_wooden_parry,
-        itcf_carry_kite_shield,
-        42,
-        weight(2) | hit_points(360) | body_armor(1) | spd_rtng(100) | weapon_length(60),
-        imodbits_shield,
-    ],
-    [
-        "arena_shield_blue",
-        "Arena Shield",
-        [("arena_shield_blue", 0)],
-        itp_type_shield | itp_wooden_parry,
-        itcf_carry_kite_shield,
-        42,
-        weight(2) | hit_points(360) | body_armor(1) | spd_rtng(100) | weapon_length(60),
-        imodbits_shield,
-    ],
-    [
-        "arena_shield_green",
-        "Arena Shield",
-        [("arena_shield_green", 0)],
-        itp_type_shield | itp_wooden_parry,
-        itcf_carry_kite_shield,
-        42,
-        weight(2) | hit_points(360) | body_armor(1) | spd_rtng(100) | weapon_length(60),
-        imodbits_shield,
-    ],
-    [
-        "arena_shield_yellow",
-        "Arena Shield",
-        [("arena_shield_yellow", 0)],
-        itp_type_shield | itp_wooden_parry,
-        itcf_carry_kite_shield,
-        42,
-        weight(2) | hit_points(360) | body_armor(1) | spd_rtng(100) | weapon_length(60),
-        imodbits_shield,
-    ],
-    ####################################################################################################################
-    # _ZD_ - Books
-    ####################################################################################################################
-    # A treatise on The Method of Mechanical Theorems Archimedes
-    # This book must be at the beginning of readable books
     [
         "book_tactics",
         "De Re Militari",
@@ -1347,8 +1229,6 @@ items = [
         weight(2) | abundance(100),
         imodbits_none,
     ],
-    # Reference books
-    # This book must be at the beginning of reference books
     [
         "book_wound_treatment_reference",
         "The Book of Healing",
@@ -1379,12 +1259,6 @@ items = [
         weight(2) | abundance(100),
         imodbits_none,
     ],
-    ####################################################################################################################
-    # _ZE_ - Goods
-    ####################################################################################################################
-    ####################################################################################################################
-    # [ ZE01 ] - Household Goods
-    ####################################################################################################################
     [
         "spice",
         "Spice",
@@ -1393,36 +1267,6 @@ items = [
         0,
         880,
         weight(40) | abundance(25) | max_ammo(50),
-        imodbits_none,
-    ],
-    [
-        "oil",
-        "Oil",
-        [("oil", 0)],
-        itp_merchandise | itp_type_goods | itp_consumable,
-        0,
-        450,
-        weight(50) | abundance(60) | max_ammo(50),
-        imodbits_none,
-    ],
-    [
-        "wine",
-        "Wine",
-        [("amphora_slim", 0)],
-        itp_merchandise | itp_type_goods | itp_consumable,
-        0,
-        220,
-        weight(30) | abundance(60) | max_ammo(50),
-        imodbits_none,
-    ],
-    [
-        "ale",
-        "Ale",
-        [("ale_barrel", 0)],
-        itp_merchandise | itp_type_goods | itp_consumable,
-        0,
-        120,
-        weight(30) | abundance(70) | max_ammo(50),
         imodbits_none,
     ],
     [
@@ -1435,9 +1279,16 @@ items = [
         weight(50) | abundance(120),
         imodbits_none,
     ],
-    ####################################################################################################################
-    # [ ZE02 ] - Trade Goods
-    ####################################################################################################################
+    [
+        "oil",
+        "Oil",
+        [("oil", 0)],
+        itp_merchandise | itp_type_goods | itp_consumable,
+        0,
+        450,
+        weight(50) | abundance(60) | max_ammo(50),
+        imodbits_none,
+    ],
     [
         "pottery",
         "Pottery",
@@ -1578,9 +1429,26 @@ items = [
         weight(40) | abundance(90),
         imodbits_none,
     ],
-    ####################################################################################################################
-    # [ ZE03 ] - Food
-    ####################################################################################################################
+    [
+        "wine",
+        "Wine",
+        [("amphora_slim", 0)],
+        itp_merchandise | itp_type_goods | itp_consumable,
+        0,
+        220,
+        weight(30) | abundance(60) | max_ammo(50),
+        imodbits_none,
+    ],
+    [
+        "ale",
+        "Ale",
+        [("ale_barrel", 0)],
+        itp_merchandise | itp_type_goods | itp_consumable,
+        0,
+        120,
+        weight(30) | abundance(70) | max_ammo(50),
+        imodbits_none,
+    ],
     [
         "smoked_fish",
         "Smoked Fish",
@@ -1731,9 +1599,10 @@ items = [
         weight(6) | abundance(110) | food_quality(40) | max_ammo(30),
         imodbits_none,
     ],
-    ####################################################################################################################
-    # _ZF_ - Quest Items
-    ####################################################################################################################
+    # ************************************************************************************************
+    # ITEMS before this point are hardcoded into item_codes.h and their order should not be changed!
+    # ************************************************************************************************
+    # Quest Items
     [
         "siege_supply",
         "Supplies",
@@ -1764,15 +1633,11 @@ items = [
         weight(40) | abundance(70) | max_ammo(50),
         imodbits_none,
     ],
-    ####################################################################################################################
-    # _ZG_ - Mounts - Slot 8
-    ####################################################################################################################
+    ###################
+    # MOUNTS - Slot 8 #
+    ###################
     # Keep sumpter_horse in front!
-    # Horses: sumpter horse/ pack horse, saddle horse, steppe horse, warm blood, geldling, stallion,   war mount, charger,
-    # Carthorse, hunter, heavy hunter, hackney, palfrey, courser, destrier.
-    ####################################################################################################################
-    # [ ZG01 ] - Unarmored
-    ####################################################################################################################
+    # Unarmored
     [
         "sumpter_horse",
         "Sumpter Horse",
@@ -1788,12 +1653,12 @@ items = [
         | horse_maneuver(39)
         | horse_charge(9)
         | horse_scale(100),
-        imodbits_horse_basic,
+        imodbits_horse_simple,
     ],
     [
         "saddle_horse",
         "Saddle Horse",
-        [("saddle_horse", 0), ("horse_c", imodbits_horse_good)],
+        [("saddle_horse", 0)],
         itp_merchandise | itp_type_horse,
         0,
         240,
@@ -1806,6 +1671,25 @@ items = [
         | horse_charge(10)
         | horse_scale(104),
         imodbits_horse_basic,
+    ],
+    [
+        "nord_pony",
+        "Nord Pony",
+        [("horse_c", 0)],
+        itp_merchandise | itp_type_horse,
+        0,
+        172,
+        abundance(80)
+        | hit_points(120)
+        | body_armor(10)
+        | difficulty(1)
+        | horse_speed(42)
+        | horse_maneuver(44)
+        | horse_charge(12)
+        | horse_scale(98),
+        imodbits_horse_basic,
+        [],
+        [fac.kingdom_4],
     ],
     [
         "steppe_horse",
@@ -1898,9 +1782,7 @@ items = [
         | horse_scale(108),
         imodbits_horse_basic | imodbit_champion,
     ],
-    ####################################################################################################################
-    # [ ZG02 ] - Armored
-    ####################################################################################################################
+    # Armored
     [
         "warhorse",
         "War Horse",
@@ -1941,7 +1823,7 @@ items = [
     ],
     [
         "warhorse_sarranid",
-        "Sarranian War Horse",
+        "Sarranian Charger",
         [("warhorse_sarranid", 0)],
         itp_merchandise | itp_type_horse,
         0,
@@ -1996,9 +1878,28 @@ items = [
         [],
         [fac.kingdom_5],
     ],
-    ####################################################################################################################
-    # _ZH_ - Ammunition - Slots 0-3
-    ####################################################################################################################
+    [
+        "charger_plate",
+        "Nordic Charger",
+        [("charger_plate", 0)],
+        itp_merchandise | itp_type_horse,
+        0,
+        1811,
+        abundance(20)
+        | hit_points(165)
+        | body_armor(58)
+        | difficulty(4)
+        | horse_speed(40)
+        | horse_maneuver(44)
+        | horse_charge(32)
+        | horse_scale(112),
+        imodbits_horse_simple,
+        [],
+        [fac.kingdom_4],
+    ],
+    ##########################
+    # AMMUNITION - Slots 0-3 #
+    ##########################
     # Keep arrows in front!
     # Arrows
     [
@@ -2018,26 +1919,28 @@ items = [
         | thrust_damage(1, pierce)
         | max_ammo(30),
         imodbits_missile,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
     [
-        "khergit_arrows",
-        "Khergit Arrows",
+        "arrows_cav",
+        "Arrows",
         [
-            ("arrow_b", 0),
+            ("arrow", 0),
             ("flying_missile", ixmesh_flying_ammo),
-            ("quiver_b", ixmesh_carry),
+            ("quiver", ixmesh_carry),
         ],
         itp_type_arrows | itp_merchandise,
         itcf_carry_quiver_back_right,
-        410,
-        weight(3.5)
-        | abundance(30)
+        72,
+        weight(3)
+        | abundance(160)
         | weapon_length(95)
-        | thrust_damage(3, pierce)
+        | thrust_damage(1, pierce)
         | max_ammo(30),
         imodbits_missile,
         [],
-        [fac.kingdom_3],
+        [fac.kingdom_2, fac.kingdom_3, fac.kingdom_6],
     ],
     [
         "barbed_arrows",
@@ -2053,12 +1956,74 @@ items = [
         weight(3)
         | abundance(70)
         | weapon_length(95)
+        | thrust_damage(2, cut)
+        | max_ammo(30),
+        imodbits_missile,
+        [],
+        [fac.kingdom_2, fac.kingdom_3, fac.kingdom_6],
+    ],
+    [
+        "khergit_arrows",
+        "Khergit Arrows",
+        [
+            ("arrow_b", 0),
+            ("flying_missile", ixmesh_flying_ammo),
+            ("quiver_b", ixmesh_carry),
+        ],
+        itp_type_arrows | itp_merchandise,
+        itcf_carry_quiver_back_right,
+        410,
+        weight(3.5)
+        | abundance(30)
+        | weapon_length(95)
+        | thrust_damage(3, cut)
+        | max_ammo(30),
+        imodbits_missile,
+        [],
+        [fac.kingdom_3],
+    ],
+    [
+        "steel_arrows",
+        "Steel Arrows",
+        [
+            ("arrow_b", 0),
+            ("flying_missile", ixmesh_flying_ammo),
+            ("arena_quiver", ixmesh_carry),
+        ],
+        itp_type_arrows | itp_merchandise | itp_default_ammo,
+        itcf_carry_quiver_back,
+        240,
+        weight(3)
+        | abundance(160)
+        | weapon_length(95)
         | thrust_damage(2, pierce)
         | max_ammo(30),
         imodbits_missile,
+        [],
+        [fac.kingdom_1, fac.kingdom_5],
     ],
     [
         "bodkin_arrows",
+        "Bodkin Arrows",
+        [
+            ("piercing_arrow", 0),
+            ("flying_missile", ixmesh_flying_ammo),
+            ("quiver_c", ixmesh_carry),
+        ],
+        itp_type_arrows | itp_merchandise,
+        itcf_carry_quiver_back,
+        350,
+        weight(3)
+        | abundance(50)
+        | weapon_length(91)
+        | thrust_damage(3, pierce)
+        | max_ammo(30),
+        imodbits_missile,
+        [],
+        [fac.kingdom_1, fac.kingdom_4],
+    ],
+    [
+        "bodkin_arrows_cav",
         "Bodkin Arrows",
         [
             ("piercing_arrow", 0),
@@ -2072,9 +2037,12 @@ items = [
         | abundance(50)
         | weapon_length(91)
         | thrust_damage(3, pierce)
-        | max_ammo(28),
+        | max_ammo(30),
         imodbits_missile,
+        [],
+        [fac.kingdom_2],
     ],
+    # Bolts
     [
         "bolts",
         "Bolts",
@@ -2082,7 +2050,6 @@ items = [
             ("bolt", 0),
             ("flying_missile", ixmesh_flying_ammo),
             ("bolt_bag", ixmesh_carry),
-            ("bolt_bag_b", ixmesh_carry | imodbit_large_bag),
         ],
         itp_type_bolts | itp_merchandise | itp_default_ammo | itp_can_penetrate_shield,
         itcf_carry_quiver_right_vertical,
@@ -2091,8 +2058,28 @@ items = [
         | abundance(90)
         | weapon_length(63)
         | thrust_damage(1, pierce)
-        | max_ammo(29),
+        | max_ammo(30),
         imodbits_missile,
+    ],
+    [
+        "hunting_bolts",
+        "Hunting Bolts",
+        [
+            ("bolt", 0),
+            ("flying_missile", ixmesh_flying_ammo),
+            ("bolt_bag_c", ixmesh_carry),
+        ],
+        itp_type_bolts | itp_merchandise | itp_can_penetrate_shield,
+        itcf_carry_quiver_right_vertical,
+        120,
+        weight(2.5)
+        | abundance(20)
+        | weapon_length(63)
+        | thrust_damage(2, cut)
+        | max_ammo(30),
+        imodbits_missile,
+        [],
+        [fac.kingdom_5],
     ],
     [
         "steel_bolts",
@@ -2100,7 +2087,7 @@ items = [
         [
             ("bolt", 0),
             ("flying_missile", ixmesh_flying_ammo),
-            ("bolt_bag_c", ixmesh_carry),
+            ("bolt_bag_b", ixmesh_carry),
         ],
         itp_type_bolts | itp_merchandise | itp_can_penetrate_shield,
         itcf_carry_quiver_right_vertical,
@@ -2109,9 +2096,12 @@ items = [
         | abundance(20)
         | weapon_length(63)
         | thrust_damage(2, pierce)
-        | max_ammo(29),
+        | max_ammo(30),
         imodbits_missile,
+        [],
+        [fac.kingdom_5],
     ],
+    # Bullets
     [
         "cartridges",
         "Cartridges",
@@ -2127,16 +2117,17 @@ items = [
         | weapon_length(3)
         | thrust_damage(1, pierce)
         | max_ammo(50),
-        imodbits_missile,
+        imodbit_large_bag,
         [],
         [fac.no_faction],
     ],
-    ####################################################################################################################
-    # _ZI_ - Armor - Slots 4-7
-    ####################################################################################################################
-    ####################################################################################################################
-    # [ ZI01 ] - Gloevs - Slots 7
-    ####################################################################################################################
+    #####################
+    # ARMOR - Slots 4-7 #
+    #####################
+    # Keep leather_gloves in front!
+    ###################
+    # Gloves - Slot 7 #
+    ###################
     [
         "leather_gloves",
         "Leather Gloves",
@@ -2166,6 +2157,8 @@ items = [
         710,
         weight(0.75) | abundance(100) | body_armor(5) | difficulty(0),
         imodbits_armor,
+        [],
+        [fac.kingdom_4, fac.kingdom_6],
     ],
     [
         "lamellar_gauntlets",
@@ -2176,6 +2169,8 @@ items = [
         910,
         weight(0.9) | abundance(100) | body_armor(6) | difficulty(0),
         imodbits_armor,
+        [],
+        [fac.kingdom_2, fac.kingdom_3],
     ],
     [
         "gauntlets",
@@ -2186,10 +2181,12 @@ items = [
         1040,
         weight(1.0) | abundance(100) | body_armor(7) | difficulty(0),
         imodbits_armor,
+        [],
+        [fac.kingdom_1, fac.kingdom_5],
     ],
-    ####################################################################################################################
-    # [ ZI02 ] - Footwear - Slots 6
-    ####################################################################################################################
+    #####################
+    # Footwear - Slot 6 #
+    #####################
     # Civilian Shoes & Boots
     [
         "wrapping_boots",
@@ -2204,7 +2201,7 @@ items = [
         | body_armor(0)
         | leg_armor(3)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "woolen_hose",
@@ -2219,7 +2216,9 @@ items = [
         | body_armor(0)
         | leg_armor(4)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "blue_hose",
@@ -2234,7 +2233,9 @@ items = [
         | body_armor(0)
         | leg_armor(5)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "sarranid_boots_a",
@@ -2249,7 +2250,7 @@ items = [
         | body_armor(0)
         | leg_armor(8)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.kingdom_6],
     ],
@@ -2266,7 +2267,9 @@ items = [
         | body_armor(0)
         | leg_armor(9)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_2],
     ],
     [
         "hide_boots",
@@ -2296,7 +2299,9 @@ items = [
         | body_armor(0)
         | leg_armor(12)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
+        [],
+        [fac.kingdom_1],
     ],
     [
         "nomad_boots",
@@ -2311,7 +2316,9 @@ items = [
         | body_armor(0)
         | leg_armor(14)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
+        [],
+        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_3, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "light_leather_boots",
@@ -2327,6 +2334,8 @@ items = [
         | leg_armor(15)
         | difficulty(0),
         imodbits_cloth,
+        [],
+        [fac.kingdom_1, fac.kingdom_5, fac.kingdom_6],
     ],
     [
         "sarranid_boots_b",
@@ -2359,6 +2368,8 @@ items = [
         | leg_armor(16)
         | difficulty(0),
         imodbits_cloth,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "khergit_leather_boots",
@@ -2397,8 +2408,8 @@ items = [
     ],
     [
         "sarranid_boots_c",
-        "Sarranid Plated Boots",
-        [("sarranid_camel_boots", 0)],
+        "Sarranid Mail Boots",
+        [("sarranid_mail_chausses", 0)],
         itp_merchandise | itp_type_foot_armor | itp_civilian | itp_attach_armature,
         0,
         280,
@@ -2409,23 +2420,6 @@ items = [
         | leg_armor(20)
         | difficulty(0),
         imodbits_plate,
-        [],
-        [fac.kingdom_6],
-    ],
-    [
-        "sarranid_boots_d",
-        "Sarranid Mail Boots",
-        [("sarranid_mail_chausses", 0)],
-        itp_merchandise | itp_type_foot_armor | itp_civilian | itp_attach_armature,
-        0,
-        920,
-        weight(3)
-        | abundance(100)
-        | head_armor(0)
-        | body_armor(0)
-        | leg_armor(30)
-        | difficulty(0),
-        imodbits_armor,
         [],
         [fac.kingdom_6],
     ],
@@ -2458,6 +2452,8 @@ items = [
         | leg_armor(24)
         | difficulty(0),
         imodbits_armor,
+        [],
+        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "splinted_greaves",
@@ -2473,6 +2469,25 @@ items = [
         | leg_armor(28)
         | difficulty(7),
         imodbits_armor,
+        [],
+        [fac.kingdom_3, fac.kingdom_6],
+    ],
+    [
+        "sarranid_boots_d",
+        "Sarranid Plated Boots",
+        [("sarranid_camel_boots", 0)],
+        itp_merchandise | itp_type_foot_armor | itp_civilian | itp_attach_armature,
+        0,
+        920,
+        weight(3)
+        | abundance(100)
+        | head_armor(0)
+        | body_armor(0)
+        | leg_armor(30)
+        | difficulty(0),
+        imodbits_armor,
+        [],
+        [fac.kingdom_6],
     ],
     [
         "mail_boots",
@@ -2488,6 +2503,8 @@ items = [
         | leg_armor(31)
         | difficulty(8),
         imodbits_armor,
+        [],
+        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5, fac.kingdom_6],
     ],
     [
         "iron_greaves",
@@ -2518,10 +2535,12 @@ items = [
         | leg_armor(33)
         | difficulty(9),
         imodbits_plate,
+        [],
+        [fac.kingdom_1, fac.kingdom_5],
     ],
-    ####################################################################################################################
-    # [ ZI03 ] - Bodywear - Slot 5
-    ####################################################################################################################
+    #####################
+    # Bodywear - Slot 5 #
+    #####################
     # Womens' Clothes
     [
         "dress",
@@ -2536,7 +2555,7 @@ items = [
         | body_armor(6)
         | leg_armor(2)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.kingdom_1, fac.kingdom_2, fac.kingdom_3, fac.kingdom_4, fac.kingdom_5],
     ],
@@ -2553,7 +2572,7 @@ items = [
         | body_armor(6)
         | leg_armor(2)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.kingdom_1, fac.kingdom_2, fac.kingdom_3, fac.kingdom_4, fac.kingdom_5],
     ],
@@ -2570,7 +2589,7 @@ items = [
         | body_armor(6)
         | leg_armor(2)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.kingdom_1, fac.kingdom_2, fac.kingdom_3, fac.kingdom_4, fac.kingdom_5],
     ],
@@ -2587,7 +2606,7 @@ items = [
         | body_armor(8)
         | leg_armor(2)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.kingdom_1, fac.kingdom_2, fac.kingdom_3, fac.kingdom_4, fac.kingdom_5],
     ],
@@ -2604,7 +2623,7 @@ items = [
         | body_armor(10)
         | leg_armor(10)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.kingdom_6],
     ],
@@ -2621,7 +2640,7 @@ items = [
         | body_armor(10)
         | leg_armor(10)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.kingdom_6],
     ],
@@ -2639,9 +2658,9 @@ items = [
         | body_armor(14)
         | leg_armor(4)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
         [],
-        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5, fac.kingdom_6],
+        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "lady_dress_ruby",
@@ -2656,7 +2675,7 @@ items = [
         | body_armor(10)
         | leg_armor(10)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
         [],
         [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5],
     ],
@@ -2673,7 +2692,7 @@ items = [
         | body_armor(10)
         | leg_armor(10)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
         [],
         [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5],
     ],
@@ -2690,7 +2709,7 @@ items = [
         | body_armor(10)
         | leg_armor(10)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
         [],
         [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5],
     ],
@@ -2707,7 +2726,7 @@ items = [
         | body_armor(10)
         | leg_armor(10)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
         [],
         [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5],
     ],
@@ -2724,7 +2743,7 @@ items = [
         | body_armor(10)
         | leg_armor(10)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
         [],
         [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5],
     ],
@@ -2741,7 +2760,7 @@ items = [
         | body_armor(10)
         | leg_armor(10)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
         [],
         [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5],
     ],
@@ -2758,7 +2777,7 @@ items = [
         | body_armor(10)
         | leg_armor(10)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
         [],
         [fac.kingdom_3],
     ],
@@ -2775,7 +2794,7 @@ items = [
         | body_armor(10)
         | leg_armor(10)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
         [],
         [fac.kingdom_3],
     ],
@@ -2792,7 +2811,7 @@ items = [
         | body_armor(10)
         | leg_armor(10)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
         [],
         [fac.kingdom_6],
     ],
@@ -2809,7 +2828,7 @@ items = [
         | body_armor(10)
         | leg_armor(10)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
         [],
         [fac.kingdom_6],
     ],
@@ -2827,7 +2846,7 @@ items = [
         | body_armor(5)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "tunic_with_green_cape",
@@ -2842,7 +2861,7 @@ items = [
         | body_armor(6)
         | leg_armor(2)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "linen_tunic",
@@ -2857,7 +2876,7 @@ items = [
         | body_armor(6)
         | leg_armor(1)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "short_tunic",
@@ -2872,7 +2891,7 @@ items = [
         | body_armor(7)
         | leg_armor(1)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "red_shirt",
@@ -2887,7 +2906,7 @@ items = [
         | body_armor(7)
         | leg_armor(1)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "red_tunic",
@@ -2902,7 +2921,7 @@ items = [
         | body_armor(7)
         | leg_armor(1)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "green_tunic",
@@ -2917,7 +2936,7 @@ items = [
         | body_armor(7)
         | leg_armor(1)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "blue_tunic",
@@ -2932,7 +2951,7 @@ items = [
         | body_armor(7)
         | leg_armor(1)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "pelt_coat",
@@ -2947,7 +2966,7 @@ items = [
         | body_armor(9)
         | leg_armor(1)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "robe",
@@ -2962,7 +2981,7 @@ items = [
         | body_armor(8)
         | leg_armor(6)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "sarranid_cloth_robe",
@@ -2977,7 +2996,7 @@ items = [
         | body_armor(9)
         | leg_armor(9)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.kingdom_6],
     ],
@@ -2994,7 +3013,7 @@ items = [
         | body_armor(9)
         | leg_armor(9)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.kingdom_6],
     ],
@@ -3011,7 +3030,7 @@ items = [
         | body_armor(11)
         | leg_armor(6)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "leather_apron",
@@ -3026,7 +3045,7 @@ items = [
         | body_armor(12)
         | leg_armor(7)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     # Fancy Clothes
     [
@@ -3042,7 +3061,7 @@ items = [
         | body_armor(20)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "fur_coat",
@@ -3057,7 +3076,7 @@ items = [
         | body_armor(13)
         | leg_armor(6)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "tabard",
@@ -3072,7 +3091,7 @@ items = [
         | body_armor(14)
         | leg_armor(6)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "courtly_outfit",
@@ -3080,14 +3099,14 @@ items = [
         [("nobleman_outf", 0)],
         itp_merchandise | itp_type_body_armor | itp_covers_legs | itp_civilian,
         0,
-        348,
+        248,
         weight(4)
         | abundance(20)
         | head_armor(0)
         | body_armor(14)
         | leg_armor(10)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
     ],
     [
         "nobleman_outfit",
@@ -3095,14 +3114,14 @@ items = [
         [("nobleman_outfit_b_new", 0)],
         itp_merchandise | itp_type_body_armor | itp_covers_legs | itp_civilian,
         0,
-        348,
+        288,
         weight(4)
         | abundance(20)
         | head_armor(0)
         | body_armor(15)
         | leg_armor(12)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
     ],
     [
         "rich_outfit",
@@ -3117,7 +3136,7 @@ items = [
         | body_armor(16)
         | leg_armor(4)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
     ],
     # Cheap Armor
     [
@@ -3193,7 +3212,7 @@ items = [
         0,
         74,
         weight(3)
-        | abundance(100)
+        | abundance(200)
         | head_armor(0)
         | body_armor(15)
         | leg_armor(9)
@@ -3217,7 +3236,7 @@ items = [
         | difficulty(0),
         imodbits_cloth,
         [],
-        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_3, fac.kingdom_4, fac.kingdom_5],
+        [fac.kingdom_2, fac.kingdom_3, fac.kingdom_4],
     ],
     [
         "steppe_armor",
@@ -3234,7 +3253,7 @@ items = [
         | difficulty(0),
         imodbits_cloth,
         [],
-        [fac.kingdom_3],
+        [fac.kingdom_2, fac.kingdom_3, fac.kingdom_6],
     ],
     [
         "archers_vest",
@@ -3244,7 +3263,7 @@ items = [
         0,
         260,
         weight(6)
-        | abundance(100)
+        | abundance(200)
         | head_armor(0)
         | body_armor(23)
         | leg_armor(12)
@@ -3267,6 +3286,8 @@ items = [
         | leg_armor(5)
         | difficulty(0),
         imodbits_cloth,
+        [],
+        [fac.kingdom_1, fac.kingdom_4],
     ],
     [
         "blue_gambeson",
@@ -3282,6 +3303,8 @@ items = [
         | leg_armor(5)
         | difficulty(0),
         imodbits_cloth,
+        [],
+        [fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "red_gambeson",
@@ -3297,6 +3320,8 @@ items = [
         | leg_armor(5)
         | difficulty(0),
         imodbits_cloth,
+        [],
+        [fac.kingdom_1, fac.kingdom_5],
     ],
     [
         "padded_cloth",
@@ -3312,6 +3337,8 @@ items = [
         | leg_armor(6)
         | difficulty(0),
         imodbits_cloth,
+        [],
+        [fac.kingdom_1, fac.kingdom_4],
     ],
     [
         "aketon_green",
@@ -3327,6 +3354,8 @@ items = [
         | leg_armor(6)
         | difficulty(0),
         imodbits_cloth,
+        [],
+        [fac.kingdom_1, fac.kingdom_5],
     ],
     [
         "leather_jerkin",
@@ -3343,7 +3372,6 @@ items = [
         | difficulty(0),
         imodbits_cloth,
     ],
-    # Not used
     [
         "light_leather",
         "Light Leather",
@@ -3358,6 +3386,8 @@ items = [
         | leg_armor(7)
         | difficulty(0),
         imodbits_armor,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5, fac.kingdom_6],
     ],
     [
         "nomad_vest",
@@ -3389,7 +3419,7 @@ items = [
         | body_armor(23)
         | leg_armor(9)
         | difficulty(0),
-        imodbits_cloth,
+        imodbit_tattered | imodbit_sturdy | imodbit_thick | imodbit_hardened,
     ],
     [
         "padded_leather",
@@ -3443,6 +3473,8 @@ items = [
         | leg_armor(10)
         | difficulty(0),
         imodbits_cloth,
+        [],
+        [fac.kingdom_2, fac.kingdom_3, fac.kingdom_6],
     ],
     [
         "sarranid_leather_armor",
@@ -3452,7 +3484,7 @@ items = [
         0,
         650,
         weight(9)
-        | abundance(100)
+        | abundance(200)
         | head_armor(0)
         | body_armor(32)
         | leg_armor(12)
@@ -3566,7 +3598,7 @@ items = [
     ],
     [
         "lamellar_vest_khergit",
-        "Khergit Lamellar Vest",
+        "Lamellar Vest",
         [("lamellar_vest_b", 0)],
         itp_merchandise | itp_type_body_armor | itp_civilian | itp_covers_legs,
         0,
@@ -3589,7 +3621,7 @@ items = [
         0,
         990,
         weight(15)
-        | abundance(100)
+        | abundance(150)
         | head_armor(0)
         | body_armor(36)
         | leg_armor(8)
@@ -3655,7 +3687,7 @@ items = [
         0,
         1400,
         weight(19)
-        | abundance(100)
+        | abundance(150)
         | head_armor(0)
         | body_armor(40)
         | leg_armor(14)
@@ -3666,16 +3698,16 @@ items = [
     ],
     [
         "scale_armor",
-        "Scale Armor",
+        "Nord Scale Armor",
         [("lamellar_armor_e", 0)],
         itp_merchandise | itp_type_body_armor | itp_covers_legs,
         0,
-        2558,
-        weight(25)
+        1200,
+        weight(18)
         | abundance(100)
         | head_armor(0)
-        | body_armor(52)
-        | leg_armor(13)
+        | body_armor(42)
+        | leg_armor(8)
         | difficulty(8),
         imodbits_armor,
         [],
@@ -3687,14 +3719,16 @@ items = [
         [("light_mail_and_plate", 0)],
         itp_type_body_armor | itp_covers_legs,
         0,
-        532,
-        weight(10)
+        1532,
+        weight(16)
         | abundance(100)
         | head_armor(0)
-        | body_armor(32)
-        | leg_armor(12)
+        | body_armor(42)
+        | leg_armor(14)
         | difficulty(0),
         imodbits_armor,
+        [],
+        [fac.kingdom_1, fac.kingdom_4],
     ],
     [
         "brigandine_red",
@@ -3713,7 +3747,6 @@ items = [
         [],
         [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
-    # Medium-Heavy Armor
     [
         "mail_and_plate",
         "Mail and Plate",
@@ -3728,7 +3761,10 @@ items = [
         | leg_armor(12)
         | difficulty(0),
         imodbits_armor,
+        [],
+        [fac.kingdom_4],
     ],
+    # Medium-Heavy Armor
     [
         "mail_with_surcoat",
         "Mail with Surcoat",
@@ -3896,7 +3932,7 @@ items = [
         itp_merchandise | itp_type_body_armor | itp_covers_legs,
         0,
         2410,
-        weight(25)
+        weight(23)
         | abundance(100)
         | head_armor(0)
         | body_armor(48)
@@ -3920,6 +3956,8 @@ items = [
         | leg_armor(14)
         | difficulty(8),
         imodbits_armor,
+        [],
+        [fac.kingdom_2, fac.kingdom_4],
     ],
     [
         "mamluke_mail",
@@ -3969,6 +4007,8 @@ items = [
         | leg_armor(15)
         | difficulty(8),
         imodbits_armor,
+        [],
+        [fac.kingdom_2, fac.kingdom_4],
     ],
     [
         "khergit_elite_armor",
@@ -4035,6 +4075,8 @@ items = [
         | leg_armor(16)
         | difficulty(8),
         imodbits_armor,
+        [],
+        [fac.kingdom_5],
     ],
     [
         "coat_of_plates_red",
@@ -4050,6 +4092,8 @@ items = [
         | leg_armor(16)
         | difficulty(8),
         imodbits_armor,
+        [],
+        [fac.kingdom_1],
     ],
     [
         "plate_armor",
@@ -4059,7 +4103,7 @@ items = [
         0,
         6553,
         weight(27)
-        | abundance(100)
+        | abundance(30)
         | head_armor(0)
         | body_armor(55)
         | leg_armor(17)
@@ -4068,9 +4112,9 @@ items = [
         [],
         [fac.kingdom_1, fac.kingdom_5],
     ],
-    ####################################################################################################################
-    # [ ZI04 ] - Headwear - Slot 4
-    ####################################################################################################################
+    #####################
+    # Headwear - Slot 4 #
+    #####################
     # Womens' Headwear
     [
         "wimple_a",
@@ -4085,7 +4129,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "wimple_with_veil",
@@ -4100,7 +4144,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "sarranid_felt_head_cloth",
@@ -4108,14 +4152,14 @@ items = [
         [("common_tulbent", 0)],
         itp_type_head_armor | itp_civilian | itp_attach_armature,
         0,
-        1,
+        4,
         weight(0.5)
         | abundance(50)
         | head_armor(4)
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.kingdom_6],
     ],
@@ -4125,14 +4169,14 @@ items = [
         [("common_tulbent_b", 0)],
         itp_type_head_armor | itp_civilian | itp_attach_armature,
         0,
-        1,
+        4,
         weight(0.5)
         | abundance(50)
         | head_armor(4)
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.kingdom_6],
     ],
@@ -4149,7 +4193,9 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "female_hood",
@@ -4164,7 +4210,9 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
     # Noble Ladies' Headwear
     [
@@ -4180,7 +4228,9 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
+        [],
+        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "turret_hat_blue",
@@ -4195,7 +4245,9 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
+        [],
+        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "turret_hat_green",
@@ -4210,7 +4262,9 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
+        [],
+        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "court_hat",
@@ -4225,7 +4279,9 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
+        [],
+        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "sarranid_head_cloth",
@@ -4244,7 +4300,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
         [],
         [fac.kingdom_6],
     ],
@@ -4265,7 +4321,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
         [],
         [fac.kingdom_6],
     ],
@@ -4286,7 +4342,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
         [],
         [fac.kingdom_3],
     ],
@@ -4296,9 +4352,9 @@ items = [
         [("khergit_lady_hat_b", 0)],
         itp_merchandise
         | itp_type_head_armor
-        | itp_civilian
         | itp_doesnt_cover_hair
-        | itp_fit_to_head,
+        | itp_fit_to_head
+        | itp_civilian,
         0,
         10,
         weight(0.5)
@@ -4307,7 +4363,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_none,
         [],
         [fac.kingdom_3],
     ],
@@ -4318,9 +4374,9 @@ items = [
         [("head_wrapping", 0)],
         itp_type_head_armor | itp_fit_to_head,
         0,
-        1,
+        16,
         weight(0.25) | abundance(0) | head_armor(3),
-        imodbit_tattered | imodbit_ragged | imodbit_sturdy | imodbit_thick,
+        imodbits_clothes,
         [],
         [fac.no_faction],
     ],
@@ -4337,7 +4393,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "woolen_cap",
@@ -4352,7 +4408,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "felt_hat",
@@ -4367,7 +4423,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "common_hood",
@@ -4382,7 +4438,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     [
         "hood_b",
@@ -4397,7 +4453,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.no_faction],
     ],
@@ -4414,7 +4470,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.no_faction],
     ],
@@ -4431,7 +4487,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.no_faction],
     ],
@@ -4443,7 +4499,7 @@ items = [
         0,
         193,
         weight(2) | abundance(100) | head_armor(18) | body_armor(0) | leg_armor(0),
-        imodbits_cloth,
+        imodbits_clothes,
     ],
     # Fancy Hats
     [
@@ -4459,7 +4515,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.kingdom_3, fac.kingdom_6],
     ],
@@ -4476,7 +4532,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.kingdom_2, fac.kingdom_4],
     ],
@@ -4493,7 +4549,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.kingdom_1, fac.kingdom_5],
     ],
@@ -4510,7 +4566,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(7),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.kingdom_6],
     ],
@@ -4529,6 +4585,8 @@ items = [
         | leg_armor(0)
         | difficulty(0),
         imodbits_cloth,
+        [],
+        [fac.kingdom_1],
     ],
     [
         "padded_coif",
@@ -4544,6 +4602,8 @@ items = [
         | leg_armor(0)
         | difficulty(0),
         imodbits_cloth,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "leather_cap",
@@ -4559,6 +4619,8 @@ items = [
         | leg_armor(0)
         | difficulty(0),
         imodbits_cloth,
+        [],
+        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4],
     ],
     [
         "skullcap",
@@ -4578,7 +4640,7 @@ items = [
     # Cheap Eastern Helmets
     [
         "nomad_cap",
-        "Nomad Cap",
+        "Nomad Skullcap",
         [("nomad_cap_a_new", 0)],
         itp_merchandise | itp_type_head_armor | itp_civilian,
         0,
@@ -4648,6 +4710,8 @@ items = [
         36,
         weight(1) | abundance(100) | head_armor(16) | body_armor(0) | leg_armor(0),
         imodbits_cloth,
+        [],
+        [fac.kingdom_2, fac.kingdom_3],
     ],
     [
         "leather_steppe_cap_c",
@@ -4658,6 +4722,8 @@ items = [
         51,
         weight(1) | abundance(100) | head_armor(16) | body_armor(0) | leg_armor(0),
         imodbits_cloth,
+        [],
+        [fac.kingdom_2, fac.kingdom_3],
     ],
     [
         "leather_warrior_cap",
@@ -4676,7 +4742,7 @@ items = [
         [],
         [fac.kingdom_3],
     ],
-    # Shared Helmets
+    # Swadian and Rhodok Helmets
     [
         "mail_coif",
         "Mail Coif",
@@ -4691,6 +4757,8 @@ items = [
         | leg_armor(0)
         | difficulty(7),
         imodbits_armor,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "footman_helmet",
@@ -4740,6 +4808,8 @@ items = [
         | leg_armor(0)
         | difficulty(7),
         imodbits_plate,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "segmented_helmet",
@@ -4755,6 +4825,8 @@ items = [
         | leg_armor(0)
         | difficulty(7),
         imodbits_plate,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "helmet_with_neckguard",
@@ -4770,6 +4842,8 @@ items = [
         | leg_armor(0)
         | difficulty(7),
         imodbits_plate,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "flat_topped_helmet",
@@ -4819,6 +4893,8 @@ items = [
         | leg_armor(0)
         | difficulty(8),
         imodbits_plate,
+        [],
+        [fac.kingdom_1, fac.kingdom_5],
     ],
     [
         "bascinet_2",
@@ -4834,6 +4910,8 @@ items = [
         | leg_armor(0)
         | difficulty(8),
         imodbits_plate,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "bascinet_3",
@@ -4849,6 +4927,8 @@ items = [
         | leg_armor(0)
         | difficulty(8),
         imodbits_plate,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "guard_helmet",
@@ -4879,6 +4959,8 @@ items = [
         | leg_armor(0)
         | difficulty(10),
         imodbits_plate,
+        [],
+        [fac.kingdom_1, fac.kingdom_5],
     ],
     [
         "great_helmet",
@@ -4894,6 +4976,8 @@ items = [
         | leg_armor(0)
         | difficulty(10),
         imodbits_plate,
+        [],
+        [fac.kingdom_1, fac.kingdom_4],
     ],
     [
         "winged_great_helmet",
@@ -4909,6 +4993,8 @@ items = [
         | leg_armor(0)
         | difficulty(10),
         imodbits_plate,
+        [],
+        [fac.kingdom_1, fac.kingdom_4],
     ],
     # Vaegir Helmets
     [
@@ -5048,7 +5134,7 @@ items = [
         [fac.kingdom_2],
     ],
     [
-        "vaegir_mask",
+        "vaegir_war_mask",
         "Vaegir War Mask",
         [("vaeg_helmet9", 0)],
         itp_merchandise | itp_type_head_armor | itp_covers_beard,
@@ -5075,7 +5161,7 @@ items = [
         weight(2) | abundance(100) | head_armor(31) | body_armor(0) | leg_armor(0),
         imodbits_cloth,
         [],
-        [fac.kingdom_2, fac.kingdom_3],
+        [fac.kingdom_2],
     ],
     [
         "spiked_helmet",
@@ -5104,7 +5190,7 @@ items = [
         weight(2) | abundance(100) | head_armor(40) | body_armor(0) | leg_armor(0),
         imodbits_cloth,
         [],
-        [fac.kingdom_3],
+        [fac.kingdom_2],
     ],
     [
         "khergit_cavalry_helmet",
@@ -5116,7 +5202,7 @@ items = [
         weight(2) | abundance(100) | head_armor(36) | body_armor(0) | leg_armor(0),
         imodbits_cloth,
         [],
-        [fac.kingdom_3],
+        [fac.kingdom_2],
     ],
     # Nord Helmets
     [
@@ -5202,7 +5288,7 @@ items = [
         | difficulty(7),
         imodbits_plate,
         [],
-        [fac.kingdom_4],
+        [fac.kingdom_1, fac.kingdom_4],
     ],
     [
         "nordic_huscarl_helmet",
@@ -5247,7 +5333,7 @@ items = [
         0,
         28,
         weight(1)
-        | abundance(100)
+        | abundance(150)
         | head_armor(11)
         | body_armor(0)
         | leg_armor(0)
@@ -5264,7 +5350,7 @@ items = [
         0,
         38,
         weight(1.50)
-        | abundance(100)
+        | abundance(150)
         | head_armor(14)
         | body_armor(0)
         | leg_armor(0)
@@ -5281,7 +5367,7 @@ items = [
         0,
         90,
         weight(2)
-        | abundance(100)
+        | abundance(150)
         | head_armor(19)
         | body_armor(0)
         | leg_armor(0)
@@ -5298,7 +5384,7 @@ items = [
         0,
         180,
         weight(2.75)
-        | abundance(100)
+        | abundance(150)
         | head_armor(25)
         | body_armor(0)
         | leg_armor(0)
@@ -5315,7 +5401,7 @@ items = [
         0,
         290,
         weight(2.50)
-        | abundance(100)
+        | abundance(150)
         | head_armor(35)
         | body_armor(0)
         | leg_armor(0)
@@ -5332,7 +5418,7 @@ items = [
         0,
         430,
         weight(3)
-        | abundance(100)
+        | abundance(150)
         | head_armor(41)
         | body_armor(0)
         | leg_armor(0)
@@ -5349,7 +5435,7 @@ items = [
         0,
         810,
         weight(3.50)
-        | abundance(100)
+        | abundance(150)
         | head_armor(47)
         | body_armor(0)
         | leg_armor(0)
@@ -5455,9 +5541,9 @@ items = [
     #     [],
     #     [fac.no_faction],
     # ],
-    ####################################################################################################################
-    # _ZJ_ - Special Sets
-    ####################################################################################################################
+    ################
+    # Special Sets #
+    ################
     [
         "burlap_tunic",
         "Burlap Tunic",
@@ -5712,7 +5798,7 @@ items = [
         | body_armor(0)
         | leg_armor(0)
         | difficulty(0),
-        imodbits_cloth,
+        imodbits_clothes,
         [],
         [fac.no_faction],
     ],
@@ -5760,15 +5846,13 @@ items = [
     # reinf_jerkin,
     # std_lthr_coat,
     # hard_lthr_a
-    ####################################################################################################################
-    # _ZK_ - Melee Weapons - Slots 0-3
-    #############################################################################
-    #############################################################################
-    
-    ####################################################################################################################
-    # [ ZK01 ] - Clubs and Maces
-    ####################################################################################################################
+    #############################
+    # MELEE WEAPONS - Slots 0-3 #
+    #############################
     # Keep wooden_stick in front!
+    # One-Handed Weapons
+    ####################
+    # Clubs and Maces
     [
         "wooden_stick",
         "Wooden Stick",
@@ -5843,6 +5927,8 @@ items = [
         | swing_damage(21, pierce)
         | thrust_damage(0, pierce),
         imodbits_mace,
+        [],
+        [fac.kingdom_1, fac.kingdom_5],
     ],
     [
         "sarranid_mace_1",
@@ -5885,6 +5971,8 @@ items = [
         | swing_damage(19, pierce)
         | thrust_damage(0, pierce),
         imodbits_mace,
+        [],
+        [fac.kingdom_2, fac.kingdom_3, fac.kingdom_4],
     ],
     [
         "mace_2",
@@ -6028,9 +6116,7 @@ items = [
         | thrust_damage(0, pierce),
         imodbits_pick,
     ],
-    ####################################################################################################################
-    # [ ZK02 ] - Hammers and Picks
-    ####################################################################################################################
+    # Hammers and Picks
     [
         "hammer",
         "Hammer",
@@ -6054,7 +6140,7 @@ items = [
     [
         "pickaxe",
         "Pickaxe",
-        [("fighting_pick_new", 0)],
+        [("rusty_pick_a", 0)],
         itp_type_one_handed_wpn | itp_merchandise | itp_primary | itp_wooden_parry,
         itc_scimitar | itcf_carry_mace_left_hip,
         27,
@@ -6125,9 +6211,7 @@ items = [
         [],
         [fac.kingdom_1, fac.kingdom_5],
     ],
-    ####################################################################################################################
-    # [ ZK03 ] - Blades
-    #################################################################################################################### 
+    # Blades
     [
         "sickle",
         "Sickle",
@@ -6213,10 +6297,7 @@ items = [
     [
         "dagger",
         "Dagger",
-        [
-            ("dagger_b", 0),
-            ("dagger_b_scabbard", ixmesh_carry),
-        ],
+        [("dagger_b", 0), ("dagger_b_scabbard", ixmesh_carry)],
         itp_type_one_handed_wpn
         | itp_merchandise
         | itp_primary
@@ -6250,7 +6331,7 @@ items = [
         imodbits_sword,
     ],
     [
-        "military_sickle_a",
+        "military_sickle",
         "Military Sickle",
         [("military_sickle_a", 0)],
         itp_type_one_handed_wpn
@@ -6269,9 +6350,7 @@ items = [
         | thrust_damage(0, pierce),
         imodbits_axe,
     ],
-    ####################################################################################################################
-    # [ ZK04 ] - One-Handed Swords (Shared)
-    #################################################################################################################### 
+    # Swadian Swords
     [
         "sword_medieval_a",
         "Sword",
@@ -6454,9 +6533,7 @@ items = [
         [],
         [fac.kingdom_1, fac.kingdom_5],
     ],
-    ####################################################################################################################
-    # [ ZK05 ] - One-Handed Swords (Khergit)
-    #################################################################################################################### 
+    # Khergit Swords
     [
         "sword_khergit_1",
         "Nomad Sabre",
@@ -6472,7 +6549,7 @@ items = [
         | swing_damage(29, cut),
         imodbits_sword_high,
         [],
-        [fac.kingdom_3],
+        [fac.kingdom_2, fac.kingdom_3],
     ],
     [
         "sword_khergit_2",
@@ -6489,7 +6566,7 @@ items = [
         | swing_damage(30, cut),
         imodbits_sword_high,
         [],
-        [fac.kingdom_3],
+        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_3],
     ],
     [
         "sword_khergit_3",
@@ -6506,7 +6583,7 @@ items = [
         | swing_damage(31, cut),
         imodbits_sword_high,
         [],
-        [fac.kingdom_3],
+        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_3],
     ],
     [
         "sword_khergit_3b",
@@ -6561,9 +6638,8 @@ items = [
         [],
         [fac.kingdom_3],
     ],
-    ####################################################################################################################
-    # [ ZK06 ] - One-Handed Swords (Nordic and Vaegir)
-    #################################################################################################################### 
+    # Nord Swords
+
     [
         "sword_viking_1",
         "Nordic Sword",
@@ -6690,9 +6766,7 @@ items = [
         [],
         [fac.kingdom_4],
     ],
-    ####################################################################################################################
-    # [ ZK07 ] - One-Handed Swords (Rhodok)
-    #################################################################################################################### 
+    # Rhodok Swords
     [
         "military_cleaver_b",
         "Soldier's Cleaver",
@@ -6729,9 +6803,7 @@ items = [
         [],
         [fac.kingdom_5],
     ],
-    ####################################################################################################################
-    # [ ZK08 ] - One-Handed Swords (Sarranid)
-    #################################################################################################################### 
+    # Sarranid Swords
     [
         "scimitar",
         "Scimitar",
@@ -6805,7 +6877,7 @@ items = [
         [fac.kingdom_6],
     ],
     [
-        "sarranid_cavalry_sword",
+        "arabian_sword_c",
         "Sarranid Cavalry Sword",
         [("arabian_sword_c", 0), ("scab_arabian_sword_c", ixmesh_carry)],
         itp_type_one_handed_wpn | itp_merchandise | itp_primary,
@@ -6840,9 +6912,7 @@ items = [
         [],
         [fac.kingdom_6],
     ],
-    ####################################################################################################################
-    # [ ZK09 ] - One-Handed Swords (Exotic)
-    #################################################################################################################### 
+    # Exotic Swords
     [
         "strange_short_sword",
         "Strange Short Sword",
@@ -6897,10 +6967,7 @@ items = [
         [],
         [fac.no_faction],
     ],
-    ####################################################################################################################
-    # [ ZK10 ] - One-Handed Axes (Shared)
-    #################################################################################################################### 
-    # 
+    # Axes
     [
         "hatchet",
         "Hatchet",
@@ -6962,7 +7029,7 @@ items = [
         | weapon_length(90)
         | swing_damage(31, cut)
         | thrust_damage(0, pierce),
-        imodbits_axe,
+        imodbits_axe_minus_heavy,
     ],
     [
         "one_handed_war_axe_a",
@@ -7010,9 +7077,6 @@ items = [
         [],
         [fac.kingdom_2, fac.kingdom_3, fac.kingdom_4],
     ],
-    ####################################################################################################################
-    # [ ZK11 ] - One-Handed Axes (Nordic and Vaegir)
-    #################################################################################################################### 
     [
         "one_handed_war_axe_b",
         "One Handed War Axe",
@@ -7034,7 +7098,7 @@ items = [
         | thrust_damage(0, pierce),
         imodbits_axe,
         [],
-        [fac.kingdom_2, fac.kingdom_4],
+        [fac.kingdom_4],
     ],
     [
         "one_handed_battle_axe_b",
@@ -7057,11 +7121,11 @@ items = [
         | thrust_damage(0, pierce),
         imodbits_axe,
         [],
-        [fac.kingdom_2, fac.kingdom_4],
+        [fac.kingdom_4],
     ],
     [
         "one_handed_battle_axe_c",
-        "One Handed Battle Axe",
+        "One Handed War Axe",
         [("one_handed_battle_axe_c", 0)],
         itp_type_one_handed_wpn
         | itp_merchandise
@@ -7080,11 +7144,9 @@ items = [
         | thrust_damage(0, pierce),
         imodbits_axe,
         [],
-        [fac.kingdom_2, fac.kingdom_4],
+        [fac.kingdom_4],
     ],
-    ####################################################################################################################
-    # [ ZK12 ] - One-Handed Axes (Sarranid)
-    #################################################################################################################### 
+   
     [
         "sarranid_axe_a",
         "Iron Battle Axe",
@@ -7131,9 +7193,10 @@ items = [
         [],
         [fac.kingdom_6],
     ],
-    ####################################################################################################################
-    # [ ZK13 ] - One/Two-Handed Weapons
-    #################################################################################################################### 
+    
+    # One/Two-Handed Weapons
+    ########################
+    
     [
         "club_with_spike_head",
         "Spiked Staff",
@@ -7174,6 +7237,8 @@ items = [
         | swing_damage(38, pierce)
         | thrust_damage(0, pierce),
         imodbits_mace,
+        [],
+        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_3, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "bastard_sword_a",
@@ -7191,7 +7256,7 @@ items = [
         | thrust_damage(26, pierce),
         imodbits_sword_high,
         [],
-        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_5],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "bastard_sword_b",
@@ -7209,11 +7274,11 @@ items = [
         | thrust_damage(27, pierce),
         imodbits_sword_high,
         [],
-        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_5],
+        [fac.kingdom_1, fac.kingdom_4],
     ],
-    ####################################################################################################################
-    # [ ZK14 ] - Two-Handed Blunts
-    #################################################################################################################### 
+    # Two-Handed Weapons
+    ####################
+    # Blunts
     [
         "maul",
         "Maul",
@@ -7286,7 +7351,7 @@ items = [
         | thrust_damage(0, pierce),
         imodbits_mace,
         [],
-        [fac.kingdom_1, fac.kingdom_5],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "sarranid_two_handed_mace_1",
@@ -7312,9 +7377,8 @@ items = [
         [],
         [fac.kingdom_6],
     ],
-    ####################################################################################################################
-    # [ ZK15 ] - Two-Handed Swords
-    ####################################################################################################################
+    # Swords
+
     [
         "great_sword",
         "Great Sword",
@@ -7331,7 +7395,7 @@ items = [
         | thrust_damage(31, pierce),
         imodbits_sword_high,
         [],
-        [fac.kingdom_1, fac.kingdom_5],
+        [fac.kingdom_4],
     ],
     [
         "sword_of_war",
@@ -7349,7 +7413,7 @@ items = [
         | thrust_damage(31, pierce),
         imodbits_sword_high,
         [],
-        [fac.kingdom_1, fac.kingdom_5],
+        [fac.kingdom_4],
     ],
     [
         "sword_two_handed_b",
@@ -7385,7 +7449,7 @@ items = [
         | thrust_damage(29, pierce),
         imodbits_sword_high,
         [],
-        [fac.kingdom_1, fac.kingdom_5, fac.kingdom_6],
+        [fac.kingdom_1, fac.kingdom_5],
     ],
     [
         "khergit_sword_two_handed_a",
@@ -7441,9 +7505,7 @@ items = [
         [],
         [fac.kingdom_5],
     ],
-    ####################################################################################################################
-    # [ ZK16 ] - Two-Handed Axes
-    ####################################################################################################################
+    # Axes
     [
         "axe",
         "Axe",
@@ -7507,7 +7569,7 @@ items = [
         | thrust_damage(0, pierce),
         imodbits_axe,
         [],
-        [fac.kingdom_2, fac.kingdom_4],
+        [fac.kingdom_2],
     ],
     [
         "war_axe",
@@ -7530,8 +7592,8 @@ items = [
         | thrust_damage(0, pierce),
         imodbits_axe,
         [],
-        [fac.kingdom_2, fac.kingdom_4],
-    ],
+        [fac.kingdom_2],
+    ],   
     [
         "two_handed_axe",
         "Two Handed Axe",
@@ -7554,7 +7616,7 @@ items = [
         | thrust_damage(0, pierce),
         imodbits_axe,
         [],
-        [fac.kingdom_2, fac.kingdom_4],
+        [fac.kingdom_4],
     ],
     [
         "two_handed_battle_axe_2",
@@ -7578,10 +7640,10 @@ items = [
         | thrust_damage(0, pierce),
         imodbits_axe,
         [],
-        [fac.kingdom_2, fac.kingdom_4],
+        [fac.kingdom_4],
     ],
     [
-        "great_axe",
+        "great_axe_2",
         "Great Axe",
         [("two_handed_battle_axe_e", 0)],
         itp_type_two_handed_wpn
@@ -7602,13 +7664,14 @@ items = [
         | thrust_damage(0, pierce),
         imodbits_axe,
         [],
-        [fac.kingdom_2, fac.kingdom_4],
+        [fac.kingdom_4],
     ],
     [
         "sarranid_two_handed_axe_a",
         "Sarranid Battle Axe",
         [("two_handed_battle_axe_g", 0)],
         itp_type_two_handed_wpn
+        | itp_merchandise
         | itp_two_handed
         | itp_primary
         | itp_bonus_against_shield
@@ -7616,7 +7679,7 @@ items = [
         itc_nodachi | itcf_carry_axe_back,
         350,
         weight(3.0)
-        | abundance(0)
+        | abundance(100)
         | difficulty(10)
         | spd_rtng(89)
         | weapon_length(95)
@@ -7624,13 +7687,14 @@ items = [
         | thrust_damage(0, pierce),
         imodbits_axe,
         [],
-        [fac.no_faction],
+        [fac.kingdom_6],
     ],
     [
         "sarranid_two_handed_axe_b",
         "Sarranid War Axe",
         [("two_handed_battle_axe_h", 0)],
         itp_type_two_handed_wpn
+        | itp_merchandise
         | itp_two_handed
         | itp_primary
         | itp_bonus_against_shield
@@ -7638,7 +7702,7 @@ items = [
         itc_nodachi | itcf_carry_axe_back,
         280,
         weight(2.50)
-        | abundance(0)
+        | abundance(100)
         | difficulty(10)
         | spd_rtng(90)
         | weapon_length(90)
@@ -7646,11 +7710,9 @@ items = [
         | thrust_damage(0, pierce),
         imodbits_axe,
         [],
-        [fac.no_faction],
+        [fac.kingdom_6],
     ],
-    ####################################################################################################################
-    # [ ZK17 ] - Two-Handed Long Axes
-    ####################################################################################################################
+    # Long Axes
     [
         "long_axe",
         "Long Axe",
@@ -7674,7 +7736,7 @@ items = [
         | thrust_damage(19, blunt),
         imodbits_axe,
         [],
-        [fac.kingdom_2, fac.kingdom_4],
+        [fac.kingdom_4],
     ],
     [
         "long_axe_alt",
@@ -7722,7 +7784,7 @@ items = [
         | thrust_damage(18, blunt),
         imodbits_axe,
         [],
-        [fac.kingdom_2, fac.kingdom_4],
+        [fac.kingdom_4],
     ],
     [
         "long_axe_b_alt",
@@ -7770,7 +7832,7 @@ items = [
         | thrust_damage(19, blunt),
         imodbits_axe,
         [],
-        [fac.kingdom_2, fac.kingdom_4],
+        [fac.kingdom_4],
     ],
     [
         "long_axe_c_alt",
@@ -7795,9 +7857,7 @@ items = [
         [],
         [fac.no_faction],
     ],
-    ####################################################################################################################
-    # [ ZK18 ] - Two-Handed Shortened Polearms
-    ####################################################################################################################
+    # Shortened Polearms
     [
         "shortened_voulge",
         "Shortened Voulge",
@@ -7837,6 +7897,8 @@ items = [
         | swing_damage(45, cut)
         | thrust_damage(0, pierce),
         imodbits_sword_high,
+        [],
+        [fac.kingdom_2, fac.kingdom_4],
     ],
     [
         "bardiche",
@@ -7886,9 +7948,9 @@ items = [
         [],
         [fac.kingdom_2],
     ],
-    ####################################################################################################################
-    # [ ZK19 ] - Polearms
-    ####################################################################################################################
+    # Polearms
+    ##########
+    # Staff
     [
         "staff",
         "Staff",
@@ -7947,10 +8009,10 @@ items = [
         | swing_damage(25, blunt)
         | thrust_damage(26, blunt),
         imodbits_polearm,
+        [],
+        [fac.kingdom_6],
     ],
-    ####################################################################################################################
-    # [ ZK20 ] - Spears (Polearms)
-    ####################################################################################################################
+    # Spear
     [
         "shortened_spear",
         "Shortened Spear",
@@ -8012,6 +8074,8 @@ items = [
         | swing_damage(26, cut)
         | thrust_damage(23, pierce),
         imodbits_polearm,
+        [],
+        [fac.kingdom_2, fac.kingdom_4],
     ],
     [
         "bamboo_spear",
@@ -8058,9 +8122,7 @@ items = [
         | thrust_damage(27, pierce),
         imodbits_polearm,
     ],
-    ####################################################################################################################
-    # [ ZK21 ] - Lances (Polearms)
-    ####################################################################################################################
+    # Lance
     [
         "double_sided_lance",
         "Double Sided Lance",
@@ -8171,6 +8233,8 @@ items = [
         | swing_damage(0, cut)
         | thrust_damage(21, pierce),
         imodbits_polearm,
+        [],
+        [fac.kingdom_1],
     ],
     [
         "jousting_lance",
@@ -8192,10 +8256,10 @@ items = [
         | swing_damage(0, cut)
         | thrust_damage(17, blunt),
         imodbits_polearm,
+        [],
+        [fac.kingdom_1],
     ],
-    ####################################################################################################################
-    # [ ZK22 ] - Pikes (Polearms)
-    ####################################################################################################################
+    # Pike
     [
         "pike",
         "Long Pike",
@@ -8224,7 +8288,7 @@ items = [
     ],
     [
         "ashwood_pike",
-        "Ashwood Pike",
+        "Heavy Pike",
         [("pike", 0)],
         itp_type_polearm
         | itp_offset_lance
@@ -8293,12 +8357,10 @@ items = [
         [],
         [fac.kingdom_1, fac.kingdom_5],
     ],
-    ####################################################################################################################
-    # [ ZK23 ] - Hammers (Polearms)
-    ####################################################################################################################
+    # Hammer
     [
-        "bec_de_corbin_a",
-        "War Hammer",
+        "bec_de_corbin_b",
+        "Footman's Hammer",
         [("bec_de_corbin_a", 0)],
         itp_type_polearm
         | itp_merchandise
@@ -8310,15 +8372,13 @@ items = [
         itc_staff | itcf_carry_spear,
         225,
         weight(3.0)
-        | abundance(100)
-        | difficulty(0)
         | spd_rtng(81)
         | weapon_length(120)
         | swing_damage(38, pierce)
         | thrust_damage(38, pierce),
         imodbits_polearm,
         [],
-        [fac.kingdom_1, fac.kingdom_5],
+        [fac.no_faction],
     ],
     [
         "polehammer",
@@ -8336,7 +8396,7 @@ items = [
         weight(7)
         | abundance(0)
         | difficulty(18)
-        | spd_rtng(50)
+        | spd_rtng(70)
         | weapon_length(126)
         | swing_damage(50, blunt)
         | thrust_damage(35, blunt),
@@ -8344,9 +8404,7 @@ items = [
         [],
         [fac.no_faction],
     ],
-    ####################################################################################################################
-    # [ ZK24 ] - Maces (Polearms)
-    ####################################################################################################################
+    # Mace
     [
         "long_spiked_club",
         "Long Spiked Club",
@@ -8354,6 +8412,7 @@ items = [
         itp_type_polearm
         | itp_can_knock_down
         | itp_merchandise
+        | itp_next_item_as_melee
         | itp_primary
         | itp_wooden_parry,
         itc_staff | itcf_carry_axe_back,
@@ -8395,6 +8454,7 @@ items = [
         itp_type_polearm
         | itp_can_knock_down
         | itp_merchandise
+        | itp_next_item_as_melee
         | itp_primary
         | itp_wooden_parry,
         itc_staff | itcf_carry_axe_back,
@@ -8408,9 +8468,7 @@ items = [
         | thrust_damage(26, blunt),
         imodbits_mace,
     ],
-    ####################################################################################################################
-    # [ ZK25 ] - Axes (Polearms)
-    ####################################################################################################################
+    # Axe
     [
         "long_voulge",
         "Voulge",
@@ -8506,9 +8564,7 @@ items = [
         [],
         [fac.kingdom_2, fac.kingdom_4],
     ],
-    ####################################################################################################################
-    # [ ZK26 ] - Blades (Polearms)
-    ####################################################################################################################
+    # Blade
     [
         "scythe",
         "Scythe",
@@ -8550,6 +8606,8 @@ items = [
         | swing_damage(36, cut)
         | thrust_damage(25, pierce),
         imodbits_polearm,
+        [],
+        [fac.kingdom_2, fac.kingdom_4],
     ],
     [
         "long_military_scythe",
@@ -8572,6 +8630,8 @@ items = [
         | swing_damage(36, cut)
         | thrust_damage(24, pierce),
         imodbits_polearm,
+        [],
+        [fac.kingdom_2, fac.kingdom_4],
     ],
     [
         "hafted_blade_b",
@@ -8642,9 +8702,7 @@ items = [
         [],
         [fac.kingdom_1, fac.kingdom_5],
     ],
-    ####################################################################################################################
-    # [ ZK27 ] - Forks (Polearms)
-    ####################################################################################################################
+    # Fork
     [
         "pitch_fork",
         "Pitch Fork",
@@ -8680,12 +8738,15 @@ items = [
         itc_spear,
         153,
         weight(2)
+        | abundance(100)
         | difficulty(0)
         | spd_rtng(95)
         | weapon_length(135)
         | swing_damage(0, blunt)
         | thrust_damage(30, pierce),
         imodbits_polearm,
+        [],
+        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "battle_fork",
@@ -8707,6 +8768,8 @@ items = [
         | swing_damage(0, blunt)
         | thrust_damage(35, pierce),
         imodbits_polearm,
+        [],
+        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_4, fac.kingdom_5],
     ],
     [
         "trident",
@@ -8729,16 +8792,14 @@ items = [
         | swing_damage(0, blunt)
         | thrust_damage(33, pierce),
         imodbits_polearm,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
     ],
-    ####################################################################################################################
-    # _ZL_ - Shields - Slots 0-3
-    #############################################################################
-    #############################################################################
-    
-    ####################################################################################################################
-    # [ ZL01 ] - Large Round Shields
-    ####################################################################################################################
+    #######################
+    # SHIELDS - Slots 0-3 #
+    #######################
     # Keep wooden_shield in front!
+    # Large Round Shields
     [
         "wooden_shield",
         "Wooden Shield",
@@ -8771,9 +8832,7 @@ items = [
         [],
         [fac.kingdom_2, fac.kingdom_4],
     ],
-    ####################################################################################################################
-    # [ ZL02 ] - Small Round Shields
-    ####################################################################################################################
+    # Small Round Shields
     [
         "wooden_round_shield",
         "Wooden Round Shield",
@@ -8803,6 +8862,8 @@ items = [
         | spd_rtng(100)
         | shield_width(40),
         imodbits_shield,
+        [],
+        [fac.kingdom_2, fac.kingdom_3],
     ],
     [
         "leather_covered_round_shield",
@@ -8833,6 +8894,8 @@ items = [
         | spd_rtng(90)
         | shield_width(40),
         imodbits_shield,
+        [],
+        [fac.kingdom_1, fac.kingdom_2, fac.kingdom_5],
     ],
     [
         "steel_shield",
@@ -8842,16 +8905,16 @@ items = [
         itcf_carry_round_shield,
         697,
         weight(4)
-        | abundance(20)
+        | abundance(10)
         | hit_points(700)
         | body_armor(17)
         | spd_rtng(61)
         | shield_width(40),
         imodbits_shield,
+        [],
+        [fac.kingdom_1, fac.kingdom_5],
     ],
-    ####################################################################################################################
-    # [ ZL03 ] - Generic Heater Shields
-    ####################################################################################################################
+    # Generic Heater Shields
     [
         "fur_covered_shield",
         "Fur Covered Shield",
@@ -8867,6 +8930,8 @@ items = [
         | shield_width(41)
         | shield_height(81),
         imodbits_shield,
+        [],
+        [fac.kingdom_2, fac.kingdom_3],
     ],
     [
         "shield_heater_c",
@@ -8904,9 +8969,7 @@ items = [
         [],
         [fac.kingdom_6],
     ],
-    ####################################################################################################################
-    # [ ZL04 ] - Nordic Round Shields
-    ####################################################################################################################
+    # Nord Round Shields
     [
         "tab_shield_round_a",
         "Old Round Shield",
@@ -8937,6 +9000,7 @@ items = [
                 ],
             )
         ],
+        [fac.kingdom_3, fac.kingdom_4, fac.kingdom_6],
     ],
     [
         "tab_shield_round_b",
@@ -8968,6 +9032,7 @@ items = [
                 ],
             )
         ],
+        [fac.kingdom_4],
     ],
     [
         "tab_shield_round_c",
@@ -8999,6 +9064,7 @@ items = [
                 ],
             )
         ],
+        [fac.kingdom_4],
     ],
     [
         "tab_shield_round_d",
@@ -9064,9 +9130,7 @@ items = [
         ],
         [fac.kingdom_4],
     ],
-    ####################################################################################################################
-    # [ ZL05 ] - Vaegir Kite Shields (also Sarranid Infantry)
-    ####################################################################################################################
+    # Vaegir Kite Shields (also Sarranid Infantry)
     [
         "tab_shield_kite_a",
         "Old Kite Shield",
@@ -9265,9 +9329,7 @@ items = [
         ],
         [fac.kingdom_2, fac.kingdom_4],
     ],
-    ####################################################################################################################
-    # [ ZL06 ] - Swadian Heater Shields
-    ####################################################################################################################
+    # Swadian Heater Shields
     [
         "tab_shield_heater_a",
         "Old Heater Shield",
@@ -9466,9 +9528,7 @@ items = [
         ],
         [fac.kingdom_1],
     ],
-    ####################################################################################################################
-    # [ ZL07 ] - Rhodok Board Shields
-    ####################################################################################################################
+    # Rhodok Board Shields
     [
         "tab_shield_pavise_a",
         "Old Board Shield",
@@ -9613,9 +9673,7 @@ items = [
         ],
         [fac.kingdom_5],
     ],
-    ####################################################################################################################
-    # [ ZL08 ] - Khergit Cavalry Shields (also Sarranid Cavalry)
-    ####################################################################################################################
+    # Khergit Cavalry Shields (also Sarranid Cavalry)
     [
         "tab_shield_small_round_a",
         "Plain Cavalry Shield",
@@ -9712,9 +9770,6 @@ items = [
         ],
         [fac.kingdom_3, fac.kingdom_6],
     ],
-    ####################################################################################################################
-    # [ ZL09 ] - Obsolete Shields
-    ####################################################################################################################
     # Obsolete Shields, kinda ugly
     # ["round_shield", "Round Shield", [("shield_round_c",0)], itp_merchandise|itp_type_shield|itp_wooden_parry, itcf_carry_round_shield,  64 , weight(2)|hit_points(400)|body_armor(1)|spd_rtng(100)|shield_width(50),imodbits_shield ],
     # ["kite_shield",  "Kite Shield", [("shield_kite_a",0)], itp_merchandise|itp_type_shield|itp_wooden_parry, itcf_carry_kite_shield,  118 , weight(2.5)|hit_points(480)|body_armor(1)|spd_rtng(82)|shield_width(90),imodbits_shield ],
@@ -9724,9 +9779,6 @@ items = [
     # ["heraldric_shield", "Heraldric Shield", [("shield_heraldic",0)], itp_merchandise|itp_type_shield|itp_wooden_parry, itcf_carry_kite_shield,  301 , weight(3.5)|hit_points(640)|body_armor(1)|spd_rtng(83)|shield_width(65),imodbits_shield ],
     # ["heater_shield", "Heater Shield", [("shield_heater_a",0)], itp_merchandise|itp_type_shield|itp_wooden_parry, itcf_carry_kite_shield,  477 , weight(3.5)|hit_points(710)|body_armor(4)|spd_rtng(80)|shield_width(60),imodbits_shield ],
     # ["nomad_shield", "Nomad Shield", [("shield_wood_b",0)], itp_merchandise|itp_type_shield|itp_wooden_parry, itcf_carry_round_shield,  12 , weight(2)|hit_points(260)|body_armor(6)|spd_rtng(110)|shield_width(30),imodbits_shield ],
-    ####################################################################################################################
-    # [ ZL10 ] - Faction Heater Shield
-    ####################################################################################################################
     # This shield uses the Faction's banner, not the Lord's banner
     [
         "shield_heater_faction",
@@ -9761,235 +9813,246 @@ items = [
         ],
         [fac.no_faction],
     ],
-    ####################################################################################################################
-    # [ ZL11 ] - Decoration Kite Shields
-    ####################################################################################################################
-    # 
-    # [
-    #     "shield_kite_g",
-    #     "Kite Shield",
-    #     [("shield_kite_g", 0)],
-    #     itp_type_shield | itp_wooden_parry,
-    #     itcf_carry_kite_shield,
-    #     118,
-    #     weight(2.5)
-    #     | abundance(0)
-    #     | hit_points(480)
-    #     | body_armor(1)
-    #     | spd_rtng(90)
-    #     | shield_width(36)
-    #     | shield_height(70),
-    #     imodbits_shield,
-    #     [],
-    #     [fac.no_faction],
-    # ],
-    # [
-    #     "shield_kite_h",
-    #     "Kite Shield",
-    #     [("shield_kite_h", 0)],
-    #     itp_type_shield | itp_wooden_parry,
-    #     itcf_carry_kite_shield,
-    #     118,
-    #     weight(2.5)
-    #     | abundance(0)
-    #     | hit_points(480)
-    #     | body_armor(1)
-    #     | spd_rtng(90)
-    #     | shield_width(36)
-    #     | shield_height(70),
-    #     imodbits_shield,
-    #     [],
-    #     [fac.no_faction],
-    # ],
-    # [
-    #     "shield_kite_i",
-    #     "Kite Shield",
-    #     [("shield_kite_i", 0)],
-    #     itp_type_shield | itp_wooden_parry,
-    #     itcf_carry_kite_shield,
-    #     118,
-    #     weight(2.5)
-    #     | abundance(0)
-    #     | hit_points(480)
-    #     | body_armor(1)
-    #     | spd_rtng(90)
-    #     | shield_width(36)
-    #     | shield_height(70),
-    #     imodbits_shield,
-    #     [],
-    #     [fac.no_faction],
-    # ],
-    # [
-    #     "shield_kite_k",
-    #     "Kite Shield",
-    #     [("shield_kite_k", 0)],
-    #     itp_type_shield | itp_wooden_parry,
-    #     itcf_carry_kite_shield,
-    #     118,
-    #     weight(2.5)
-    #     | abundance(0)
-    #     | hit_points(480)
-    #     | body_armor(1)
-    #     | spd_rtng(90)
-    #     | shield_width(36)
-    #     | shield_height(70),
-    #     imodbits_shield,
-    #     [],
-    #     [fac.no_faction],
-    # ],
-    # [
-    #     "norman_shield_1",
-    #     "Kite Shield",
-    #     [("norman_shield_1", 0)],
-    #     itp_type_shield | itp_wooden_parry,
-    #     itcf_carry_kite_shield,
-    #     118,
-    #     weight(2.5)
-    #     | abundance(0)
-    #     | hit_points(480)
-    #     | body_armor(1)
-    #     | spd_rtng(90)
-    #     | shield_width(36)
-    #     | shield_height(70),
-    #     imodbits_shield,
-    #     [],
-    #     [fac.no_faction],
-    # ],
-    # [
-    #     "norman_shield_2",
-    #     "Kite Shield",
-    #     [("norman_shield_2", 0)],
-    #     itp_type_shield | itp_wooden_parry,
-    #     itcf_carry_kite_shield,
-    #     118,
-    #     weight(2.5)
-    #     | abundance(0)
-    #     | hit_points(480)
-    #     | body_armor(1)
-    #     | spd_rtng(90)
-    #     | shield_width(36)
-    #     | shield_height(70),
-    #     imodbits_shield,
-    #     [],
-    #     [fac.no_faction],
-    # ],
-    # [
-    #     "norman_shield_3",
-    #     "Kite Shield",
-    #     [("norman_shield_3", 0)],
-    #     itp_type_shield | itp_wooden_parry,
-    #     itcf_carry_kite_shield,
-    #     118,
-    #     weight(2.5)
-    #     | abundance(0)
-    #     | hit_points(480)
-    #     | body_armor(1)
-    #     | spd_rtng(90)
-    #     | shield_width(36)
-    #     | shield_height(70),
-    #     imodbits_shield,
-    #     [],
-    #     [fac.no_faction],
-    # ],
-    # [
-    #     "norman_shield_4",
-    #     "Kite Shield",
-    #     [("norman_shield_4", 0)],
-    #     itp_type_shield | itp_wooden_parry,
-    #     itcf_carry_kite_shield,
-    #     118,
-    #     weight(2.5)
-    #     | abundance(0)
-    #     | hit_points(480)
-    #     | body_armor(1)
-    #     | spd_rtng(90)
-    #     | shield_width(36)
-    #     | shield_height(70),
-    #     imodbits_shield,
-    #     [],
-    #     [fac.no_faction],
-    # ],
-    # [
-    #     "norman_shield_5",
-    #     "Kite Shield",
-    #     [("norman_shield_5", 0)],
-    #     itp_type_shield | itp_wooden_parry,
-    #     itcf_carry_kite_shield,
-    #     118,
-    #     weight(2.5)
-    #     | abundance(0)
-    #     | hit_points(480)
-    #     | body_armor(1)
-    #     | spd_rtng(90)
-    #     | shield_width(36)
-    #     | shield_height(70),
-    #     imodbits_shield,
-    #     [],
-    #     [fac.no_faction],
-    # ],
-    # [
-    #     "norman_shield_6",
-    #     "Kite Shield",
-    #     [("norman_shield_6", 0)],
-    #     itp_type_shield | itp_wooden_parry,
-    #     itcf_carry_kite_shield,
-    #     118,
-    #     weight(2.5)
-    #     | abundance(0)
-    #     | hit_points(480)
-    #     | body_armor(1)
-    #     | spd_rtng(90)
-    #     | shield_width(36)
-    #     | shield_height(70),
-    #     imodbits_shield,
-    #     [],
-    #     [fac.no_faction],
-    # ],
-    # [
-    #     "norman_shield_7",
-    #     "Kite Shield",
-    #     [("norman_shield_7", 0)],
-    #     itp_type_shield | itp_wooden_parry,
-    #     itcf_carry_kite_shield,
-    #     118,
-    #     weight(2.5)
-    #     | abundance(0)
-    #     | hit_points(480)
-    #     | body_armor(1)
-    #     | spd_rtng(90)
-    #     | shield_width(36)
-    #     | shield_height(70),
-    #     imodbits_shield,
-    #     [],
-    #     [fac.no_faction],
-    # ],
-    # [
-    #     "norman_shield_8",
-    #     "Kite Shield",
-    #     [("norman_shield_8", 0)],
-    #     itp_type_shield | itp_wooden_parry,
-    #     itcf_carry_kite_shield,
-    #     118,
-    #     weight(2.5)
-    #     | abundance(0)
-    #     | hit_points(480)
-    #     | body_armor(1)
-    #     | spd_rtng(90)
-    #     | shield_width(36)
-    #     | shield_height(70),
-    #     imodbits_shield,
-    #     [],
-    #     [fac.no_faction],
-    # ],
-    ####################################################################################################################
-    # _ZM_ - Ranged Weapons - Slots 0-3
-    #############################################################################
-    #############################################################################
-    
-    ####################################################################################################################
-    # [ ZM01 ] - Throwing Spears
-    ####################################################################################################################
+    # Decoration Kite Shields
+    [
+        "shield_kite_g",
+        "Kite Shield",
+        [("shield_kite_g", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        118,
+        weight(2.5)
+        | abundance(0)
+        | hit_points(480)
+        | body_armor(1)
+        | spd_rtng(90)
+        | shield_width(36)
+        | shield_height(70),
+        imodbits_shield,
+        [],
+        [fac.no_faction],
+    ],
+    [
+        "shield_kite_h",
+        "Kite Shield",
+        [("shield_kite_h", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        118,
+        weight(2.5)
+        | abundance(0)
+        | hit_points(480)
+        | body_armor(1)
+        | spd_rtng(90)
+        | shield_width(36)
+        | shield_height(70),
+        imodbits_shield,
+        [],
+        [fac.no_faction],
+    ],
+    [
+        "shield_kite_i",
+        "Kite Shield",
+        [("shield_kite_i", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        118,
+        weight(2.5)
+        | abundance(0)
+        | hit_points(480)
+        | body_armor(1)
+        | spd_rtng(90)
+        | shield_width(36)
+        | shield_height(70),
+        imodbits_shield,
+        [],
+        [fac.no_faction],
+    ],
+    [
+        "shield_kite_k",
+        "Kite Shield",
+        [("shield_kite_k", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        118,
+        weight(2.5)
+        | abundance(0)
+        | hit_points(480)
+        | body_armor(1)
+        | spd_rtng(90)
+        | shield_width(36)
+        | shield_height(70),
+        imodbits_shield,
+        [],
+        [fac.no_faction],
+    ],
+    [
+        "norman_shield_1",
+        "Kite Shield",
+        [("norman_shield_1", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        118,
+        weight(2.5)
+        | abundance(0)
+        | hit_points(480)
+        | body_armor(1)
+        | spd_rtng(90)
+        | shield_width(36)
+        | shield_height(70),
+        imodbits_shield,
+        [],
+        [fac.no_faction],
+    ],
+    [
+        "norman_shield_2",
+        "Kite Shield",
+        [("norman_shield_2", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        118,
+        weight(2.5)
+        | abundance(0)
+        | hit_points(480)
+        | body_armor(1)
+        | spd_rtng(90)
+        | shield_width(36)
+        | shield_height(70),
+        imodbits_shield,
+        [],
+        [fac.no_faction],
+    ],
+    [
+        "norman_shield_3",
+        "Kite Shield",
+        [("norman_shield_3", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        118,
+        weight(2.5)
+        | abundance(0)
+        | hit_points(480)
+        | body_armor(1)
+        | spd_rtng(90)
+        | shield_width(36)
+        | shield_height(70),
+        imodbits_shield,
+        [],
+        [fac.no_faction],
+    ],
+    [
+        "norman_shield_4",
+        "Kite Shield",
+        [("norman_shield_4", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        118,
+        weight(2.5)
+        | abundance(0)
+        | hit_points(480)
+        | body_armor(1)
+        | spd_rtng(90)
+        | shield_width(36)
+        | shield_height(70),
+        imodbits_shield,
+        [],
+        [fac.no_faction],
+    ],
+    [
+        "norman_shield_5",
+        "Kite Shield",
+        [("norman_shield_5", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        118,
+        weight(2.5)
+        | abundance(0)
+        | hit_points(480)
+        | body_armor(1)
+        | spd_rtng(90)
+        | shield_width(36)
+        | shield_height(70),
+        imodbits_shield,
+        [],
+        [fac.no_faction],
+    ],
+    [
+        "norman_shield_6",
+        "Kite Shield",
+        [("norman_shield_6", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        118,
+        weight(2.5)
+        | abundance(0)
+        | hit_points(480)
+        | body_armor(1)
+        | spd_rtng(90)
+        | shield_width(36)
+        | shield_height(70),
+        imodbits_shield,
+        [],
+        [fac.no_faction],
+    ],
+    [
+        "norman_shield_7",
+        "Kite Shield",
+        [("norman_shield_7", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        118,
+        weight(2.5)
+        | abundance(0)
+        | hit_points(480)
+        | body_armor(1)
+        | spd_rtng(90)
+        | shield_width(36)
+        | shield_height(70),
+        imodbits_shield,
+        [],
+        [fac.no_faction],
+    ],
+    [
+        "norman_shield_8",
+        "Kite Shield",
+        [("norman_shield_8", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        118,
+        weight(2.5)
+        | abundance(0)
+        | hit_points(480)
+        | body_armor(1)
+        | spd_rtng(90)
+        | shield_width(36)
+        | shield_height(70),
+        imodbits_shield,
+        [],
+        [fac.no_faction],
+    ],
+    [
+        "test_shield",
+        "Mesh-Based Shield",
+        [("mesh_ui_kingdom_shield_7", 0)],
+        itp_type_shield | itp_wooden_parry,
+        itcf_carry_kite_shield,
+        118,
+        weight(2.5)
+        | abundance(0)
+        | hit_points(480)
+        | body_armor(1)
+        | spd_rtng(90)
+        | shield_width(36)
+        | shield_height(70),
+        imodbits_shield,
+        [],
+        [fac.no_faction],
+    ],
+    ##############################
+    # RANGED WEAPONS - Slots 0-3 #
+    ##############################
     # Keep darts in front!
+    # Throwing Spears
     [
         "darts",
         "Darts",
@@ -10135,9 +10198,7 @@ items = [
         [],
         [fac.no_faction],
     ],
-    ####################################################################################################################
-    # [ ZM02 ] - Other Throwing Weapons
-    ####################################################################################################################
+    # Other Throwing Weapons
     [
         "stones",
         "Stones",
@@ -10299,9 +10360,7 @@ items = [
         [],
         [fac.no_faction],
     ],
-    ####################################################################################################################
-    # [ ZM03 ] - Bows
-    ####################################################################################################################
+    # Bows
     [
         "hunting_bow",
         "Hunting Bow",
@@ -10425,9 +10484,7 @@ items = [
         [],
         [fac.kingdom_2],
     ],
-    ####################################################################################################################
-    # [ ZM04 ] - Crossbows
-    ####################################################################################################################
+    # Crossbows
     [
         "hunting_crossbow",
         "Hunting Crossbow",
@@ -10516,19 +10573,18 @@ items = [
         itcf_shoot_crossbow | itcf_carry_crossbow_back,
         683,
         weight(3.75)
-        | abundance(40)
+        | abundance(20)
         | difficulty(10)
         | spd_rtng(37)
         | shoot_speed(70)
         | thrust_damage(63, pierce)
-        | max_ammo(1),
+        | max_ammo(1)
+        | abundance(40),
         imodbits_crossbow,
         [],
         [fac.kingdom_5],
     ],
-    ####################################################################################################################
-    # [ ZM05 ] - Firearms
-    ####################################################################################################################
+    # Firearms
     [
         "flintlock_pistol",
         "Flintlock Pistol",
@@ -10540,7 +10596,7 @@ items = [
         | abundance(0)
         | difficulty(0)
         | spd_rtng(38)
-        | shoot_speed(160)
+        | shoot_speed(140)
         | thrust_damage(45, pierce)
         | max_ammo(1)
         | accuracy(65),
@@ -10557,10 +10613,10 @@ items = [
             )
         ],
         [fac.no_faction],
-    ],
-    ####################################################################################################################
-    # _ZN_ - Random Stuff
-    ####################################################################################################################
+    ], 
+    ################
+    # RANDOM STUFF #
+    ################
     # Keep torch in front!
     [
         "torch",
@@ -10570,7 +10626,6 @@ items = [
         itc_scimitar,
         11,
         weight(2.5)
-        | abundance(0)
         | difficulty(0)
         | spd_rtng(95)
         | weapon_length(95)
@@ -10599,12 +10654,11 @@ items = [
         itcf_carry_bow_back,
         118,
         weight(2.5)
-        | abundance(0)
         | hit_points(480)
         | body_armor(1)
         | spd_rtng(82)
         | weapon_length(90),
-        imodbits_none,
+        0,
         [],
         [fac.no_faction],
     ],
@@ -10616,15 +10670,14 @@ items = [
         itcf_carry_bow_back,
         118,
         weight(2.5)
-        | abundance(0)
         | hit_points(480)
         | body_armor(1)
         | spd_rtng(82)
         | weapon_length(90),
-        imodbits_none,
+        0,
         [],
         [fac.no_faction],
-    ], 
+    ],
     [
         "keys",
         "Ring of Keys",
@@ -10633,7 +10686,6 @@ items = [
         itc_scimitar,
         240,
         weight(5)
-        | abundance(0)
         | spd_rtng(98)
         | swing_damage(29, cut)
         | max_ammo(5)
@@ -10706,6 +10758,18 @@ items = [
         1,
         weight(3) | abundance(0) | head_armor(0) | body_armor(0) | leg_armor(1),
         imodbits_armor,
+        [],
+        [fac.no_faction],
+    ],
+    [
+        "book_of_the_dead",
+        "Strange Book",
+        [("book_b", 0)],
+        itp_type_book,
+        0,
+        5000,
+        weight(2) | abundance(0),
+        imodbits_none,
         [],
         [fac.no_faction],
     ],

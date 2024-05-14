@@ -2,7 +2,8 @@ from compiler import *
 from module_items import imodbits_none, imodbits_horse_basic
 from module_troops import no_scene, reserved, wp, mercenary_face_1, mercenary_face_2
 
-register_plugin(__name__)
+register_plugin(__name__) # v0.1
+
 party_templates = [
     (
         "deer_herd",

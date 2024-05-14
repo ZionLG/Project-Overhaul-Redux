@@ -2,7 +2,7 @@ from compiler import *
 
 from module_troops import *
 
-register_plugin(__name__)
+register_plugin(__name__) # v0.0.1
 
 factions = [
     (

@@ -325,16 +325,22 @@ slot_town_village_product = 76
 slot_town_rebellion_readiness = 77
 #(readiness can be a negative number if the rebellion has been defeated)
 
-slot_town_arena_melee_mission_tpl = 78
-slot_town_arena_torny_mission_tpl = 79
-slot_town_arena_melee_1_num_teams = 80
-slot_town_arena_melee_1_team_size = 81
-slot_town_arena_melee_2_num_teams = 82
-slot_town_arena_melee_2_team_size = 83
-slot_town_arena_melee_3_num_teams = 84
-slot_town_arena_melee_3_team_size = 85
-slot_town_arena_melee_cur_tier    = 86
-##slot_town_arena_template	  = 87
+# Vanila like tournament constants
+slot_town_has_tournament                    = 78
+slot_town_tournament_max_teams              = 79
+slot_town_tournament_max_team_size          = 80
+slot_town_tournament_weapon_maybe_horse     = 81 # first slot for which a horse is optional
+slot_town_tournament_weapon_no_horse        = 82 # first slot for which a horse is forbidden
+slot_town_tournament_weapon_1               = 83
+slot_town_tournament_weapon_2               = 84
+slot_town_tournament_weapon_3               = 85
+slot_town_tournament_weapon_4               = 86
+slot_town_tournament_weapon_5               = 87
+slot_town_tournament_weapon_6               = 88
+slot_town_tournament_weapon_7               = 89
+slot_town_tournament_weapon_end             = 90
+tournament_weapon_horse_offset = 10 # must be greater than the max number of weapon sets
+#
 
 slot_center_npc_volunteer_troop_type   = 90
 slot_center_npc_volunteer_troop_amount = 91
@@ -400,10 +406,6 @@ slot_center_player_enterprise_output_price        = 142 #not used
 
 
 slot_center_has_bandits                        = 155
-slot_town_has_tournament                       = 156
-slot_town_tournament_max_teams                 = 157
-slot_town_tournament_max_team_size             = 158
-
 slot_center_faction_when_oath_renounced        = 159
 
 slot_center_walker_0_troop                   = 160
@@ -785,6 +787,7 @@ slot_troop_personalityclash_penalties = 77 ### accumulated grievances from perso
 
 slot_troop_home_speech_delivered = 78 #only for companions
 slot_troop_discussed_rebellion   = 78 #only for pretenders
+slot_troop_fights_in_tournaments = 79 #only in player party
 
 #courtship slots
 slot_lady_courtship_heroic_recited 	    = 74
@@ -1298,6 +1301,7 @@ hero_escape_after_defeat_chance = 70
 
 
 raid_distance = 4
+num_tournament_rounds = 6 # -> 64 participants
 
 surnames_begin = "str_surname_1"
 surnames_end = "str_surnames_end"
@@ -1375,6 +1379,13 @@ ransom_brokers_end   = tavern_travelers_begin
 
 mercenary_troops_begin = "trp_watchman"
 mercenary_troops_end = "trp_mercenaries_end"
+
+arena_champions_begin = "trp_xerina"
+arena_champions_end = "trp_tutorial_trainer"
+
+arena_fighters_begin = "trp_arena_training_fighter_1"
+arena_fighters_end = "trp_cattle"
+
 
 quick_battle_troops_begin = "trp_quick_battle_troop_1"
 quick_battle_troops_end = "trp_quick_battle_troops_end"
