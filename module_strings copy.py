@@ -1,4 +1,4 @@
-from compiler import *  # should be after all imports
+# -*- coding: cp1254 -*-
 
 strings = (
     [
@@ -456,6 +456,16 @@ strings = (
             "qst_follow_spy_noticed_you",
             "The spy has spotted you! He's making a run for it!",
         ),
+        ("father", "father"),
+        ("husband", "husband"),
+        ("wife", "wife"),
+        ("daughter", "daughter"),
+        ("mother", "mother"),
+        ("son", "son"),
+        ("brother", "brother"),
+        ("sister", "sister"),
+        ("he", "He"),
+        ("she", "She"),
         ("s3s_s2", "{s3}'s {s2}"),
         ("s5_is_s51", "{s5} is {s51}."),
         ("s5_is_the_ruler_of_s51", "{s5} is the ruler of {s51}. "),
@@ -3125,7 +3135,6 @@ strings = (
             "npc16_turn_against",
             "Hello, Captain! So, I guess we're enemies! One small word of warning if we end up fighting each other -- once the rage of battle hits me, I can't always account for my actions. Just know that whatever I do, it's not personal. Maybe if we both walk away from this, we can meet once more as friends?",
         ),  # klethi
-        # NPC companion changes end
         # Troop Commentaries begin
         # Tags for comments are = allied/enemy, friendly/unfriendly, and then those related to specific reputations
         # Also, there are four other tags which refer to groups of two or more reputations (spiteful, benevolent, chivalrous, and coldblooded)
@@ -3523,7 +3532,6 @@ strings = (
             "comment_you_give_castle_in_my_control",
             "You won't regret your decision to give {s51} to me. You can count on me to protect it.",
         ),
-        # can be added some more here acc. characteristic.
         # Combat-related events
         (
             "comment_you_captured_a_castle_allied_friendly",
@@ -3753,6 +3761,14 @@ strings = (
         (
             "comment_you_helped_my_ally_default",
             "I heard that you got {s54} out of a tight spot. Good work!",
+        ),
+        (
+            "comment_you_were_defeated_allied_unfriendly_DUPLICATE",
+            "I heard that {s54} defeated you. Look, try not to get too many of our men killed, will you?",
+        ),
+        (
+            "comment_you_were_defeated_allied_DUPLICATE",
+            "I heard that {s54} defeated you. But take heart -- the tables will soon be turned!",
         ),
         (
             "comment_you_abandoned_us_unfriendly_spiteful",
@@ -4825,7 +4841,6 @@ strings = (
             "People say that it is good to be in the service of {s6}. He is good to his followers, and rewards them if they work well.",
         ),
         ("latest_rumor", "The latest rumor you heard about {s6} was:"),
-        # steve lord recruitment changes begin
         ("changed_my_mind_default", "{!}[liege]"),
         (
             "changed_my_mind_martial",
@@ -4855,8 +4870,7 @@ strings = (
             "changed_my_mind_upstanding",
             "However, you make an eloquent case. I am still listening.",
         ),
-        # steve lord recruitment changes end
-        # steve post 0912 changes begin
+        # pretenders
         (
             "swadian_rebellion_pretender_intro",
             "I am Isolla, rightful Queen of the Swadians.",
@@ -5001,7 +5015,6 @@ strings = (
             "sarranid_rebellion_monarch_response_2",
             "You should know, however, that Arwa was not chosen as Baybak's partner because of her wisdom or love of justice. No, she was chosen because she was a witch, who could transform men like Ayzar and Baybak into stammering fools. No matter -- I was true to my oath, and respected her usurpation, until the very hour that it was invalidated by the death of her puppet. Now she must respect mine.",
         ),
-        # steve post 0912 changes end
         # courtship
         ("courtship_comment_conventional_generic", "is a very well-bred sort"),
         ("courtship_comment_adventurous_generic", "seems decent enough"),
@@ -5495,6 +5508,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
         ),
         ("spectator", "Spectator"),
         ("spectators", "Spectators"),
+        ("score_DUPLICATE", "Score"),
         ("command", "Command:"),
         ("profile_banner_selection_text", "Choose a banner for your profile:"),
         ("use_default_banner", "Use Faction's Banner"),
@@ -5638,6 +5652,10 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "The {s5} is ruled by {s6}.^It occupies {s8}.^Its vassals are {s10}.^^{s21}",
         ),
         (
+            "assigned_lord_reputation_and_relations_cheat_mode_reg3",
+            "{!}Assigned lord reputation and relations, cheat mode: {reg3}",
+        ),
+        (
             "caravan_trades_in_s5_originally_from_s4_",
             "{!}Caravan trades in {s5}, originally from {s4} ",
         ),
@@ -5670,6 +5688,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
         ("reg4_killed_reg5_routed", "{reg4} killed, {reg5} routed"),
         ("reg4_killed_reg5_wounded", "{reg4} killed, {reg5} wounded"),
         ("reg4_wounded_reg5_routed", "{reg4} wounded, {reg5} routed"),
+        ("routed_DUPLICATE", "routed"),
         (
             "caravan_in_s10_considers_s11_total_price_dif_=_reg3",
             "{!}Caravan in {s10} considers {s11}, total price dif = {reg3}",
@@ -5792,14 +5811,14 @@ We apologize sincerely if you contributed your suggestions and feedback but were
         ),
         # Relative types
         ("no_relation", "no relation"),
-        ("wife", "wife"),
-        ("husband", "husband"),
-        ("father", "father"),
-        ("mother", "mother"),
-        ("daughter", "daughter"),
-        ("son", "son"),
-        ("sister", "sister"),
-        ("brother", "brother"),
+        ("wife_DUPLICATE", "wife"),
+        ("husband_DUPLICATE", "husband"),
+        ("father_DUPLICATE", "father"),
+        ("mother_DUPLICATE", "mother"),
+        ("daughter_DUPLICATE", "daughter"),
+        ("son_DUPLICATE", "son"),
+        ("sister_DUPLICATE", "sister"),
+        ("brother_DUPLICATE", "brother"),
         ("niece", "niece"),
         ("nephew", "nephew"),
         ("aunt", "aunt"),
@@ -5929,6 +5948,10 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "I tend to a grove of date palms. I hope you don't mind me saying so, but it takes great skill to tend them, as we must climb to the tops of the palms to ensure that the trees will flower. We export the fruit far and wide, as they keep for many months when properly dried. As sweet as honey, and they grant the eater health and strength.",
         ),
         (
+            "trade_explanation_dates_DUPLICATE",
+            "I tend to a grove of date palms. We grow them using well-water, and export the fruit far and wide, as they keep for many months when properly dried. As sweet as honey, and they grant the eater health and vigor.",
+        ),
+        (
             "trade_explanation_olives",
             "I tend to a grove of olive trees. You can eat the fruit or preserve it in brine, but we end up sending most of it to be pressed, to be made into oil.",
         ),
@@ -6040,6 +6063,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "{!}Reputation (cheat mode only): {reg11}^",
         ),
         ("love_interest", "love interest"),
+        ("betrothed", "betrothed"),
         ("s40_s39_s2_reg0", "{!}{s40}, {s39} ({s2}, {reg0})"),
         ("other_relations_s40_", "Other relations: {s40}^"),
         ("relation_with_liege_reg0_", "Relation with liege: {reg0}^"),
@@ -6380,7 +6404,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "you_speak_of_unifying_calradia_it_would_be_good_to_bring_peace_the_realm_but_with_your_kingdom_in_its_current_state_i_worry_that_you_are_just_bringing_more_discord",
             "You speak of unifying Calradia. It would be good to bring peace the realm, but with your kingdom in its current state, I worry that you are just bringing more discord.",
         ),
-        ("s15", "{!}{s15"),
+        ("s15_DUPLICATE", "{!}{s15"),
         ("my_s11_s15", "my {s11} {s15}"),
         (
             "stop_gap__s15_is_the_rival_of_s16",
@@ -7841,6 +7865,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "Please do not take this amiss, but I'm not sure you and I are still on those terms.",
         ),
         ("persuasion__relation_less_than_5", "{!}Persuasion + relation less than -5)"),
+        ("s15", "{!}{s15}"),
         (
             "persuasion__2__lord_reputation_modifier__relation_less_than_10",
             "{!}Persuasion * 2 + lord reputation modifier + relation less than 10)",
@@ -7920,9 +7945,9 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "that_s14_will_reward_me_with_a_fief",
             "That {s14} will reward me with a fief?",
         ),
-        ("he", "he"),
+        ("he_DUPLICATE", "he"),
         ("king", "king"),
-        ("she", "she"),
+        ("she_DUPLICATE", "she"),
         ("queen", "queen"),
         ("khan", "khan"),
         ("i", "I"),
@@ -8117,7 +8142,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "lord_recruitment_provokes_home_faction",
             "{!}DEBUG : Lord recruitment provokes home faction",
         ),
-        ("error__wrong_quest_type", "{!}ERROR - Wrong quest type"),
+        ("ERROR__wrong_quest_type", "{!}ERROR - Wrong quest type"),
         (
             "you_are_challenging_me_to_a_duel_how_droll_as_you_wish_playername_it_will_be_good_sport_to_bash_your_head_in",
             "You are challenging me to a duel? How droll! As you wish, {playername}, it will be good sport to bash your head in.",
@@ -8164,7 +8189,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "{!}DEBUG : War damage inflicted: {reg3}, suffered: {reg4}, ratio: {reg5}",
         ),
         (
-            "error__did_not_calculate_war_progress_string_properly",
+            "ERROR__did_not_calculate_war_progress_string_properly",
             "{!}[ERROR - did not calculate war progress string properly",
         ),
         (
@@ -8263,7 +8288,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "s9_asked_you_to_catch_the_three_groups_of_runaway_serfs_and_bring_them_back_to_s4_alive_and_breathing_he_said_that_all_three_groups_are_heading_towards_s3",
             "{s9} asked you to catch the three groups of runaway serfs and bring them back to {s4}, alive and breathing. He said that all three groups are heading towards {s3}.",
         ),
-        ("error__player_not_logged_as_groom", "{!}ERROR - Player not logged as groom"),
+        ("ERROR__player_not_logged_as_groom", "{!}ERROR - Player not logged as groom"),
         (
             "you_intend_to_bring_goods_to_s9_in_preparation_for_the_feast_which_will_be_held_as_soon_as_conditions_permit",
             "You intend to bring goods to {s9} in preparation for the feast, which will be held as soon as conditions permit.",
@@ -8328,6 +8353,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
         ("i_am", "I am"),
         ("s12", "{!}{s12},"),
         ("s12_s11_to_s14", "{s12} {s11} to {s14}"),
+        ("s12_DUPLICATE", "{!}{s12}."),
         ("s12_i_am_here_for_the_feast", "{s12}. I am here for the feast."),
         (
             "another_tournament_dedication_oh_i_suppose_it_is_always_flattering",
@@ -8452,7 +8478,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "{!}DEBUG : Log entry type: {reg4} for {s4}, total entries: {reg5}",
         ),
         (
-            "error__reputation_type_for_s9_not_within_range",
+            "ERROR__reputation_type_for_s9_not_within_range",
             "{!}ERROR - reputation type for {s9} not within range",
         ),
         (
@@ -8522,7 +8548,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "there_is_not_much_to_tell_but_it_is_still_early_in_the_season",
             "There is not much to tell, but it is still early in the season",
         ),
-        ("error_lady_selected_=_s9", "{!}ERROR: lady selected = {s9}"),
+        ("ERROR_lady_selected_=_s9", "{!}ERROR: lady selected = {s9}"),
         (
             "s12there_is_a_feast_of_the_s3_in_progress_at_s4_but_it_has_been_going_on_for_a_couple_of_days_and_is_about_to_end_",
             "{s12}There is a feast of the {s3} in progress at {s4}, but it has been going on for a couple of days and is about to end. ",
@@ -8570,7 +8596,6 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "our_power__reg3__enemy_power__reg4",
             "{!}our power : {reg3}, enemy power : {reg4}",
         ),
-        # end new auto generated strings
         (
             "do_you_wish_to_award_it_to_one_of_your_vassals",
             "Do you wish to award it to one of your vassals?",
@@ -8585,9 +8610,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "{s12}I want to have {s1} for myself. {s2}",
         ),
         ("fiefs_s0", "(fiefs: {s0})"),
-        # reserved strigs
         ("reserved_001", "{!}Reserved 001"),
-        # reserved strings end
         (
             "production_setting_buy_from_market",
             "We are buying raw materials from the market.",
@@ -8604,12 +8627,6 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "production_setting_produce_to_market",
             "We are selling our output directly into the inventory.",
         ),
-        # Strings to add...
-        # Strings for political quest outcomes
-        # Notes on companions
-        # Pretender and companion strings
-        # Redo mao color strings
-        # STRINGS ADDED AFTER THE FREEZE
         (
             "feast_quest_expired",
             "You were unable to hold a feast as planned. Most likely, major faction campaigns or other events intervened. You may attempt to hold the feast again, if you wish.",
@@ -8638,7 +8655,6 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "you_intend_to_bring_gift_for_s14",
             "You intend to bring velvet and furs to {s12}. Then, speak to {s14}, to see if {s12} was able to arrange a reconciliation.",
         ),
-        # Strategy AI string
         (
             "we_will_gather_the_army_but_not_ride_until_we_have_an_objective",
             "We will gather the army, but not ride forth until we have an objective.",
@@ -8659,7 +8675,6 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "we_shall_cut_a_fiery_trail_through_their_richest_lands_to_draw_them_out_to_battle",
             "We leave a fiery trail through their richest lands to draw them out to battle.",
         ),
-        # Strategy AI string
         (
             "strategy_criticism_rash",
             "I believe that this strategy is rash, and needlessly exposes our forces to danger.",
@@ -8777,11 +8792,18 @@ We apologize sincerely if you contributed your suggestions and feedback but were
         ("quick_battle_scene_1", "Farmhouse"),
         ("quick_battle_scene_2", "Oasis"),
         ("quick_battle_scene_3", "Tulbuk's Pass"),
-        ("quick_battle_scene_4", "Haima Castle"),
-        ("quick_battle_scene_5", "Ulbas Castle"),
+        ("quick_battle_scene_4", "Granary Hills"),
+        ("quick_battle_scene_5", "Frostbite Peak"),
+        ("quick_battle_scene_6", "Elysium Fields"),
+        ("quick_siege_scene_1", "Haima Castle"),
+        ("quick_siege_scene_2", "Ulbas Castle"),
+        ("quick_siege_scene_3", "Kerrak Castle (Belfry)"),
+        ("quick_siege_scene_3b", "Kerrak Castle (Ladders)"),
+        ("quick_siege_scene_4", "Falcis Castle"),
+        ("quick_siege_scene_5", "Malsby Castle"),
         (
             "quick_battle_troop_1",
-            "There is a reason no one goes about the cities without armed guards once the sun sets, and that reason is Rodrigo de Braganca. Once a bright eyed merchant who arrived at Tihr with a small fortune in rubies and a dream to corner the velvet market, he was soon reduced to a pauper, having lost everything to cutthroat competition with the colluding Rhodok merchant guilds. But he soon turned measuring scales into swords, and applied his considerable business smarts into building up the deadliest criminal enterprise in Veluca, with hideouts and operations in every major town. He has attained his goal, for the price on his head is greater than the riches he once pursued. Now he takes great pleasure in relieving his former competitors of their worldly goods -— and worries.",
+            "There is a reason no one goes about the cities without armed guards once the sun sets, and that reason is Rodrigo de Braganca. Once a bright eyed merchant who arrived at Tihr with a small fortune in rubies and a dream to corner the velvet market, he was soon reduced to a pauper, having lost everything to cutthroat competition with the colluding Rhodok merchant guilds. But he soon turned measuring scales into swords, and applied his considerable business smarts into building up the deadliest criminal enterprise in Veluca, with hideouts and operations in every major town. He has attained his goal, for the price on his head is greater than the riches he once pursued. Now he takes great pleasure in relieving his former competitors of their worldly goods -� and worries.",
         ),
         (
             "quick_battle_troop_2",
@@ -8809,7 +8831,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
         ),
         (
             "quick_battle_troop_8",
-            "Growing up with one of the nomadic tribes deep in the desert beyond Sarranid lands, Gamara learned early on how to hunt with sling and spear. However, the simple life and pitiless conditions in the desert did not satisfy her, and she burned with a desire to see the great world beyond that she had heard so many wondrous tales about. Life is not easy for an adventuring young woman, and Gamara had to learn the ways of Calradia quickly. Taking the weapons and armor of a soldier who had attacked her after a dispute, Gamara now hides her beauty under thick Sarranid garb, and many never even suspect she is a woman –- certainly as a force on the battlefield she is as dangerous as any man. She has gathered about her a group of followers, and together they wander the war-torn land in search of glory.",
+            "Growing up with one of the nomadic tribes deep in the desert beyond Sarranid lands, Gamara learned early on how to hunt with sling and spear. However, the simple life and pitiless conditions in the desert did not satisfy her, and she burned with a desire to see the great world beyond that she had heard so many wondrous tales about. Life is not easy for an adventuring young woman, and Gamara had to learn the ways of Calradia quickly. Taking the weapons and armor of a soldier who had attacked her after a dispute, Gamara now hides her beauty under thick Sarranid garb, and many never even suspect she is a woman �- certainly as a force on the battlefield she is as dangerous as any man. She has gathered about her a group of followers, and together they wander the war-torn land in search of glory.",
         ),
         (
             "quick_battle_troop_9",
@@ -8831,6 +8853,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
         ("map_basic", "Map"),
         ("game_type_basic", "Game Type"),
         ("battle", "Battle"),
+        ("battle_reverse", "Battle (Reversed)"),
         ("siege_offense", "Siege (Offense)"),
         ("siege_defense", "Siege (Defense)"),
         ("character", "Character"),
@@ -8878,6 +8901,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
             "we_are_conducting_recce",
             "We will first scout the area, and then decide what to do.",
         ),
+        ("_family__DUPLICATE", "^Family:"),
         ("s49_s12_s11_end", "{s49} {s12} ({s11})."),
         (
             "center_party_not_active",
@@ -9304,8 +9328,9 @@ We apologize sincerely if you contributed your suggestions and feedback but were
         ),
         ("attempting_to_rejoin_party", "Attempting to rejoin party,"),
         ("separated_from_party", "Separated from party,"),
+        ("whereabouts_unknown_DUPLICATE", "whereabouts unknown"),
         ("none_yet_gathered", "{!}None yet gathered"),
-        ("betrothed", " Betrothed "),
+        ("betrothed_DUPLICATE", " Betrothed "),
         ("leading_party", "leading a party"),
         (
             "court_disbanded",
@@ -9411,5 +9436,28 @@ We apologize sincerely if you contributed your suggestions and feedback but were
         ("ranged_weapons_are_disallowed", "Ranged weapons are disallowed."),
         ("ranged_weapons_are_allowed", "Ranged weapons are allowed."),
         ("duel_starts_in_reg0_seconds", "Duel starts in {reg0} seconds..."),
+        ("ui_order_form_1_row", "Single Row"),
+        ("ui_order_form_2_row", "Double Row"),
+        ("ui_order_form_3_row", "Triple Row"),
+        ("ui_order_form_4_row", "Four Rows"),
+        ("ui_order_form_5_row", "Five Rows"),
+        ("ui_order_button_fire_at_my_command", "Hold Your Fire"),
+        ("ui_order_button_weapon_usage_orders", "Weapon Usage"),
+        ("ui_order_button_use_melee_weapons", "Use Melee Weapons"),
+        ("ui_order_button_use_ranged_weapons", "Use Ranged Weapons"),
+        ("form_1_row_e_", "Form Single Row!"),
+        ("form_2_row_e_", "Form Two Rows!"),
+        ("form_3_row_e_", "Form Three Rows!"),
+        ("form_4_row_e_", "Form Four Rows!"),
+        ("form_5_row_e_", "Form Five Rows!"),
+        ("fire_at_my_command_e_", "Hold Your Fire!"),
+        ("weapon_usage_orders_e_", "Weapon Usage!"),
+        ("use_melee_weapons_e_", "Use Melee Weapons!"),
+        ("use_ranged_weapons_e_", "Use Ranged Weapons!"),
+        ("ui_order_7", "Select Order 7"),
+        ("ui_order_8", "Select Order 8"),
+        ("ui_crouch", "Crouch"),
+        ("s1_routed", "{s1} has routed!"),
+        ("s1_rallied", "{s1} has rallied!"),
     ]
 )

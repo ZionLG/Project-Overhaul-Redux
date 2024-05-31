@@ -121,7 +121,7 @@ slot_faction_tier_3_troop         = 43
 slot_faction_tier_4_troop         = 44
 slot_faction_tier_5_troop         = 45
 
-slot_faction_deserter_troop       = 48
+#slot_faction_deserter_troop       = 48
 slot_faction_guard_troop          = 49
 slot_faction_messenger_troop      = 50
 slot_faction_prison_guard_troop   = 51
@@ -268,7 +268,6 @@ slot_center_accumulated_rents      = 47 #collected automatically by NPC lords
 slot_center_accumulated_tariffs    = 48 #collected automatically by NPC lords
 slot_town_wealth        = 49 #total amount of accumulated wealth in the center, pays for the garrison
 slot_town_prosperity    = 50 #affects the amount of wealth generated
-slot_town_player_odds   = 51
 
 
 slot_party_last_toll_paid_hours = 52
@@ -1295,6 +1294,13 @@ reinforcement_cost_easy = 600
 reinforcement_cost_moderate = 450
 reinforcement_cost_hard = 300
 
+
+max_bandit_parties_easy     = 16 # Was 14 at mount&blade, 18 in warband, 16 last decision
+max_bandit_parties_moderate = 24 # Bandits are more spread out now, so we might need a few more
+max_bandit_parties_hard     = 32 # If you play on hard, I assume you like a challenge...
+max_looter_parties = 42 # Was 33 at mount&blade, 50 in warband, 42 last decision; does not scale with difficulty, looters are basically XP on legs
+
+
 merchant_toll_duration        = 72 #Tolls are valid for 72 hours
 
 hero_escape_after_defeat_chance = 70
@@ -1354,7 +1360,7 @@ heroes_begin = active_npcs_begin
 heroes_end = kingdom_ladies_end
 
 soldiers_begin = "trp_farmer"
-soldiers_end = "trp_town_walker_1"
+soldiers_end = "trp_kidnapped_girl"
 
 #Rebellion changes
 

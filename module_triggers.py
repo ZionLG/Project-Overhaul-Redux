@@ -1395,17 +1395,6 @@ triggers = [
     #########################################################################
     # Random MERCHANT quest triggers
     ####################################
-    # Apply interest to merchants guild debt  1% per week
-    (
-        24.0 * 7,
-        0.0,
-        0.0,
-        [],
-        [
-            (val_mul, "$debt_to_merchants_guild", 101),
-            (val_div, "$debt_to_merchants_guild", 100),
-        ],
-    ),
     # Escort merchant caravan:
     (
         0.1,

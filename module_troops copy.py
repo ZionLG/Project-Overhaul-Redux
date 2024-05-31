@@ -4,8 +4,8 @@ import random
 
 ####################################################################################################################
 #  Each troop contains the following fields:
-#  1) Troop id (string): used for referencing troops in other files. The prefix trp_ is automatically added before each troop-id .
-#  2) Troop name (string).
+#  1) Troop id (string): used for referencing troops in other files. The prefix trp. is automatically added before each troop-id .
+#  2) Toop name (string).
 #  3) Plural troop name (string).
 #  4) Troop flags (int). See header_troops.py for a list of available flags
 #  5) Scene (int) (only applicable to heroes) For example: scn.reyvadin_castle|entry(1) puts troop in reyvadin castle's first entry point
@@ -46,23 +46,29 @@ import random
 # wp_one_handed () | wp_two_handed () | wp_polearm () | wp_archery () | wp_crossbow () | wp_throwing ()
 def wp(x):
     n = 0
-    r = 10 + int(x / 10)
-    #  n |= wp_one_handed(x + random.randrange(r))
-    #  n |= wp_two_handed(x + random.randrange(r))
-    #  n |= wp_polearm(x + random.randrange(r))
-    #  n |= wp_archery(x + random.randrange(r))
-    #  n |= wp_crossbow(x + random.randrange(r))
-    #  n |= wp_throwing(x + random.randrange(r))
     n |= wp_one_handed(x)
     n |= wp_two_handed(x)
     n |= wp_polearm(x)
     n |= wp_archery(x)
     n |= wp_crossbow(x)
     n |= wp_throwing(x)
+    n |= wp_firearm(x)
     return n
 
 
-def wpe(m, a, c, t):
+def wp2(x, r):
+    n = 0
+    n |= wp_one_handed(x)
+    n |= wp_two_handed(x)
+    n |= wp_polearm(x)
+    n |= wp_archery(r)
+    n |= wp_crossbow(r)
+    n |= wp_throwing(r)
+    n |= wp_firearm(r)
+    return n
+
+
+def wpe(m, a, c, t, g):
     n = 0
     n |= wp_one_handed(m)
     n |= wp_two_handed(m)
@@ -70,10 +76,23 @@ def wpe(m, a, c, t):
     n |= wp_archery(a)
     n |= wp_crossbow(c)
     n |= wp_throwing(t)
+    n |= wp_firearm(g)
     return n
 
 
-def wpex(o, w, p, a, c, t):
+def wpm(o, w, p, r):
+    n = 0
+    n |= wp_one_handed(o)
+    n |= wp_two_handed(w)
+    n |= wp_polearm(p)
+    n |= wp_archery(r)
+    n |= wp_crossbow(r)
+    n |= wp_throwing(r)
+    n |= wp_firearm(r)
+    return n
+
+
+def wpex(o, w, p, a, c, t, g):
     n = 0
     n |= wp_one_handed(o)
     n |= wp_two_handed(w)
@@ -81,18 +100,132 @@ def wpex(o, w, p, a, c, t):
     n |= wp_archery(a)
     n |= wp_crossbow(c)
     n |= wp_throwing(t)
+    n |= wp_firearm(g)
     return n
 
 
 def wp_melee(x):
     n = 0
-    r = 10 + int(x / 10)
-    #  n |= wp_one_handed(x + random.randrange(r))
-    #  n |= wp_two_handed(x + random.randrange(r))
-    #  n |= wp_polearm(x + random.randrange(r))
     n |= wp_one_handed(x + 20)
     n |= wp_two_handed(x)
     n |= wp_polearm(x + 10)
+    return n
+
+
+def wp_ranged(a, c, t, g):
+    n = 0
+    n |= wp_archery(a)
+    n |= wp_crossbow(c)
+    n |= wp_throwing(t)
+    n |= wp_firearm(g)
+    return n
+
+
+def wp_bow(m, b):
+    n = 0
+    n |= wp_one_handed(m)
+    n |= wp_two_handed(m)
+    n |= wp_polearm(m)
+    n |= wp_archery(b)
+    n |= wp_crossbow(m)
+    n |= wp_throwing(m)
+    n |= wp_firearm(m)
+    return n
+
+
+def wp_xbow(m, x):
+    n = 0
+    n |= wp_one_handed(m)
+    n |= wp_two_handed(m)
+    n |= wp_polearm(m)
+    n |= wp_archery(m)
+    n |= wp_crossbow(x)
+    n |= wp_throwing(m)
+    n |= wp_firearm(m)
+    return n
+
+
+def wp_throw(m, t):
+    n = 0
+    n |= wp_one_handed(m)
+    n |= wp_two_handed(m)
+    n |= wp_polearm(m)
+    n |= wp_archery(m)
+    n |= wp_crossbow(m)
+    n |= wp_throwing(t)
+    n |= wp_firearm(m)
+    return n
+
+
+def wp_gun(m, g):
+    n = 0
+    n |= wp_one_handed(m)
+    n |= wp_two_handed(m)
+    n |= wp_polearm(m)
+    n |= wp_archery(m)
+    n |= wp_crossbow(m)
+    n |= wp_throwing(m)
+    n |= wp_firearm(g)
+    return n
+
+
+def wp_sarranid(m, r, t):
+    n = 0
+    n |= wp_one_handed(m)
+    n |= wp_two_handed(m)
+    n |= wp_polearm(m)
+    n |= wp_archery(r)
+    n |= wp_crossbow(r)
+    n |= wp_throwing(t)
+    n |= wp_firearm(r)
+    return n
+
+
+def wp_skirmish(m, r):
+    n = 0
+    n |= wp_one_handed(m)
+    n |= wp_two_handed(m)
+    n |= wp_polearm(m)
+    n |= wp_archery(r)
+    n |= wp_crossbow(m)
+    n |= wp_throwing(r)
+    n |= wp_firearm(m)
+    return n
+
+
+def wp_1h(o, m, r):
+    n = 0
+    n |= wp_one_handed(o)
+    n |= wp_two_handed(m)
+    n |= wp_polearm(m)
+    n |= wp_archery(r)
+    n |= wp_crossbow(r)
+    n |= wp_throwing(r)
+    n |= wp_firearm(r)
+    return n
+
+
+def wp_2h(w, m, r):
+    n = 0
+    n |= wp_one_handed(m)
+    n |= wp_two_handed(w)
+    n |= wp_polearm(m)
+    n |= wp_archery(r)
+    n |= wp_crossbow(r)
+    n |= wp_throwing(r)
+    n |= wp_firearm(r)
+    return n
+
+
+def wp_pole(p, m, r):
+    n = 0
+    n |= wp_one_handed(m)
+    n |= wp_two_handed(m)
+    n |= wp_polearm(p)
+    n |= wp_archery(r)
+    n |= wp_crossbow(r)
+    n |= wp_throwing(r)
+    n |= wp_firearm(r)
     return n
 
 
@@ -104,8 +237,8 @@ knows_common = (
     | knows_prisoner_management_1
     | knows_leadership_1
 )
-
 def_attrib = str_7 | agi_5 | int_4 | cha_4
+
 
 knows_lord_1 = (
     knows_riding_3
@@ -200,112 +333,140 @@ reserved = 0
 no_scene = 0
 
 swadian_face_younger_1 = (
-    0x0000000000000001124000000020000000000000001C00800000000000000000
+    0x0000000000002001355335371861249200000000001C96520000000000000000
 )
 swadian_face_young_1 = (
-    0x0000000400000001124000000020000000000000001C00800000000000000000
+    0x00000004400023C1355335371861249200000000001C96520000000000000000
 )
 swadian_face_middle_1 = (
-    0x0000000800000001124000000020000000000000001C00800000000000000000
+    0x00000008000023C1355335371861249200000000001C96520000000000000000
 )
-swadian_face_old_1 = 0x0000000D00000001124000000020000000000000001C00800000000000000000
+swadian_face_old_1 = 0x0000000E000023C0355335371861249200000000001C96520000000000000000
 swadian_face_older_1 = (
-    0x0000000FC0000001124000000020000000000000001C00800000000000000000
+    0x0000000FC00023C0355335371861249200000000001C96520000000000000000
 )
 
 swadian_face_younger_2 = (
-    0x00000000000062C76DDCDF7FEEFBFFFF00000000001EFDBC0000000000000000
+    0x000000003A0045C549FDDEFDFFFFFFFF00000000001E6DB60000000000000000
 )
 swadian_face_young_2 = (
-    0x00000003C00062C76DDCDF7FEEFBFFFF00000000001EFDBC0000000000000000
+    0x000000033A0045C549FDDEFDFFFFFFFF00000000001E6DB60000000000000000
 )
 swadian_face_middle_2 = (
-    0x00000007C00062C76DDCDF7FEEFBFFFF00000000001EFDBC0000000000000000
+    0x00000007BA0045C549FDDEFDFFFFFFFF00000000001E6DB60000000000000000
 )
-swadian_face_old_2 = 0x0000000BC00062C76DDCDF7FEEFBFFFF00000000001EFDBC0000000000000000
+swadian_face_old_2 = 0x0000000E3B0045C549FDDEFDFFFFFFFF00000000001E6DB60000000000000000
 swadian_face_older_2 = (
-    0x0000000FC00062C76DDCDF7FEEFBFFFF00000000001EFDBC0000000000000000
+    0x0000000FFA0045C549FDDEFDFFFFFFFF00000000001E6DB60000000000000000
 )
 
 vaegir_face_younger_1 = (
-    0x0000000000000001124000000020000000000000001C00800000000000000000
+    0x000000001D001141044C21928821245200000000001D22190000000000000000
 )
-vaegir_face_young_1 = 0x0000000400000001124000000020000000000000001C00800000000000000000
+vaegir_face_young_1 = 0x000000029B001181044C21928821245200000000001D22190000000000000000
 vaegir_face_middle_1 = (
-    0x0000000800000001124000000020000000000000001C00800000000000000000
+    0x000000075F001181044C21928821245200000000001D22190000000000000000
 )
-vaegir_face_old_1 = 0x0000000D00000001124000000020000000000000001C00800000000000000000
-vaegir_face_older_1 = 0x0000000FC0000001124000000020000000000000001C00800000000000000000
+vaegir_face_old_1 = 0x0000000E1F001181044C21928821245200000000001D22190000000000000000
+vaegir_face_older_1 = 0x0000000FDF001180044C21928821245200000000001D22190000000000000000
 
 vaegir_face_younger_2 = (
-    0x000000003F00230C4DEEFFFFFFFFFFFF00000000001EFFF90000000000000000
+    0x0000000037002189497E97CB5FB27FFF00000000001FF8370000000000000000
 )
-vaegir_face_young_2 = 0x00000003BF00230C4DEEFFFFFFFFFFFF00000000001EFFF90000000000000000
+vaegir_face_young_2 = 0x0000000477002249497E97CB5FB27FFF00000000001FF8370000000000000000
 vaegir_face_middle_2 = (
-    0x00000007BF00230C4DEEFFFFFFFFFFFF00000000001EFFF90000000000000000
+    0x0000000877002349497E97CB5FB27FFF00000000001FF8370000000000000000
 )
-vaegir_face_old_2 = 0x0000000CBF00230C4DEEFFFFFFFFFFFF00000000001EFFF90000000000000000
-vaegir_face_older_2 = 0x0000000FF100230C4DEEFFFFFFFFFFFF00000000001EFFF90000000000000000
+vaegir_face_old_2 = 0x0000000E37002349497E97CB5FB27FFF00000000001FF8370000000000000000
+vaegir_face_older_2 = 0x0000000FF7002349497E97CB5FB27FFF00000000001FF8370000000000000000
 
 khergit_face_younger_1 = (
-    0x0000000009003109207000000000000000000000001C80470000000000000000
+    0x00000000190830CA209D69B4100906DA00000000001E10E30000000000000000
 )
 khergit_face_young_1 = (
-    0x00000003C9003109207000000000000000000000001C80470000000000000000
+    0x00000003590830CA209D69B4100906DA00000000001E10E30000000000000000
 )
 khergit_face_middle_1 = (
-    0x00000007C9003109207000000000000000000000001C80470000000000000000
+    0x00000007D90830CA209D69B4100906DA00000000001E10E30000000000000000
 )
-khergit_face_old_1 = 0x0000000B89003109207000000000000000000000001C80470000000000000000
+khergit_face_old_1 = 0x0000000E190830CA209D69B4100906DA00000000001E10E30000000000000000
 khergit_face_older_1 = (
-    0x0000000FC9003109207000000000000000000000001C80470000000000000000
+    0x0000000FD90830CA209D69B4100906DA00000000001E10E30000000000000000
 )
 
 khergit_face_younger_2 = (
-    0x000000003F0061CD6D7FFBDF9DF6EBEE00000000001FFB7F0000000000000000
+    0x000000003F08514D49FFF7D86CFFFFFF00000000001FF97F0000000000000000
 )
 khergit_face_young_2 = (
-    0x00000003BF0061CD6D7FFBDF9DF6EBEE00000000001FFB7F0000000000000000
+    0x000000047F08514D49FFF7D86CFFFFFF00000000001FF97F0000000000000000
 )
 khergit_face_middle_2 = (
-    0x000000077F0061CD6D7FFBDF9DF6EBEE00000000001FFB7F0000000000000000
+    0x00000007BF08514D49FFF7D86CFFFFFF00000000001FF97F0000000000000000
 )
-khergit_face_old_2 = 0x0000000B3F0061CD6D7FFBDF9DF6EBEE00000000001FFB7F0000000000000000
+khergit_face_old_2 = 0x0000000E3F08518D49FFF7D86CFFFFFF00000000001FF97F0000000000000000
 khergit_face_older_2 = (
-    0x0000000FFF0061CD6D7FFBDF9DF6EBEE00000000001FFB7F0000000000000000
+    0x0000000FFF0851CD49FFF7D86CFFFFFF00000000001FF97F0000000000000000
 )
 
-nord_face_younger_1 = 0x0000000000000001124000000020000000000000001C00800000000000000000
-nord_face_young_1 = 0x0000000400000001124000000020000000000000001C00800000000000000000
-nord_face_middle_1 = 0x0000000800000001124000000020000000000000001C00800000000000000000
-nord_face_old_1 = 0x0000000D00000001124000000020000000000000001C00800000000000000000
-nord_face_older_1 = 0x0000000FC0000001124000000020000000000000001C00800000000000000000
+nord_face_younger_1 = 0x000000000000014104C200928801249200000000001D24100000000000000000
+nord_face_young_1 = 0x000000044000014104C200928801249200000000001D24100000000000000000
+nord_face_middle_1 = 0x000000084000014104C200928801249200000000001D24100000000000000000
+nord_face_old_1 = 0x0000000E0000014104C200928801249200000000001D24100000000000000000
+nord_face_older_1 = 0x0000000E0000014004C200928801249200000000001D24100000000000000000
 
-nord_face_younger_2 = 0x00000000310023084DEEFFFFFFFFFFFF00000000001EFFF90000000000000000
-nord_face_young_2 = 0x00000003B10023084DEEFFFFFFFFFFFF00000000001EFFF90000000000000000
-nord_face_middle_2 = 0x00000008310023084DEEFFFFFFFFFFFF00000000001EFFF90000000000000000
-nord_face_old_2 = 0x0000000C710023084DEEFFFFFFFFFFFF00000000001EFFF90000000000000000
-nord_face_older_2 = 0x0000000FF10023084DEEFFFFFFFFFFFF00000000001EFFF90000000000000000
+nord_face_younger_2 = 0x000000002B00218A5BFCBDBB67B7FF7F00000000001EEB6F0000000000000000
+nord_face_young_2 = 0x000000036B00234A5BFCBDBB67B7FF7F00000000001EEB6F0000000000000000
+nord_face_middle_2 = 0x00000007EB00234A5BFCBDBB67B7FF7F00000000001EEB6F0000000000000000
+nord_face_old_2 = 0x0000000DEB00234A5BFCBDBB67B7FF7F00000000001EEB6F0000000000000000
+nord_face_older_2 = 0x0000000FEB0023465BFCBDBB67B7FF7F00000000001EEB6F0000000000000000
 
 rhodok_face_younger_1 = (
-    0x0000000009002003140000000000000000000000001C80400000000000000000
+    0x0000000000003144355355370861008200000000001C96520000000000000000
 )
-rhodok_face_young_1 = 0x0000000449002003140000000000000000000000001C80400000000000000000
+rhodok_face_young_1 = 0x0000000500003141355355370861008200000000001C96520000000000000000
 rhodok_face_middle_1 = (
-    0x0000000849002003140000000000000000000000001C80400000000000000000
+    0x0000000840003141355355370861008200000000001C96520000000000000000
 )
-rhodok_face_old_1 = 0x0000000CC9002003140000000000000000000000001C80400000000000000000
-rhodok_face_older_1 = 0x0000000FC9002003140000000000000000000000001C80400000000000000000
+rhodok_face_old_1 = 0x0000000DC0003192355355370861008200000000001C96520000000000000000
+rhodok_face_older_1 = 0x0000000FC0003192355355370861008200000000001C96520000000000000000
 
 rhodok_face_younger_2 = (
-    0x00000000000062C76DDCDF7FEEFBFFFF00000000001EFDBC0000000000000000
+    0x000000003E0040C649FC9E6F54B6DBBF00000000001D7B270000000000000000
 )
-rhodok_face_young_2 = 0x00000003C00062C76DDCDF7FEEFBFFFF00000000001EFDBC0000000000000000
+rhodok_face_young_2 = 0x000000037E0040C649FC9E6F54B6DBBF00000000001D7B270000000000000000
 rhodok_face_middle_2 = (
-    0x00000007C00062C76DDCDF7FEEFBFFFF00000000001EFDBC0000000000000000
+    0x000000083E0040C649FC9E6F54B6DBBF00000000001D7B270000000000000000
 )
-rhodok_face_old_2 = 0x0000000BC00062C76DDCDF7FEEFBFFFF00000000001EFDBC0000000000000000
-rhodok_face_older_2 = 0x0000000FC00062C76DDCDF7FEEFBFFFF00000000001EFDBC0000000000000000
+rhodok_face_old_2 = 0x0000000DFE0040C649FC9E6F54B6DBBF00000000001D7B270000000000000000
+rhodok_face_older_2 = 0x0000000FFE0040C649FC9E6F54B6DBBF00000000001D7B270000000000000000
+
+sarranid_face_younger_1 = (
+    0x000000000000710004820C24204C000200000000001D16100000000000000000
+)
+sarranid_face_young_1 = (
+    0x000000040000710004820C24204C000200000000001D16100000000000000000
+)
+sarranid_face_middle_1 = (
+    0x000000088000710004820C24204C000200000000001D16100000000000000000
+)
+sarranid_face_old_1 = 0x0000000E0000718004820C24204C000200000000001D16100000000000000000
+sarranid_face_older_1 = (
+    0x0000000FC000718004820C24204C000200000000001D16100000000000000000
+)
+
+sarranid_face_younger_2 = (
+    0x000000003F00714049FEFE393FFFC7FF00000000001EF96F0000000000000000
+)
+sarranid_face_young_2 = (
+    0x000000043F00724049FEFE393FFFC7FF00000000001EF96F0000000000000000
+)
+sarranid_face_middle_2 = (
+    0x00000007BF00728049FEFE393FFFC7FF00000000001EF96F0000000000000000
+)
+sarranid_face_old_2 = 0x0000000E3F00728049FEFE393FFFC7FF00000000001EF96F0000000000000000
+sarranid_face_older_2 = (
+    0x0000000FFF00728049FEFE393FFFC7FF00000000001EF96F0000000000000000
+)
 
 man_face_younger_1 = 0x0000000000000001124000000020000000000000001C00800000000000000000
 man_face_young_1 = 0x0000000400000001124000000020000000000000001C00800000000000000000
@@ -319,9 +480,6 @@ man_face_middle_2 = 0x00000007BF0052064DEEFFFFFFFFFFFF00000000001EFFF90000000000
 man_face_old_2 = 0x0000000BFF0052064DEEFFFFFFFFFFFF00000000001EFFF90000000000000000
 man_face_older_2 = 0x0000000FFF0052064DEEFFFFFFFFFFFF00000000001EFFF90000000000000000
 
-merchant_face_1 = man_face_young_1
-merchant_face_2 = man_face_older_2
-
 woman_face_1 = 0x0000000000000001000000000000000000000000001C00000000000000000000
 woman_face_2 = 0x00000003BF0030067FF7FBFFEFFF6DFF00000000001F6DBF0000000000000000
 
@@ -332,6 +490,9 @@ swadian_woman_face_2 = (
     0x00000001BF1000061DB6D75DB6B6DBAD00000000001C92890000000000000000
 )
 
+vaegir_woman_face_1 = 0x0000000180100006124925124928924900000000001C92890000000000000000
+vaegir_woman_face_2 = 0x00000001BF1010061DB6D75DB6B6DBAD00000000001C92890000000000000000
+
 khergit_woman_face_1 = (
     0x0000000180103006124925124928924900000000001C92890000000000000000
 )
@@ -339,19 +500,216 @@ khergit_woman_face_2 = (
     0x00000001AF1030025B6EB6DD6DB6DD6D00000000001EEDAE0000000000000000
 )
 
-refugee_face1 = woman_face_1
-refugee_face2 = woman_face_2
-girl_face1 = woman_face_1
-girl_face2 = woman_face_2
+nord_woman_face_1 = 0x0000000180100006124925124928924900000000001C92890000000000000000
+nord_woman_face_2 = 0x00000001A01010061DB6D75DB6B6DBAD00000000001C92890000000000000000
+
+rhodok_woman_face_1 = 0x0000000180102006124925124928924900000000001C92890000000000000000
+rhodok_woman_face_2 = 0x00000001BF1020061DB6D75DB6B6DBAD00000000001C92890000000000000000
+
+sarranid_woman_face_1 = (
+    0x0000000000004001000000000000000000000000001C00000000000000000000
+)
+sarranid_woman_face_2 = (
+    0x00000003BF0040067FF7FBFFEFFF6DFF00000000001F6DBF0000000000000000
+)
+
+swadian_woman_face_younger_1 = (
+    0x0000000000100006124925124928924900000000001C92890000000000000000
+)
+swadian_woman_face_young_1 = (
+    0x0000000400100006124925124928924900000000001C92890000000000000000
+)
+swadian_woman_face_middle_1 = (
+    0x0000000800100006124925124928924900000000001C92890000000000000000
+)
+swadian_woman_face_old_1 = (
+    0x0000000D00100006124925124928924900000000001C92890000000000000000
+)
+swadian_woman_face_older_1 = (
+    0x0000000FC0100006124925124928924900000000001C92890000000000000000
+)
+
+swadian_woman_face_younger_2 = (
+    0x00000000BF1020061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+swadian_woman_face_young_2 = (
+    0x00000003BF1020061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+swadian_woman_face_middle_2 = (
+    0x00000007BF1020061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+swadian_woman_face_old_2 = (
+    0x0000000BFF1020061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+swadian_woman_face_older_2 = (
+    0x0000000FFF1020061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+
+vaegir_woman_face_younger_1 = (
+    0x0000000000100006124925124928924900000000001C92890000000000000000
+)
+vaegir_woman_face_young_1 = (
+    0x0000000400100006124925124928924900000000001C92890000000000000000
+)
+vaegir_woman_face_middle_1 = (
+    0x0000000800100006124925124928924900000000001C92890000000000000000
+)
+vaegir_woman_face_old_1 = (
+    0x0000000D00100006124925124928924900000000001C92890000000000000000
+)
+vaegir_woman_face_older_1 = (
+    0x0000000FC0100006124925124928924900000000001C92890000000000000000
+)
+
+vaegir_woman_face_younger_2 = (
+    0x00000000BF1010061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+vaegir_woman_face_young_2 = (
+    0x00000003BF1010061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+vaegir_woman_face_middle_2 = (
+    0x00000007BF1010061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+vaegir_woman_face_old_2 = (
+    0x0000000BFF1010061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+vaegir_woman_face_older_2 = (
+    0x0000000FFF1010061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+
+khergit_woman_face_younger_1 = (
+    0x0000000000103006124925124928924900000000001C92890000000000000000
+)
+khergit_woman_face_young_1 = (
+    0x0000000400103006124925124928924900000000001C92890000000000000000
+)
+khergit_woman_face_middle_1 = (
+    0x0000000800103006124925124928924900000000001C92890000000000000000
+)
+khergit_woman_face_old_1 = (
+    0x0000000D00103006124925124928924900000000001C92890000000000000000
+)
+khergit_woman_face_older_1 = (
+    0x0000000FC0103006124925124928924900000000001C92890000000000000000
+)
+
+khergit_woman_face_younger_2 = (
+    0x00000000BF1030025B6EB6DD6DB6DD6D00000000001EEDAE0000000000000000
+)
+khergit_woman_face_young_2 = (
+    0x00000003BF1030025B6EB6DD6DB6DD6D00000000001EEDAE0000000000000000
+)
+khergit_woman_face_middle_2 = (
+    0x00000007BF1030025B6EB6DD6DB6DD6D00000000001EEDAE0000000000000000
+)
+khergit_woman_face_old_2 = (
+    0x0000000BFF1030025B6EB6DD6DB6DD6D00000000001EEDAE0000000000000000
+)
+khergit_woman_face_older_2 = (
+    0x0000000FFF1030025B6EB6DD6DB6DD6D00000000001EEDAE0000000000000000
+)
+
+nord_woman_face_younger_1 = (
+    0x0000000000100006124925124928924900000000001C92890000000000000000
+)
+nord_woman_face_young_1 = (
+    0x0000000400100006124925124928924900000000001C92890000000000000000
+)
+nord_woman_face_middle_1 = (
+    0x0000000800100006124925124928924900000000001C92890000000000000000
+)
+nord_woman_face_old_1 = (
+    0x0000000D00100006124925124928924900000000001C92890000000000000000
+)
+nord_woman_face_older_1 = (
+    0x0000000FC0100006124925124928924900000000001C92890000000000000000
+)
+
+nord_woman_face_younger_2 = (
+    0x00000000B01010061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+nord_woman_face_young_2 = (
+    0x00000003B01010061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+nord_woman_face_middle_2 = (
+    0x00000007B01010061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+nord_woman_face_old_2 = (
+    0x0000000BF01010061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+nord_woman_face_older_2 = (
+    0x0000000FF01010061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+
+rhodok_woman_face_younger_1 = (
+    0x0000000000102006124925124928924900000000001C92890000000000000000
+)
+rhodok_woman_face_young_1 = (
+    0x0000000400102006124925124928924900000000001C92890000000000000000
+)
+rhodok_woman_face_middle_1 = (
+    0x0000000800102006124925124928924900000000001C92890000000000000000
+)
+rhodok_woman_face_old_1 = (
+    0x0000000D00102006124925124928924900000000001C92890000000000000000
+)
+rhodok_woman_face_older_1 = (
+    0x0000000FC0102006124925124928924900000000001C92890000000000000000
+)
+
+rhodok_woman_face_younger_2 = (
+    0x00000000BF1020061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+rhodok_woman_face_young_2 = (
+    0x00000003BF1020061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+rhodok_woman_face_middle_2 = (
+    0x00000007BF1020061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+rhodok_woman_face_old_2 = (
+    0x0000000BFF1020061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+rhodok_woman_face_older_2 = (
+    0x0000000FFF1020061DB6D75DB6B6DBAD00000000001C92890000000000000000
+)
+
+sarranid_woman_face_younger_1 = (
+    0x0000000000004001000000000000000000000000001C00000000000000000000
+)
+sarranid_woman_face_young_1 = (
+    0x0000000400004001000000000000000000000000001C00000000000000000000
+)
+sarranid_woman_face_middle_1 = (
+    0x0000000800004001000000000000000000000000001C00000000000000000000
+)
+sarranid_woman_face_old_1 = (
+    0x0000000D00004001000000000000000000000000001C00000000000000000000
+)
+sarranid_woman_face_older_1 = (
+    0x0000000FC0004001000000000000000000000000001C00000000000000000000
+)
+
+sarranid_woman_face_younger_2 = (
+    0x00000000BF0040067FF7FBFFEFFF6DFF00000000001F6DBF0000000000000000
+)
+sarranid_woman_face_young_2 = (
+    0x00000003BF0040067FF7FBFFEFFF6DFF00000000001F6DBF0000000000000000
+)
+sarranid_woman_face_middle_2 = (
+    0x00000007BF0040067FF7FBFFEFFF6DFF00000000001F6DBF0000000000000000
+)
+sarranid_woman_face_old_2 = (
+    0x0000000BFF0040067FF7FBFFEFFF6DFF00000000001F6DBF0000000000000000
+)
+sarranid_woman_face_older_2 = (
+    0x0000000FFF0040067FF7FBFFEFFF6DFF00000000001F6DBF0000000000000000
+)
 
 mercenary_face_1 = 0x0000000000000000000000000000000000000000001C00000000000000000000
 mercenary_face_2 = 0x0000000CFF00730B6DB6DB6DB7FBFFFF00000000001EFFFE0000000000000000
 
-vaegir_face1 = vaegir_face_young_1
-vaegir_face2 = vaegir_face_older_2
-
-swadian_face1 = swadian_face_young_1
-swadian_face2 = swadian_face_older_2
+merchant_face_1 = man_face_young_1
+merchant_face_2 = man_face_older_2
 
 bandit_face1 = man_face_young_1
 bandit_face2 = man_face_older_2
@@ -394,34 +752,6 @@ troops = [
         0x000000018000000136DB6DB6DB6DB6DB00000000001DB6DB0000000000000000,
     ],
     [
-        "multiplayer_profile_troop_male",
-        "multiplayer_profile_troop_male",
-        "multiplayer_profile_troop_male",
-        tf_hero | tf_guarantee_all,
-        0,
-        0,
-        fac.commoners,
-        [itm.leather_jerkin, itm.leather_boots],
-        0,
-        0,
-        0,
-        0x000000018000000136DB6DB6DB6DB6DB00000000001DB6DB0000000000000000,
-    ],
-    [
-        "multiplayer_profile_troop_female",
-        "multiplayer_profile_troop_female",
-        "multiplayer_profile_troop_female",
-        tf_hero | tf_female | tf_guarantee_all,
-        0,
-        0,
-        fac.commoners,
-        [itm.tribal_warrior_outfit, itm.leather_boots],
-        0,
-        0,
-        0,
-        0x000000018000000136DB6DB6DB6DB6DB00000000001DB6DB0000000000000000,
-    ],
-    [
         "temp_troop",
         "Temp Troop",
         "Temp Troop",
@@ -453,77 +783,18 @@ troops = [
         0,
     ],
     [
-        "random_town_sequence",
-        "Random Town Sequence",
-        "Random Town Sequence",
+        "battle_orders",
+        "Battle Order",
+        "Battle Orders",
         tf_hero,
-        no_scene,
-        reserved,
+        0,
+        0,
         fac.commoners,
         [],
         def_attrib,
         0,
-        knows_common | knows_inventory_management_10,
         0,
-    ],
-    [
-        "tournament_participants",
-        "Tournament Participants",
-        "Tournament Participants",
-        tf_hero,
-        no_scene,
-        reserved,
-        fac.commoners,
-        [],
-        def_attrib,
         0,
-        knows_common | knows_inventory_management_10,
-        0,
-    ],
-    [
-        "tutorial_maceman",
-        "Maceman",
-        "Maceman",
-        tf_guarantee_boots | tf_guarantee_armor,
-        no_scene,
-        reserved,
-        fac.commoners,
-        [itm.tutorial_club, itm.leather_jerkin, itm.hide_boots],
-        str_6 | agi_6 | level(1),
-        wp(50),
-        knows_common,
-        mercenary_face_1,
-        mercenary_face_2,
-    ],
-    [
-        "tutorial_archer",
-        "Archer",
-        "Archer",
-        tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_ranged,
-        no_scene,
-        reserved,
-        fac.commoners,
-        [itm.tutorial_short_bow, itm.tutorial_arrows, itm.linen_tunic, itm.hide_boots],
-        str_6 | agi_6 | level(5),
-        wp(100),
-        knows_common | knows_power_draw_4,
-        mercenary_face_1,
-        mercenary_face_2,
-    ],
-    [
-        "tutorial_swordsman",
-        "Swordsman",
-        "Swordsman",
-        tf_guarantee_boots | tf_guarantee_armor,
-        no_scene,
-        reserved,
-        fac.commoners,
-        [itm.tutorial_sword, itm.leather_vest, itm.hide_boots],
-        str_6 | agi_6 | level(5),
-        wp(80),
-        knows_common,
-        mercenary_face_1,
-        mercenary_face_2,
     ],
     [
         "novice_fighter",
@@ -824,7 +1095,6 @@ troops = [
         mercenary_face_1,
         mercenary_face_2,
     ],
-    #############
     # Mercenaries
     #############
     [
@@ -893,6 +1163,65 @@ troops = [
         mercenary_face_2,
     ],
     [
+        "mercenary_footman",
+        "Mercenary Footman",
+        "Mercenary Footmen",
+        tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_shield,
+        0,
+        0,
+        fac.neutral,
+        [
+            itm.bolts,
+            itm.spear,
+            itm.fighting_pick,
+            itm.sword_medieval_a,
+            itm.tab_shield_round_b,
+            itm.light_crossbow,
+            itm.leather_jerkin,
+            itm.studded_leather_coat,
+            itm.nomad_boots,
+            itm.mail_coif,
+            itm.norman_helmet,
+        ],
+        def_attrib | level(14),
+        wp(95),
+        knows_common
+        | knows_riding_2
+        | knows_ironflesh_2
+        | knows_shield_2
+        | knows_power_strike_2,
+        mercenary_face_1,
+        mercenary_face_2,
+    ],
+    [
+        "mercenary_archer",
+        "Mercenary Archer",
+        "Mercenary Archers",
+        tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_ranged,
+        0,
+        0,
+        fac.neutral,
+        [
+            itm.arrows,
+            itm.axe,
+            itm.hand_axe,
+            itm.short_bow,
+            itm.leather_jerkin,
+            itm.leather_vest,
+            itm.nomad_boots,
+            itm.skullcap,
+        ],
+        def_attrib | level(14),
+        wp(95),
+        knows_common
+        | knows_riding_2
+        | knows_ironflesh_2
+        | knows_power_draw_2
+        | knows_power_strike_2,
+        mercenary_face_1,
+        mercenary_face_2,
+    ],
+    [
         "mercenary_swordsman",
         "Mercenary Swordsman",
         "Mercenary Swordsmen",
@@ -903,7 +1232,7 @@ troops = [
         | tf_guarantee_shield,
         no_scene,
         reserved,
-        fac.commoners,
+        fac.neutral,
         [
             itm.bastard_sword_a,
             itm.sword_medieval_b,
@@ -940,7 +1269,7 @@ troops = [
         | tf_guarantee_shield,
         no_scene,
         reserved,
-        fac.commoners,
+        fac.neutral,
         [
             itm.bastard_sword_b,
             itm.sword_medieval_c,
@@ -972,7 +1301,7 @@ troops = [
         tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_ranged,
         no_scene,
         reserved,
-        fac.commoners,
+        fac.neutral,
         [
             itm.bolts,
             itm.spiked_club,
@@ -991,13 +1320,75 @@ troops = [
             itm.wrapping_boots,
         ],
         def_attrib | level(19),
-        wp_one_handed(90)
-        | wp_two_handed(90)
-        | wp_polearm(90)
-        | wp_archery(90)
-        | wp_crossbow(130)
-        | wp_throwing(90),
+        wp_xbow(90, 130),
         knows_common | knows_athletics_5 | knows_shield_1,
+        mercenary_face_1,
+        mercenary_face_2,
+    ],
+    [
+        "mercenary_longbowman",
+        "Mercenary Longbowman",
+        "Mercenary Longbowmen",
+        tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_ranged,
+        no_scene,
+        reserved,
+        fac.neutral,
+        [
+            itm.bodkin_arrows,
+            itm.maul,
+            itm.falchion,
+            itm.long_bow,
+            itm.studded_leather_coat,
+            itm.leather_jerkin,
+            itm.skullcap,
+            itm.nomad_boots,
+            itm.leather_boots,
+        ],
+        def_attrib | level(20),
+        wp_bow(90, 120),
+        knows_common
+        | knows_athletics_4
+        | knows_ironflesh_3
+        | knows_power_draw_4
+        | knows_power_strike_3,
+        mercenary_face_1,
+        mercenary_face_2,
+    ],
+    [
+        "mercenary_horse_archer",
+        "Mercenary Horse Archer",
+        "Mercenary Horse Archers",
+        tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet
+        | tf_guarantee_horse
+        | tf_guarantee_ranged,
+        no_scene,
+        reserved,
+        fac.neutral,
+        [
+            itm.sword_khergit_1,
+            itm.fighting_axe,
+            itm.fighting_axe_heavy,
+            itm.tab_shield_small_round_a,
+            itm.barbed_arrows,
+            itm.nomad_bow,
+            itm.studded_leather_coat,
+            itm.leather_jerkin,
+            itm.leather_boots,
+            itm.spiked_helmet,
+            itm.steppe_horse,
+        ],
+        def_attrib | level(20),
+        wp(100),
+        knows_common
+        | knows_riding_4
+        | knows_ironflesh_3
+        | knows_horse_archery_2
+        | knows_power_draw_3
+        | knows_shield_1
+        | knows_power_strike_2,
         mercenary_face_1,
         mercenary_face_2,
     ],
@@ -1013,7 +1404,7 @@ troops = [
         | tf_guarantee_shield,
         no_scene,
         reserved,
-        fac.commoners,
+        fac.neutral,
         [
             itm.lance,
             itm.bastard_sword_a,
@@ -1050,7 +1441,7 @@ troops = [
         | tf_guarantee_shield,
         no_scene,
         reserved,
-        fac.commoners,
+        fac.neutral,
         [
             itm.heavy_lance,
             itm.bastard_sword_a,
@@ -1076,23 +1467,94 @@ troops = [
         mercenary_face_1,
         mercenary_face_2,
     ],
+    # Elite Mercenaries; can't be hired, only upgraded:
     [
-        "mercenaries_end",
-        "mercenaries_end",
-        "mercenaries_end",
-        0,
+        "mercenary_musketeer",
+        "Mercenary Musketeer",
+        "Mercenary Musketeers",
+        tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_ranged,
         no_scene,
         reserved,
-        fac.commoners,
-        [],
-        def_attrib | level(4),
-        wp(60),
-        knows_common,
+        fac.neutral,
+        [
+            itm.cartridges,
+            itm.spiked_club,
+            itm.fighting_pick,
+            itm.sword_medieval_a,
+            itm.voulge,
+            itm.arquebus,
+            itm.leather_jerkin,
+            itm.leather_cap,
+            itm.nomad_boots,
+            itm.hide_boots,
+        ],
+        def_attrib | level(20),
+        wp_gun(90, 100),
+        knows_common | knows_athletics_5 | knows_shield_1,
         mercenary_face_1,
         mercenary_face_2,
     ],
-    # peasant - retainer - footman - man-at-arms -  knight
-    ###################
+    [
+        "black_guard",
+        "Black Guard",
+        "Black Guards",
+        tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_gloves
+        | tf_guarantee_helmet,
+        no_scene,
+        reserved,
+        fac.neutral,
+        [
+            itm.sword_of_war,
+            itm.great_axe,
+            itm.bec_de_corbin_a,
+            itm.black_armor,
+            itm.black_greaves,
+            itm.black_helmet,
+            itm.leather_gloves,
+        ],
+        def_attrib | level(26),
+        wp(130),
+        knows_common
+        | knows_riding_3
+        | knows_athletics_5
+        | knows_shield_5
+        | knows_power_strike_5
+        | knows_ironflesh_5,
+        mercenary_face_1,
+        mercenary_face_2,
+    ],
+    [
+        "black_knight",
+        "Black Knight",
+        "Black Knights",
+        tf_mounted | tf_guarantee_all_wo_ranged,
+        no_scene,
+        reserved,
+        fac.neutral,
+        [
+            itm.heavy_lance,
+            itm.morningstar,
+            itm.morningstar_short,
+            itm.tab_shield_heater_c,
+            itm.black_armor,
+            itm.black_greaves,
+            itm.black_helmet,
+            itm.leather_gloves,
+            itm.charger_plate,
+        ],
+        def_attrib | level(26),
+        wp(130),
+        knows_common
+        | knows_riding_5
+        | knows_ironflesh_4
+        | knows_shield_5
+        | knows_power_strike_4,
+        mercenary_face_1,
+        mercenary_face_2,
+    ],
     # Kingdom of Swadia
     ###################
     [
@@ -1307,12 +1769,7 @@ troops = [
             itm.segmented_helmet,
         ],
         def_attrib | level(19),
-        wp_one_handed(90)
-        | wp_two_handed(90)
-        | wp_polearm(90)
-        | wp_archery(90)
-        | wp_crossbow(100)
-        | wp_throwing(90),
+        wp_xbow(90, 100),
         knows_common | knows_riding_2 | knows_ironflesh_1 | knows_athletics_1,
         swadian_face_young_1,
         swadian_face_old_2,
@@ -1347,12 +1804,7 @@ troops = [
             itm.leather_gloves,
         ],
         str_14 | agi_10 | int_4 | cha_4 | level(24),
-        wp_one_handed(100)
-        | wp_two_handed(100)
-        | wp_polearm(100)
-        | wp_archery(100)
-        | wp_crossbow(120)
-        | wp_throwing(100),
+        wp_xbow(100, 120),
         knows_common
         | knows_power_draw_3
         | knows_ironflesh_1
@@ -1436,12 +1888,167 @@ troops = [
             itm.mail_mittens,
         ],
         def_attrib | level(28),
-        wp_one_handed(150)
-        | wp_two_handed(130)
-        | wp_polearm(130)
-        | wp_archery(75)
-        | wp_crossbow(75)
-        | wp_throwing(75),
+        wp_1h(150, 130, 75),
+        knows_common
+        | knows_riding_5
+        | knows_shield_5
+        | knows_ironflesh_5
+        | knows_power_strike_5,
+        swadian_face_middle_1,
+        swadian_face_older_2,
+    ],
+    [
+        "swadian_musketeer",
+        "Swadian Musketeer",
+        "Swadian Musketeers",
+        tf_guarantee_ranged | tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.kingdom_1,
+        [
+            itm.cartridges,
+            itm.arquebus,
+            itm.club,
+            itm.spiked_club,
+            itm.red_gambeson,
+            itm.leather_cap,
+            itm.leather_cap,
+            itm.ankle_boots,
+        ],
+        def_attrib | level(15),
+        wp_gun(80, 60),
+        knows_common | knows_ironflesh_1,
+        swadian_face_young_1,
+        swadian_face_middle_2,
+    ],
+    [
+        "swadian_elite_guard",
+        "Swadian Royal Guard",
+        "Swadian Royal Guards",
+        tf_mounted
+        | tf_guarantee_gloves
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet,
+        0,
+        0,
+        fac.kingdom_1,
+        [
+            itm.awlpike,
+            itm.shortened_voulge,
+            itm.sword_two_handed_b,
+            itm.morningstar,
+            itm.great_sword,
+            itm.plate_armor,
+            itm.plate_boots,
+            itm.gauntlets,
+            itm.great_helmet,
+            itm.guard_helmet,
+        ],
+        def_attrib | level(25),
+        wp_melee(135),
+        knows_common
+        | knows_shield_4
+        | knows_ironflesh_4
+        | knows_power_strike_4
+        | knows_athletics_4,
+        swadian_face_middle_1,
+        swadian_face_older_2,
+    ],
+    [
+        "swadian_heavy_crossbowman",
+        "Swadian Heavy Crossbowman",
+        "Swadian Heavy Crossbowmen",
+        tf_guarantee_ranged
+        | tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet
+        | tf_guarantee_shield
+        | tf_guarantee_gloves,
+        0,
+        0,
+        fac.kingdom_1,
+        [
+            itm.bolts,
+            itm.heavy_crossbow,
+            itm.sword_medieval_c_small,
+            itm.sword_medieval_c,
+            itm.tab_shield_heater_d,
+            itm.coat_of_plates_red,
+            itm.mail_boots,
+            itm.kettle_hat,
+            itm.guard_helmet,
+            itm.leather_gloves,
+        ],
+        str_15 | agi_10 | int_4 | cha_4 | level(25),
+        wp_xbow(110, 130),
+        knows_common
+        | knows_power_draw_3
+        | knows_shield_2
+        | knows_ironflesh_1
+        | knows_power_strike_1
+        | knows_athletics_3,
+        swadian_face_middle_1,
+        swadian_face_older_2,
+    ],
+    [
+        "swadian_reiter",
+        "Swadian Reiter",
+        "Swadian Reiter",
+        tf_mounted | tf_guarantee_all,
+        0,
+        0,
+        fac.kingdom_1,
+        [
+            itm.cartridges,
+            itm.flintlock_pistol,
+            itm.fighting_pick,
+            itm.bastard_sword_b,
+            itm.sword_medieval_b,
+            itm.fighting_axe,
+            itm.steel_shield,
+            itm.brigandine_red,
+            itm.splinted_greaves,
+            itm.bascinet,
+            itm.guard_helmet,
+            itm.leather_gloves,
+            itm.hunter,
+        ],
+        def_attrib | level(24),
+        wp_gun(100, 80),
+        knows_common
+        | knows_riding_4
+        | knows_ironflesh_2
+        | knows_shield_2
+        | knows_horse_archery_2
+        | knows_power_strike_3,
+        swadian_face_young_1,
+        swadian_face_old_2,
+    ],
+    [
+        "swadian_cuirassier",
+        "Swadian Cuirassier",
+        "Swadian Cuirassiers",
+        tf_mounted | tf_guarantee_all_wo_ranged,
+        0,
+        0,
+        fac.kingdom_1,
+        [
+            itm.great_lance,
+            itm.great_lance,
+            itm.sword_medieval_d_long,
+            itm.morningstar,
+            itm.tab_shield_heater_cav_b,
+            itm.plate_armor,
+            itm.plate_boots,
+            itm.guard_helmet,
+            itm.great_helmet,
+            itm.gauntlets,
+            itm.charger,
+        ],
+        def_attrib | level(28),
+        wp_melee(130),
         knows_common
         | knows_riding_5
         | knows_shield_5
@@ -1545,7 +2152,6 @@ troops = [
         swadian_face_young_1,
         swadian_face_old_2,
     ],
-    ####################
     # Kingdom of Vaegirs
     ####################
     [
@@ -1612,7 +2218,7 @@ troops = [
         fac.kingdom_2,
         [
             itm.arrows,
-            itm.spiked_mace,
+            itm.mace_3,
             itm.axe,
             itm.sword_khergit_1,
             itm.short_bow,
@@ -1642,6 +2248,7 @@ troops = [
         0,
         fac.kingdom_2,
         [
+            itm.arrows_cav,
             itm.arrows,
             itm.axe,
             itm.sword_khergit_1,
@@ -1657,12 +2264,7 @@ troops = [
             itm.nomad_cap,
         ],
         str_12 | agi_5 | int_4 | cha_4 | level(19),
-        wp_one_handed(70)
-        | wp_two_handed(70)
-        | wp_polearm(70)
-        | wp_archery(110)
-        | wp_crossbow(70)
-        | wp_throwing(70),
+        wp_bow(70, 110),
         knows_ironflesh_1
         | knows_power_draw_3
         | knows_athletics_2
@@ -1697,12 +2299,7 @@ troops = [
             itm.vaegir_fur_helmet,
         ],
         str_14 | agi_5 | int_4 | cha_4 | level(24),
-        wp_one_handed(80)
-        | wp_two_handed(80)
-        | wp_polearm(80)
-        | wp_archery(140)
-        | wp_crossbow(80)
-        | wp_throwing(80),
+        wp_bow(80, 140),
         knows_ironflesh_2
         | knows_power_draw_5
         | knows_athletics_3
@@ -1719,7 +2316,7 @@ troops = [
         0,
         fac.kingdom_2,
         [
-            itm.spiked_mace,
+            itm.mace_3,
             itm.two_handed_axe,
             itm.sword_viking_1,
             itm.tab_shield_kite_b,
@@ -1742,7 +2339,7 @@ troops = [
     [
         "vaegir_infantry",
         "Vaegir Infantry",
-        "Vaegir Infantries",
+        "Vaegir Infantry",
         tf_guarantee_shield
         | tf_guarantee_boots
         | tf_guarantee_armor
@@ -1757,7 +2354,6 @@ troops = [
             itm.sword_khergit_2,
             itm.tab_shield_kite_c,
             itm.spear,
-            itm.mail_hauberk,
             itm.lamellar_vest,
             itm.leather_boots,
             itm.vaegir_lamellar_helmet,
@@ -1785,11 +2381,11 @@ troops = [
         [
             itm.ashwood_pike,
             itm.fighting_axe,
+            itm.fighting_axe_heavy,
             itm.bardiche,
             itm.battle_axe,
             itm.fighting_axe,
             itm.tab_shield_kite_d,
-            itm.banded_armor,
             itm.lamellar_vest,
             itm.lamellar_armor,
             itm.splinted_leather_greaves,
@@ -1862,10 +2458,10 @@ troops = [
             itm.great_bardiche,
             itm.war_axe,
             itm.fighting_axe,
+            itm.fighting_axe_heavy,
             itm.lance,
             itm.lance,
             itm.tab_shield_kite_cav_b,
-            itm.banded_armor,
             itm.lamellar_vest,
             itm.lamellar_armor,
             itm.mail_boots,
@@ -1878,14 +2474,235 @@ troops = [
             itm.leather_gloves,
         ],
         def_attrib | level(26),
-        wp_one_handed(120)
-        | wp_two_handed(140)
-        | wp_polearm(120)
-        | wp_archery(120)
-        | wp_crossbow(120)
-        | wp_throwing(120),
+        wp_2h(140, 120, 120),
         knows_riding_4 | knows_shield_2 | knows_ironflesh_4 | knows_power_strike_4,
         vaegir_face_middle_1,
+        vaegir_face_older_2,
+    ],
+    [
+        "vaegir_raider",
+        "Vaegir Raider",
+        "Vaegir Raiders",
+        tf_mounted | tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_horse,
+        0,
+        0,
+        fac.kingdom_2,
+        [
+            itm.mace_3,
+            itm.two_handed_axe,
+            itm.sword_viking_1,
+            itm.tab_shield_kite_b,
+            itm.tab_shield_kite_c,
+            itm.spear,
+            itm.steppe_cap,
+            itm.vaegir_spiked_helmet,
+            itm.vaegir_fur_helmet,
+            itm.vaegir_fur_cap,
+            itm.leather_jerkin,
+            itm.studded_leather_coat,
+            itm.nomad_boots,
+            itm.saddle_horse,
+        ],
+        def_attrib | level(15),
+        wp_melee(85),
+        knows_riding_3
+        | knows_athletics_2
+        | knows_ironflesh_1
+        | knows_power_strike_2
+        | knows_shield_2,
+        vaegir_face_young_1,
+        vaegir_face_old_2,
+    ],
+    [
+        "vaegir_cossack",
+        "Vaegir Cossack",
+        "Vaegir Cossacks",
+        tf_mounted
+        | tf_guarantee_ranged
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_horse,
+        0,
+        0,
+        fac.kingdom_2,
+        [
+            itm.arrows_cav,
+            itm.axe,
+            itm.sword_khergit_1,
+            itm.nomad_bow,
+            itm.nomad_bow,
+            itm.leather_jerkin,
+            itm.leather_vest,
+            itm.nomad_boots,
+            itm.vaegir_spiked_helmet,
+            itm.vaegir_fur_helmet,
+            itm.vaegir_fur_cap,
+            itm.nomad_cap,
+            itm.saddle_horse,
+        ],
+        str_12 | agi_5 | int_4 | cha_4 | level(20),
+        wp_bow(70, 110),
+        knows_riding_4
+        | knows_horse_archery_2
+        | knows_ironflesh_1
+        | knows_power_draw_3
+        | knows_athletics_2
+        | knows_power_throw_1,
+        vaegir_face_young_1,
+        vaegir_face_older_2,
+    ],
+    [
+        "vaegir_strelets",
+        "Vaegir Strelets",
+        "Vaegir Strelcy",
+        tf_guarantee_ranged | tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.kingdom_2,
+        [
+            itm.cartridges,
+            itm.arquebus,
+            itm.bardiche,
+            itm.bardiche,
+            itm.sword_khergit_1,
+            itm.fur_hat,
+            itm.fur_hat,
+            itm.fur_coat,
+            itm.nomad_boots,
+        ],
+        str_10 | agi_5 | int_4 | cha_4 | level(15),
+        wp_gun(60, 50),
+        knows_ironflesh_1 | knows_power_draw_1 | knows_power_throw_1,
+        vaegir_face_young_1,
+        vaegir_face_old_2,
+    ],
+    [
+        "vaegir_elite_guard",
+        "Vaegir Principal Guard",
+        "Vaegir Principal Guards",
+        tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet
+        | tf_guarantee_gloves,
+        0,
+        0,
+        fac.kingdom_2,
+        [
+            itm.ashwood_pike,
+            itm.great_bardiche,
+            itm.bardiche,
+            itm.battle_axe,
+            itm.great_axe,
+            itm.vaegir_elite_armor,
+            itm.iron_greaves,
+            itm.vaegir_war_helmet,
+            itm.vaegir_war_helmet,
+            itm.vaegir_guard_helmet,
+            itm.scale_gauntlets,
+            itm.lamellar_gauntlets,
+        ],
+        def_attrib | level(25),
+        wp_2h(150, 130, 130),
+        knows_riding_2
+        | knows_athletics_4
+        | knows_shield_2
+        | knows_ironflesh_3
+        | knows_power_strike_4,
+        vaegir_face_middle_1,
+        vaegir_face_older_2,
+    ],
+    [
+        "strange_marksman",
+        "Strange Marksman",
+        "Strange Marksmen",
+        tf_guarantee_ranged
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_gloves,
+        0,
+        0,
+        fac.kingdom_2,
+        [
+            itm.bodkin_arrows,
+            itm.strange_short_sword,
+            itm.strange_sword,
+            itm.war_bow,
+            itm.strange_armor,
+            itm.strange_boots,
+            itm.nomad_boots,
+            itm.strange_helmet,
+            itm.leather_gloves,
+        ],
+        str_14 | agi_5 | int_4 | cha_4 | level(25),
+        wp_bow(90, 140),
+        knows_ironflesh_2
+        | knows_power_draw_5
+        | knows_athletics_3
+        | knows_power_strike_1,
+        vaegir_face_young_1,
+        vaegir_face_older_2,
+    ],
+    [
+        "strange_swordsman",
+        "Strange Swordsman",
+        "Strange Swordsmen",
+        tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet
+        | tf_guarantee_gloves,
+        0,
+        0,
+        fac.kingdom_2,
+        [
+            itm.ashwood_pike,
+            itm.strange_great_sword,
+            itm.strange_sword,
+            itm.strange_short_sword,
+            itm.strange_armor,
+            itm.strange_boots,
+            itm.strange_helmet,
+            itm.leather_gloves,
+            itm.scale_gauntlets,
+        ],
+        def_attrib | level(20),
+        wp_melee(100),
+        knows_athletics_3 | knows_ironflesh_2 | knows_power_strike_3 | knows_shield_2,
+        vaegir_face_young_1,
+        vaegir_face_older_2,
+    ],
+    [
+        "strange_knight",
+        "Strange Knight",
+        "Strange Knights",
+        tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet
+        | tf_guarantee_horse
+        | tf_guarantee_gloves,
+        0,
+        0,
+        fac.kingdom_2,
+        [
+            itm.strange_great_sword,
+            itm.strange_great_sword,
+            itm.strange_sword,
+            itm.strange_short_sword,
+            itm.war_spear,
+            itm.strange_armor,
+            itm.strange_boots,
+            itm.strange_helmet,
+            itm.leather_gloves,
+            itm.scale_gauntlets,
+            itm.hunter,
+            itm.warhorse_steppe,
+        ],
+        def_attrib | level(26),
+        wp_2h(140, 120, 120),
+        knows_riding_4 | knows_shield_2 | knows_ironflesh_4 | knows_power_strike_4,
+        vaegir_face_young_1,
         vaegir_face_older_2,
     ],
     [
@@ -1984,7 +2801,6 @@ troops = [
         vaegir_face_middle_1,
         vaegir_face_older_2,
     ],
-    #################
     # Khergit Khanate
     #################
     [
@@ -1997,6 +2813,7 @@ troops = [
         fac.kingdom_3,
         [
             itm.arrows,
+            itm.arrows_cav,
             itm.club,
             itm.spear,
             itm.hunting_bow,
@@ -2026,9 +2843,9 @@ troops = [
         0,
         fac.kingdom_3,
         [
-            itm.arrows,
+            itm.arrows_cav,
             itm.sword_khergit_1,
-            itm.winged_mace,
+            itm.mace_4,
             itm.spear,
             itm.nomad_bow,
             itm.javelin,
@@ -2045,12 +2862,7 @@ troops = [
             itm.saddle_horse,
         ],
         def_attrib | level(10),
-        wp_one_handed(60)
-        | wp_two_handed(60)
-        | wp_polearm(60)
-        | wp_archery(80)
-        | wp_crossbow(60)
-        | wp_throwing(80),
+        wp_skirmish(60, 80),
         knows_common
         | knows_riding_4
         | knows_power_draw_3
@@ -2072,13 +2884,15 @@ troops = [
         0,
         fac.kingdom_3,
         [
-            itm.arrows,
+            itm.arrows_cav,
             itm.light_lance,
             itm.nomad_bow,
             itm.sword_khergit_2,
             itm.tab_shield_small_round_a,
             itm.tab_shield_small_round_b,
             itm.spear,
+            itm.javelin,
+            itm.javelin,
             itm.leather_steppe_cap_a,
             itm.leather_steppe_cap_b,
             itm.nomad_robe,
@@ -2115,9 +2929,9 @@ troops = [
         0,
         fac.kingdom_3,
         [
-            itm.arrows,
+            itm.arrows_cav,
             itm.sword_khergit_2,
-            itm.winged_mace,
+            itm.mace_4,
             itm.spear,
             itm.khergit_bow,
             itm.tab_shield_small_round_a,
@@ -2125,7 +2939,6 @@ troops = [
             itm.tab_shield_small_round_b,
             itm.bodkin_arrows,
             itm.arrows,
-            itm.javelin,
             itm.leather_steppe_cap_b,
             itm.nomad_cap_b,
             itm.tribal_warrior_outfit,
@@ -2136,12 +2949,7 @@ troops = [
             itm.steppe_horse,
         ],
         def_attrib | level(14),
-        wp_one_handed(80)
-        | wp_two_handed(80)
-        | wp_polearm(80)
-        | wp_archery(110)
-        | wp_crossbow(80)
-        | wp_throwing(110),
+        wp_skirmish(80, 110),
         knows_riding_5
         | knows_power_draw_3
         | knows_ironflesh_1
@@ -2166,11 +2974,10 @@ troops = [
             itm.khergit_bow,
             itm.khergit_bow,
             itm.nomad_bow,
-            itm.arrows,
+            itm.arrows_cav,
             itm.khergit_arrows,
             itm.khergit_arrows,
             itm.khergit_arrows,
-            itm.javelin,
             itm.tab_shield_small_round_b,
             itm.tab_shield_small_round_c,
             itm.khergit_cavalry_helmet,
@@ -2184,12 +2991,7 @@ troops = [
             itm.courser,
         ],
         def_attrib | level(21),
-        wp_one_handed(90)
-        | wp_two_handed(90)
-        | wp_polearm(90)
-        | wp_archery(130)
-        | wp_crossbow(90)
-        | wp_throwing(130),
+        wp_skirmish(90, 130),
         knows_riding_7
         | knows_power_draw_5
         | knows_ironflesh_3
@@ -2232,12 +3034,158 @@ troops = [
             itm.warhorse_steppe,
         ],
         def_attrib | level(23),
-        wp_one_handed(110)
-        | wp_two_handed(110)
-        | wp_polearm(150)
-        | wp_archery(110)
-        | wp_crossbow(110)
-        | wp_throwing(110),
+        wp_pole(150, 110, 110),
+        knows_riding_7
+        | knows_power_strike_4
+        | knows_power_draw_4
+        | knows_power_throw_2
+        | knows_ironflesh_4
+        | knows_horse_archery_1
+        | knows_shield_2,
+        khergit_face_middle_1,
+        khergit_face_older_2,
+    ],
+    [
+        "khergit_guard",
+        "Khergit Guard",
+        "Khergit Guards",
+        tf_mounted | tf_guarantee_all_wo_ranged,
+        0,
+        0,
+        fac.kingdom_3,
+        [
+            itm.sword_khergit_4,
+            itm.spiked_mace,
+            itm.one_handed_war_axe_b,
+            itm.hafted_blade_a,
+            itm.hafted_blade_b,
+            itm.hafted_blade_a,
+            itm.hafted_blade_b,
+            itm.heavy_lance,
+            itm.lance,
+            itm.throwing_spears,
+            itm.throwing_spears,
+            itm.khergit_guard_helmet,
+            itm.khergit_cavalry_helmet,
+            itm.khergit_war_helmet,
+            itm.khergit_guard_armor,
+            itm.khergit_leather_boots,
+            itm.khergit_guard_boots,
+            itm.leather_gloves,
+            itm.lamellar_gauntlets,
+            itm.tab_shield_small_round_b,
+            itm.tab_shield_small_round_c,
+            itm.warhorse_steppe,
+        ],
+        def_attrib | level(26),
+        wp(135),
+        knows_riding_8
+        | knows_power_strike_4
+        | knows_power_draw_4
+        | knows_power_throw_4
+        | knows_ironflesh_4
+        | knows_horse_archery_4
+        | knows_shield_2,
+        khergit_face_middle_1,
+        khergit_face_older_2,
+    ],
+    [
+        "khergit_elite_guard",
+        "Khergit Keshig",
+        "Khergit Keshig",
+        tf_mounted | tf_guarantee_all_wo_ranged,
+        0,
+        0,
+        fac.kingdom_3,
+        [
+            itm.sword_khergit_4,
+            itm.khergit_sword_two_handed_a,
+            itm.khergit_sword_two_handed_b,
+            itm.hafted_blade_a,
+            itm.hafted_blade_b,
+            itm.hafted_blade_a,
+            itm.hafted_blade_b,
+            itm.heavy_lance,
+            itm.lance,
+            itm.throwing_spears,
+            itm.throwing_spears,
+            itm.khergit_guard_helmet,
+            itm.khergit_cavalry_helmet,
+            itm.khergit_elite_armor,
+            itm.khergit_guard_boots,
+            itm.lamellar_gauntlets,
+            itm.tab_shield_small_round_b,
+            itm.tab_shield_small_round_c,
+            itm.warhorse_steppe,
+        ],
+        def_attrib | level(26),
+        wp(135),
+        knows_riding_8
+        | knows_power_strike_4
+        | knows_power_draw_4
+        | knows_power_throw_4
+        | knows_ironflesh_4
+        | knows_horse_archery_4
+        | knows_shield_2,
+        khergit_face_middle_1,
+        khergit_face_older_2,
+    ],
+    [
+        "strange_horse_archer",
+        "Strange Horse Archer",
+        "Strange Horse Archers",
+        tf_mounted | tf_guarantee_all,
+        0,
+        0,
+        fac.kingdom_3,
+        [
+            itm.strange_sword,
+            itm.strange_short_sword,
+            itm.khergit_bow,
+            itm.khergit_arrows,
+            itm.strange_helmet,
+            itm.strange_armor,
+            itm.strange_boots,
+            itm.leather_gloves,
+            itm.courser,
+        ],
+        def_attrib | level(22),
+        wp_skirmish(100, 130),
+        knows_riding_7
+        | knows_power_draw_5
+        | knows_ironflesh_3
+        | knows_horse_archery_7
+        | knows_power_throw_4
+        | knows_shield_1,
+        khergit_face_middle_1,
+        khergit_face_older_2,
+    ],
+    [
+        "strange_lancer",
+        "Strange Lancer",
+        "Strange Lancers",
+        tf_mounted | tf_guarantee_all_wo_ranged,
+        0,
+        0,
+        fac.kingdom_3,
+        [
+            itm.strange_sword,
+            itm.strange_short_sword,
+            itm.hafted_blade_a,
+            itm.hafted_blade_b,
+            itm.heavy_lance,
+            itm.lance,
+            itm.lance,
+            itm.war_darts,
+            itm.strange_helmet,
+            itm.strange_armor,
+            itm.strange_boots,
+            itm.leather_gloves,
+            itm.scale_gauntlets,
+            itm.courser,
+        ],
+        def_attrib | level(23),
+        wp_pole(150, 110, 110),
         knows_riding_7
         | knows_power_strike_4
         | knows_power_draw_4
@@ -2334,7 +3282,6 @@ troops = [
         khergit_face_middle_1,
         khergit_face_older_2,
     ],
-    ##################
     # Kingdom of Nords
     ##################
     [
@@ -2479,7 +3426,7 @@ troops = [
             itm.sword_viking_2,
             itm.sword_viking_2_small,
             itm.one_handed_battle_axe_b,
-            itm.spiked_mace,
+            itm.mace_3,
             itm.tab_shield_round_d,
             itm.javelin,
             itm.throwing_axes,
@@ -2516,7 +3463,7 @@ troops = [
         [
             itm.sword_viking_3,
             itm.sword_viking_3_small,
-            itm.great_axe,
+            itm.great_axe_2,
             itm.one_handed_battle_axe_c,
             itm.tab_shield_round_e,
             itm.throwing_spears,
@@ -2550,12 +3497,7 @@ troops = [
         fac.kingdom_4,
         [itm.arrows, itm.rawhide_coat, itm.hatchet, itm.hunting_bow, itm.hide_boots],
         str_10 | agi_5 | int_4 | cha_4 | level(11),
-        wp_one_handed(60)
-        | wp_two_handed(60)
-        | wp_polearm(60)
-        | wp_archery(70)
-        | wp_crossbow(60)
-        | wp_throwing(60),
+        wp_bow(60, 70),
         knows_ironflesh_1 | knows_power_draw_1 | knows_athletics_2,
         nord_face_young_1,
         nord_face_old_2,
@@ -2581,20 +3523,15 @@ troops = [
             itm.leather_cap,
         ],
         str_11 | agi_5 | int_4 | cha_4 | level(15),
-        wp_one_handed(80)
-        | wp_two_handed(80)
-        | wp_polearm(80)
-        | wp_archery(95)
-        | wp_crossbow(80)
-        | wp_throwing(80),
+        wp_bow(80, 95),
         knows_ironflesh_2 | knows_power_draw_3 | knows_athletics_5,
         nord_face_young_1,
         nord_face_old_2,
     ],
     [
         "nord_veteran_archer",
-        "Nord Veteran Archer",
-        "Nord Veteran Archers",
+        "Nord Longbowman",
+        "Nord Longbowmen",
         tf_guarantee_ranged | tf_guarantee_boots | tf_guarantee_armor,
         0,
         0,
@@ -2613,16 +3550,181 @@ troops = [
             itm.nordic_veteran_archer_helmet,
         ],
         str_12 | agi_5 | int_4 | cha_4 | level(19),
-        wp_one_handed(95)
-        | wp_two_handed(95)
-        | wp_polearm(95)
-        | wp_archery(120)
-        | wp_crossbow(95)
-        | wp_throwing(95),
+        wp_bow(95, 120),
         knows_power_strike_3
         | knows_ironflesh_4
         | knows_power_draw_5
         | knows_athletics_7,
+        nord_face_middle_1,
+        nord_face_older_2,
+    ],
+    [
+        "nord_handgunner",
+        "Nord Handgunner",
+        "Nord Handgunners",
+        tf_guarantee_ranged | tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.kingdom_4,
+        [
+            itm.cartridges,
+            itm.nomad_vest,
+            itm.padded_leather,
+            itm.sword_viking_2_small,
+            itm.wooden_round_shield,
+            itm.arquebus,
+            itm.hide_boots,
+            itm.nordic_footman_helmet,
+        ],
+        str_11 | agi_5 | int_4 | cha_4 | level(15),
+        wp_gun(95, 80),
+        knows_power_strike_1
+        | knows_ironflesh_2
+        | knows_power_draw_1
+        | knows_athletics_5,
+        nord_face_young_1,
+        nord_face_old_2,
+    ],
+    [
+        "nord_shocktrooper",
+        "Nord Shocktrooper",
+        "Nord Shocktroopers",
+        tf_guarantee_ranged
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_shield
+        | tf_guarantee_helmet,
+        0,
+        0,
+        fac.kingdom_4,
+        [
+            itm.cartridges,
+            itm.arquebus,
+            itm.fighting_axe,
+            itm.one_handed_war_axe_b,
+            itm.one_handed_battle_axe_a,
+            itm.plate_covered_round_shield,
+            itm.nordic_helmet,
+            itm.nordic_fighter_helmet,
+            itm.mail_shirt,
+            itm.studded_leather_coat,
+            itm.splinted_leather_greaves,
+            itm.leather_boots,
+            itm.leather_gloves,
+        ],
+        str_12 | agi_5 | int_4 | cha_4 | level(20),
+        wp_gun(115, 100),
+        knows_ironflesh_4 | knows_power_strike_5 | knows_athletics_7 | knows_shield_3,
+        nord_face_young_1,
+        nord_face_older_2,
+    ],
+    [
+        "nord_mounted_archer",
+        "Nord Mounted Archer",
+        "Nord Mounted Archers",
+        tf_mounted
+        | tf_guarantee_ranged
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_horse,
+        0,
+        0,
+        fac.kingdom_4,
+        [
+            itm.bodkin_arrows,
+            itm.sword_viking_2,
+            itm.fighting_axe,
+            itm.fighting_axe_heavy,
+            itm.two_handed_axe,
+            itm.long_bow,
+            itm.mail_shirt,
+            itm.mail_shirt,
+            itm.studded_leather_coat,
+            itm.leather_boots,
+            itm.nordic_archer_helmet,
+            itm.nordic_veteran_archer_helmet,
+            itm.nord_pony,
+        ],
+        str_12 | agi_5 | int_4 | cha_4 | level(20),
+        wp_bow(95, 120),
+        knows_riding_2
+        | knows_power_strike_3
+        | knows_ironflesh_4
+        | knows_power_draw_5
+        | knows_athletics_7,
+        nord_face_middle_1,
+        nord_face_older_2,
+    ],
+    [
+        "nord_cavalry",
+        "Nord Cavalry",
+        "Nord Cavalry",
+        tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_shield
+        | tf_guarantee_helmet
+        | tf_guarantee_horse,
+        0,
+        0,
+        fac.kingdom_4,
+        [
+            itm.sword_viking_3,
+            itm.sword_viking_3_long,
+            itm.two_handed_battle_axe_2,
+            itm.war_spear,
+            itm.tab_shield_round_d,
+            itm.javelin,
+            itm.throwing_axes,
+            itm.nordic_helmet,
+            itm.nordic_fighter_helmet,
+            itm.mail_hauberk,
+            itm.banded_armor,
+            itm.splinted_leather_greaves,
+            itm.mail_chausses,
+            itm.leather_gloves,
+            itm.mail_mittens,
+            itm.warhorse,
+        ],
+        def_attrib | level(25),
+        wp(145),
+        knows_ironflesh_5
+        | knows_power_strike_5
+        | knows_power_throw_4
+        | knows_riding_4
+        | knows_athletics_4
+        | knows_shield_4,
+        nord_face_young_1,
+        nord_face_older_2,
+    ],
+    [
+        "nord_elite",
+        "Nord Berserker",
+        "Nord Berserkers",
+        tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_gloves
+        | tf_guarantee_helmet,
+        0,
+        0,
+        fac.kingdom_4,
+        [
+            itm.long_axe_b,
+            itm.long_axe_c,
+            itm.nordic_huscarl_helmet,
+            itm.nordic_warlord_helmet,
+            itm.cuir_bouilli,
+            itm.mail_boots,
+            itm.mail_mittens,
+        ],
+        def_attrib | level(28),
+        wp(170),
+        knows_ironflesh_7
+        | knows_power_strike_7
+        | knows_power_throw_5
+        | knows_riding_2
+        | knows_athletics_7
+        | knows_shield_6,
         nord_face_middle_1,
         nord_face_older_2,
     ],
@@ -2718,16 +3820,14 @@ troops = [
         wp(130),
         knows_athletics_3 | knows_shield_2 | knows_ironflesh_3,
         nord_face_middle_1,
-        
         nord_face_older_2,
     ],
-    ####################
     # Kingdom of Rhodoks
     ####################
     [
-        "rhodok_tribesman",
-        "Rhodok Tribesman",
-        "Rhodok Tribesmen",
+        "rhodok_recruit",
+        "Rhodok Recruit",
+        "Rhodok Recruits",
         tf_guarantee_boots | tf_guarantee_armor,
         0,
         0,
@@ -2800,12 +3900,7 @@ troops = [
             itm.leather_boots,
         ],
         def_attrib | level(14),
-        wp_one_handed(105)
-        | wp_two_handed(105)
-        | wp_polearm(115)
-        | wp_archery(105)
-        | wp_crossbow(105)
-        | wp_throwing(105),
+        wp_pole(115, 105, 105),
         knows_common
         | knows_ironflesh_3
         | knows_shield_2
@@ -2837,12 +3932,7 @@ troops = [
             itm.leather_gloves,
         ],
         def_attrib | level(19),
-        wp_one_handed(115)
-        | wp_two_handed(115)
-        | wp_polearm(130)
-        | wp_archery(115)
-        | wp_crossbow(115)
-        | wp_throwing(115),
+        wp_pole(130, 115, 115),
         knows_common
         | knows_ironflesh_5
         | knows_shield_3
@@ -2879,12 +3969,7 @@ troops = [
             itm.mail_mittens,
         ],
         def_attrib | level(25),
-        wp_one_handed(130)
-        | wp_two_handed(115)
-        | wp_polearm(155)
-        | wp_archery(115)
-        | wp_crossbow(115)
-        | wp_throwing(115),
+        wpm(130, 115, 155, 115),
         knows_common
         | knows_ironflesh_6
         | knows_shield_5
@@ -2952,12 +4037,7 @@ troops = [
             itm.nomad_boots,
         ],
         def_attrib | level(15),
-        wp_one_handed(90)
-        | wp_two_handed(90)
-        | wp_polearm(90)
-        | wp_archery(90)
-        | wp_crossbow(105)
-        | wp_throwing(90),
+        wp_xbow(90, 105),
         knows_common
         | knows_ironflesh_1
         | knows_shield_2
@@ -2993,12 +4073,7 @@ troops = [
             itm.leather_boots,
         ],
         def_attrib | level(20),
-        wp_one_handed(100)
-        | wp_two_handed(100)
-        | wp_polearm(100)
-        | wp_archery(100)
-        | wp_crossbow(120)
-        | wp_throwing(100),
+        wp_xbow(100, 120),
         knows_common
         | knows_ironflesh_2
         | knows_shield_3
@@ -3033,17 +4108,189 @@ troops = [
             itm.splinted_leather_greaves,
         ],
         str_14 | agi_5 | int_4 | cha_4 | level(25),
-        wp_one_handed(110)
-        | wp_two_handed(110)
-        | wp_polearm(110)
-        | wp_archery(100)
-        | wp_crossbow(140)
-        | wp_throwing(100),
+        wp_xbow(110, 140),
         knows_common
         | knows_ironflesh_3
         | knows_shield_4
         | knows_power_strike_4
         | knows_athletics_6,
+        rhodok_face_middle_1,
+        rhodok_face_older_2,
+    ],
+    [
+        "rhodok_chasseur",
+        "Rhodok Chasseur",
+        "Rhodok Chasseurs",
+        tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet
+        | tf_guarantee_ranged
+        | tf_guarantee_gloves,
+        0,
+        0,
+        fac.kingdom_5,
+        [
+            itm.falchion,
+            itm.arquebus,
+            itm.cartridges,
+            itm.common_hood,
+            itm.leather_armor,
+            itm.nomad_boots,
+        ],
+        def_attrib | level(15),
+        wp_gun(90, 100),
+        knows_common
+        | knows_ironflesh_1
+        | knows_shield_1
+        | knows_power_strike_2
+        | knows_athletics_3,
+        rhodok_face_middle_1,
+        rhodok_face_older_2,
+    ],
+    [
+        "rhodok_lancer",
+        "Rhodok Lancer",
+        "Rhodok Lancers",
+        tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet
+        | tf_guarantee_shield
+        | tf_guarantee_horse,
+        0,
+        0,
+        fac.kingdom_5,
+        [
+            itm.lance,
+            itm.lance,
+            itm.lance,
+            itm.fighting_axe,
+            itm.fighting_pick,
+            itm.military_hammer,
+            itm.wooden_shield,
+            itm.kettle_hat,
+            itm.mail_coif,
+            itm.mail_with_tunic_green,
+            itm.leather_boots,
+            itm.splinted_leather_greaves,
+            itm.leather_gloves,
+            itm.courser,
+        ],
+        def_attrib | level(20),
+        wp_pole(130, 115, 115),
+        knows_common
+        | knows_riding_3
+        | knows_ironflesh_5
+        | knows_shield_3
+        | knows_power_strike_4
+        | knows_athletics_2,
+        rhodok_face_young_1,
+        rhodok_face_older_2,
+    ],
+    [
+        "rhodok_mounted_crossbowman",
+        "Rhodok Mounted Crossbowman",
+        "Rhodok Mounted Crossbowmen",
+        tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet
+        | tf_guarantee_ranged
+        | tf_guarantee_shield
+        | tf_guarantee_horse,
+        0,
+        0,
+        fac.kingdom_5,
+        [
+            itm.sword_medieval_a,
+            itm.sword_medieval_b,
+            itm.fighting_pick,
+            itm.club_with_spike_head,
+            itm.tab_shield_pavise_b,
+            itm.tab_shield_pavise_c,
+            itm.heavy_crossbow,
+            itm.bolts,
+            itm.leather_cap,
+            itm.felt_hat_b,
+            itm.leather_jerkin,
+            itm.leather_boots,
+            itm.courser,
+        ],
+        def_attrib | level(20),
+        wp_xbow(100, 120),
+        knows_common
+        | knows_riding_3
+        | knows_ironflesh_2
+        | knows_shield_3
+        | knows_power_strike_3
+        | knows_athletics_4,
+        rhodok_face_middle_1,
+        rhodok_face_older_2,
+    ],
+    [
+        "rhodok_elite_guard",
+        "Rhodok Honor Guard",
+        "Rhodok Honor Guards",
+        tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet
+        | tf_guarantee_gloves,
+        0,
+        0,
+        fac.kingdom_5,
+        [
+            itm.glaive,
+            itm.bec_de_corbin_a,
+            itm.two_handed_cleaver,
+            itm.full_helm,
+            itm.plate_armor,
+            itm.plate_boots,
+            itm.gauntlets,
+        ],
+        def_attrib | level(25),
+        wpm(130, 115, 155, 115),
+        knows_common
+        | knows_ironflesh_6
+        | knows_shield_5
+        | knows_power_strike_5
+        | knows_athletics_5,
+        rhodok_face_middle_1,
+        rhodok_face_older_2,
+    ],
+    [
+        "rhodok_heavy_crossbowman",
+        "Rhodok Heavy Crossbowman",
+        "Rhodok Heavy Crossbowmen",
+        tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet
+        | tf_guarantee_ranged
+        | tf_guarantee_shield
+        | tf_guarantee_gloves,
+        0,
+        0,
+        fac.kingdom_5,
+        [
+            itm.military_cleaver_c,
+            itm.military_pick,
+            itm.military_hammer,
+            itm.tab_shield_pavise_d,
+            itm.sniper_crossbow,
+            itm.steel_bolts,
+            itm.kettle_hat,
+            itm.bascinet_2,
+            itm.coat_of_plates,
+            itm.mail_chausses,
+            itm.splinted_leather_greaves,
+            itm.leather_gloves,
+        ],
+        str_15 | agi_5 | int_4 | cha_4 | level(25),
+        wp_xbow(110, 140),
+        knows_common
+        | knows_ironflesh_3
+        | knows_shield_5
+        | knows_power_strike_4
+        | knows_athletics_7,
         rhodok_face_middle_1,
         rhodok_face_older_2,
     ],
@@ -3066,8 +4313,8 @@ troops = [
             itm.leather_boots,
             itm.courser,
             itm.leather_gloves,
-            itm.short_bow,
-            itm.arrows,
+            itm.light_crossbow,
+            itm.bolts,
         ],
         def_attrib | agi_21 | level(25),
         wp(130),
@@ -3133,7 +4380,6 @@ troops = [
         rhodok_face_middle_1,
         rhodok_face_older_2,
     ],
-    ####################
     # Sarranid Sultanate
     ####################
     [
@@ -3150,7 +4396,7 @@ troops = [
             itm.pickaxe,
             itm.club,
             itm.stones,
-            itm.tab_shield_heater_a,
+            itm.tab_shield_kite_a,
             itm.sarranid_felt_hat,
             itm.turban,
             itm.sarranid_boots_a,
@@ -3160,8 +4406,8 @@ troops = [
         def_attrib | level(4),
         wp(60),
         knows_common | knows_athletics_1,
-        swadian_face_younger_1,
-        swadian_face_middle_2,
+        sarranid_face_younger_1,
+        sarranid_face_middle_2,
     ],
     [
         "sarranid_footman",
@@ -3184,8 +4430,8 @@ troops = [
         def_attrib | level(9),
         wp(75),
         knows_common | knows_athletics_2,
-        swadian_face_young_1,
-        swadian_face_old_2,
+        sarranid_face_young_1,
+        sarranid_face_old_2,
     ],
     [
         "sarranid_veteran_footman",
@@ -3211,25 +4457,20 @@ troops = [
             itm.mace_3,
         ],
         def_attrib | level(14),
-        wp_one_handed(85)
-        | wp_two_handed(85)
-        | wp_polearm(85)
-        | wp_archery(75)
-        | wp_crossbow(75)
-        | wp_throwing(100),
+        wp_sarranid(85, 75, 100),
         knows_common
         | knows_athletics_2
         | knows_power_throw_2
         | knows_ironflesh_1
         | knows_power_strike_2
         | knows_shield_2,
-        swadian_face_young_1,
-        swadian_face_old_2,
+        sarranid_face_young_1,
+        sarranid_face_old_2,
     ],
     [
         "sarranid_infantry",
         "Sarranid Infantry",
-        "Sarranid Infantries",
+        "Sarranid Infantry",
         tf_guarantee_shield
         | tf_guarantee_boots
         | tf_guarantee_armor
@@ -3250,12 +4491,7 @@ troops = [
             itm.tab_shield_kite_c,
         ],
         def_attrib | level(20),
-        wp_one_handed(105)
-        | wp_two_handed(105)
-        | wp_polearm(105)
-        | wp_archery(75)
-        | wp_crossbow(75)
-        | wp_throwing(110),
+        wp_sarranid(105, 75, 110),
         knows_common
         | knows_riding_3
         | knows_ironflesh_2
@@ -3263,8 +4499,8 @@ troops = [
         | knows_shield_3
         | knows_power_throw_3
         | knows_athletics_3,
-        swadian_face_middle_1,
-        swadian_face_old_2,
+        sarranid_face_middle_1,
+        sarranid_face_old_2,
     ],
     [
         "sarranid_guard",
@@ -3295,20 +4531,15 @@ troops = [
             itm.tab_shield_kite_d,
         ],
         def_attrib | level(25),
-        wp_one_handed(135)
-        | wp_two_handed(135)
-        | wp_polearm(135)
-        | wp_archery(75)
-        | wp_crossbow(75)
-        | wp_throwing(140),
+        wp_sarranid(135, 75, 140),
         knows_common
         | knows_shield_3
         | knows_ironflesh_3
         | knows_power_strike_4
         | knows_power_throw_4
         | knows_athletics_5,
-        swadian_face_middle_1,
-        swadian_face_older_2,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
     ],
     [
         "sarranid_skirmisher",
@@ -3337,8 +4568,8 @@ troops = [
         | knows_power_throw_2
         | knows_ironflesh_1
         | knows_athletics_3,
-        swadian_face_young_1,
-        swadian_face_middle_2,
+        sarranid_face_young_1,
+        sarranid_face_middle_2,
     ],
     [
         "sarranid_archer",
@@ -3349,8 +4580,8 @@ troops = [
         0,
         fac.kingdom_6,
         [
-            itm.arrows,
-            itm.arrows,
+            itm.arrows_cav,
+            itm.arrows_cav,
             itm.nomad_bow,
             itm.arabian_sword_a,
             itm.archers_vest,
@@ -3361,19 +4592,14 @@ troops = [
             itm.desert_turban,
         ],
         def_attrib | level(19),
-        wp_one_handed(90)
-        | wp_two_handed(90)
-        | wp_polearm(90)
-        | wp_archery(100)
-        | wp_crossbow(90)
-        | wp_throwing(100),
+        wp_skirmish(90, 100),
         knows_common
         | knows_power_draw_3
         | knows_ironflesh_2
         | knows_power_throw_3
         | knows_athletics_4,
-        swadian_face_young_1,
-        swadian_face_old_2,
+        sarranid_face_young_1,
+        sarranid_face_old_2,
     ],
     [
         "sarranid_master_archer",
@@ -3400,19 +4626,49 @@ troops = [
             itm.sarranid_mail_coif,
         ],
         str_14 | agi_5 | int_4 | cha_4 | level(24),
-        wp_one_handed(100)
-        | wp_two_handed(100)
-        | wp_polearm(100)
-        | wp_archery(130)
-        | wp_crossbow(100)
-        | wp_throwing(130),
+        wp_skirmish(100, 130),
         knows_common
         | knows_power_draw_4
         | knows_power_throw_4
         | knows_ironflesh_3
         | knows_athletics_5,
-        swadian_face_middle_1,
-        swadian_face_older_2,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
+    ],
+    [
+        "sarranid_raider",
+        "Sarranid Raider",
+        "Sarranid Raiders",
+        tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_horse | tf_mounted,
+        0,
+        0,
+        fac.kingdom_6,
+        [
+            itm.arrows_cav,
+            itm.turban,
+            itm.desert_turban,
+            itm.skirmisher_armor,
+            itm.jarid,
+            itm.jarid,
+            itm.nomad_bow,
+            itm.short_bow,
+            itm.arabian_sword_a,
+            itm.spear,
+            itm.light_lance,
+            itm.tab_shield_small_round_a,
+            itm.sarranid_warrior_cap,
+            itm.sarranid_boots_a,
+            itm.arabian_horse_a,
+        ],
+        def_attrib | level(15),
+        wp(80),
+        knows_common
+        | knows_riding_3
+        | knows_horse_archery_2
+        | knows_power_draw_2
+        | knows_power_throw_2,
+        sarranid_face_young_1,
+        sarranid_face_middle_2,
     ],
     [
         "sarranid_horseman",
@@ -3449,8 +4705,8 @@ troops = [
         | knows_ironflesh_2
         | knows_shield_2
         | knows_power_strike_3,
-        swadian_face_young_1,
-        swadian_face_old_2,
+        sarranid_face_young_1,
+        sarranid_face_old_2,
     ],
     [
         "sarranid_mamluke",
@@ -3470,7 +4726,7 @@ troops = [
             itm.heavy_lance,
             itm.scimitar_b,
             itm.sarranid_two_handed_mace_1,
-            itm.sarranid_cavalry_sword,
+            itm.arabian_sword_c,
             itm.tab_shield_small_round_c,
             itm.mamluke_mail,
             itm.sarranid_boots_d,
@@ -3482,19 +4738,252 @@ troops = [
             itm.mail_mittens,
         ],
         def_attrib | level(27),
-        wp_one_handed(150)
-        | wp_two_handed(130)
-        | wp_polearm(130)
-        | wp_archery(75)
-        | wp_crossbow(75)
-        | wp_throwing(110),
+        wpex(150, 130, 130, 75, 75, 110, 75),
         knows_common
         | knows_riding_6
         | knows_shield_5
         | knows_ironflesh_5
         | knows_power_strike_5,
-        swadian_face_middle_1,
-        swadian_face_older_2,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
+    ],
+    [
+        "sarranid_handgunner",
+        "Sarranid Handgunner",
+        "Sarranid Handgunners",
+        tf_guarantee_ranged | tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.kingdom_6,
+        [
+            itm.cartridges,
+            itm.arquebus,
+            itm.arabian_sword_a,
+            itm.tab_shield_small_round_a,
+            itm.archers_vest,
+            itm.sarranid_boots_b,
+            itm.sarranid_warrior_cap,
+            itm.turban,
+            itm.desert_turban,
+        ],
+        def_attrib | level(19),
+        wp_gun(90, 80),
+        knows_common
+        | knows_power_draw_3
+        | knows_ironflesh_2
+        | knows_power_throw_3
+        | knows_athletics_4,
+        sarranid_face_young_1,
+        sarranid_face_old_2,
+    ],
+    [
+        "sarranid_janissary",
+        "Sarranid Janissary",
+        "Sarranid Janissary",
+        tf_guarantee_ranged
+        | tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet,
+        0,
+        0,
+        fac.kingdom_6,
+        [
+            itm.cartridges,
+            itm.scimitar,
+            itm.scimitar_b,
+            itm.arquebus,
+            itm.tab_shield_small_round_b,
+            itm.arabian_armor_b,
+            itm.sarranid_boots_b,
+            itm.sarranid_boots_d,
+            itm.sarranid_helmet1,
+        ],
+        str_14 | agi_5 | int_4 | cha_4 | level(24),
+        wp_gun(100, 100),
+        knows_common
+        | knows_power_strike_2
+        | knows_power_draw_3
+        | knows_power_throw_3
+        | knows_ironflesh_4
+        | knows_athletics_5,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
+    ],
+    [
+        "sarranid_elite_guard",
+        "Sarranid Immortal",
+        "Sarranid Immortals",
+        tf_mounted
+        | tf_guarantee_shield
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet
+        | tf_guarantee_gloves,
+        0,
+        0,
+        fac.kingdom_6,
+        [
+            itm.military_pick,
+            itm.sarranid_two_handed_axe_a,
+            itm.jarid,
+            itm.jarid,
+            itm.light_throwing_axes,
+            itm.scimitar_b,
+            itm.arabian_sword_d,
+            itm.mace_bronze,
+            itm.sarranid_axe_a,
+            itm.sarranid_axe_b,
+            itm.sarranid_boots_d,
+            itm.sarranid_boots_c,
+            itm.sarranid_elite_armor,
+            itm.sarranid_mail_coif,
+            itm.sarranid_veiled_helmet,
+            itm.lamellar_gauntlets,
+            itm.steel_shield,
+        ],
+        def_attrib | level(26),
+        wp_sarranid(135, 75, 140),
+        knows_common
+        | knows_shield_4
+        | knows_ironflesh_3
+        | knows_power_strike_4
+        | knows_power_throw_4
+        | knows_athletics_7,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
+    ],
+    [
+        "strange_infantry",
+        "Strange Infantry",
+        "Strange Infantry",
+        tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet
+        | tf_guarantee_gloves,
+        0,
+        0,
+        fac.kingdom_6,
+        [
+            itm.military_sickle,
+            itm.military_sickle,
+            itm.strange_great_sword,
+            itm.strange_sword,
+            itm.strange_sword,
+            itm.strange_short_sword,
+            itm.war_spear,
+            itm.shortened_military_scythe,
+            itm.military_scythe,
+            itm.double_sided_lance,
+            itm.ashwood_pike,
+            itm.long_hafted_spiked_mace,
+            itm.hafted_blade_a,
+            itm.hafted_blade_b,
+            itm.military_fork,
+            itm.battle_fork,
+            itm.war_darts,
+            itm.war_darts,
+            itm.throwing_daggers,
+            itm.light_throwing_axes,
+            itm.jarid,
+            itm.jarid,
+            itm.strange_armor,
+            itm.strange_boots,
+            itm.strange_helmet,
+            itm.scale_gauntlets,
+            itm.leather_gloves,
+        ],
+        def_attrib | level(20),
+        wp_sarranid(105, 75, 110),
+        knows_common
+        | knows_riding_3
+        | knows_ironflesh_2
+        | knows_power_strike_3
+        | knows_shield_3
+        | knows_power_throw_3
+        | knows_athletics_3,
+        sarranid_face_middle_1,
+        sarranid_face_old_2,
+    ],
+    [
+        "strange_horseman",
+        "Strange Horseman",
+        "Strange Horsemen",
+        tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet
+        | tf_guarantee_horse
+        | tf_guarantee_gloves,
+        0,
+        0,
+        fac.kingdom_6,
+        [
+            itm.lance,
+            itm.lance,
+            itm.lance,
+            itm.strange_sword,
+            itm.strange_short_sword,
+            itm.darts,
+            itm.darts,
+            itm.strange_armor,
+            itm.strange_boots,
+            itm.strange_helmet,
+            itm.leather_gloves,
+            itm.arabian_horse_a,
+            itm.courser,
+        ],
+        def_attrib | level(21),
+        wp_melee(100),
+        knows_common
+        | knows_riding_4
+        | knows_ironflesh_2
+        | knows_shield_2
+        | knows_power_strike_3,
+        sarranid_face_young_1,
+        sarranid_face_old_2,
+    ],
+    [
+        "strange_cavalry",
+        "Strange Cavalry",
+        "Strange Cavalry",
+        tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_gloves
+        | tf_guarantee_helmet
+        | tf_guarantee_horse
+        | tf_guarantee_shield,
+        0,
+        0,
+        fac.kingdom_6,
+        [
+            itm.heavy_lance,
+            itm.strange_great_sword,
+            itm.strange_sword,
+            itm.strange_short_sword,
+            itm.war_darts,
+            itm.war_darts,
+            itm.strange_armor,
+            itm.strange_boots,
+            itm.strange_helmet,
+            itm.hunter,
+            itm.arabian_horse_b,
+            itm.scale_gauntlets,
+            itm.lamellar_gauntlets,
+        ],
+        def_attrib | level(26),
+        wpex(150, 130, 130, 75, 75, 110, 75),
+        knows_common
+        | knows_riding_6
+        | knows_shield_2
+        | knows_ironflesh_5
+        | knows_power_strike_5
+        | knows_horse_archery_2
+        | knows_power_throw_2,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
     ],
     [
         "sarranid_messenger",
@@ -3508,7 +4997,7 @@ troops = [
         | tf_guarantee_ranged,
         0,
         0,
-        fac.kingdom_6,
+        fac.kingdom_1,
         [
             itm.lance,
             itm.arabian_sword_b,
@@ -3528,8 +5017,8 @@ troops = [
         | knows_ironflesh_2
         | knows_shield_2
         | knows_power_strike_3,
-        swadian_face_young_1,
-        swadian_face_old_2,
+        sarranid_face_young_1,
+        sarranid_face_old_2,
     ],
     [
         "sarranid_prison_guard",
@@ -3541,7 +5030,7 @@ troops = [
         | tf_guarantee_helmet,
         0,
         0,
-        fac.kingdom_6,
+        fac.kingdom_1,
         [
             itm.arabian_sword_b,
             itm.scimitar_b,
@@ -3561,8 +5050,8 @@ troops = [
         def_attrib | level(25),
         wp_melee(135) | wp_throwing(100),
         knows_common | knows_shield_3 | knows_ironflesh_3 | knows_power_strike_3,
-        swadian_face_middle_1,
-        swadian_face_older_2,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
     ],
     [
         "sarranid_castle_guard",
@@ -3574,7 +5063,7 @@ troops = [
         | tf_guarantee_helmet,
         0,
         0,
-        fac.kingdom_6,
+        fac.kingdom_1,
         [
             itm.arabian_sword_b,
             itm.scimitar_b,
@@ -3595,10 +5084,9 @@ troops = [
         def_attrib | level(25),
         wp_melee(135) | wp_throwing(100),
         knows_common | knows_shield_3 | knows_ironflesh_3 | knows_power_strike_3,
-        swadian_face_middle_1,
-        swadian_face_older_2,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
     ],
-    #####################
     # Bandits and Outlaws
     #####################
     [
@@ -3639,7 +5127,7 @@ troops = [
         fac.outlaws,
         [
             itm.arrows,
-            itm.spiked_mace,
+            itm.mace_3,
             itm.sword_viking_1,
             itm.short_bow,
             itm.falchion,
@@ -3668,7 +5156,7 @@ troops = [
         fac.outlaws,
         [
             itm.arrows,
-            itm.spiked_mace,
+            itm.mace_3,
             itm.sword_viking_1,
             itm.falchion,
             itm.wooden_shield,
@@ -3697,7 +5185,7 @@ troops = [
             itm.arrows,
             itm.sword_viking_1,
             itm.spear,
-            itm.winged_mace,
+            itm.mace_4,
             itm.maul,
             itm.falchion,
             itm.short_bow,
@@ -3764,6 +5252,7 @@ troops = [
             itm.sword_viking_1,
             itm.sword_viking_2,
             itm.fighting_axe,
+            itm.fighting_axe_heavy,
             itm.battle_axe,
             itm.spear,
             itm.nordic_shield,
@@ -3806,9 +5295,9 @@ troops = [
         0,
         fac.outlaws,
         [
-            itm.arrows,
+            itm.arrows_cav,
             itm.sword_khergit_1,
-            itm.winged_mace,
+            itm.mace_4,
             itm.spear,
             itm.light_lance,
             itm.nomad_bow,
@@ -3845,9 +5334,9 @@ troops = [
         0,
         fac.outlaws,
         [
-            itm.arrows,
+            itm.arrows_cav,
             itm.sword_khergit_1,
-            itm.winged_mace,
+            itm.mace_4,
             itm.spear,
             itm.light_lance,
             itm.nomad_bow,
@@ -3879,9 +5368,9 @@ troops = [
         0,
         fac.outlaws,
         [
-            itm.arrows,
+            itm.arrows_cav,
             itm.arabian_sword_a,
-            itm.winged_mace,
+            itm.mace_4,
             itm.spear,
             itm.light_lance,
             itm.jarid,
@@ -3902,8 +5391,8 @@ troops = [
         def_attrib | level(12),
         wp(100),
         knows_riding_4 | knows_horse_archery_3 | knows_power_draw_3,
-        khergit_face_young_1,
-        khergit_face_old_2,
+        sarranid_face_young_1,
+        sarranid_face_old_2,
     ],
     [
         "black_khergit_horseman",
@@ -3914,26 +5403,23 @@ troops = [
         0,
         fac.outlaws,
         [
-            itm.arrows,
-            itm.sword_khergit_2,
-            itm.scimitar,
-            itm.scimitar,
-            itm.winged_mace,
+            itm.barbed_arrows,
+            itm.sword_khergit_2b,
+            itm.sword_khergit_2b,
+            itm.sword_khergit_3b,
+            itm.mace_4,
             itm.spear,
             itm.lance,
             itm.khergit_bow,
             itm.khergit_bow,
             itm.nomad_bow,
             itm.nomad_bow,
-            itm.steppe_cap,
-            itm.nomad_cap,
+            itm.leather_warrior_cap,
+            itm.leather_warrior_cap,
             itm.khergit_war_helmet,
             itm.khergit_war_helmet,
-            itm.mail_hauberk,
             itm.lamellar_armor,
-            itm.hide_boots,
-            itm.plate_covered_round_shield,
-            itm.plate_covered_round_shield,
+            itm.khergit_leather_boots,
             itm.saddle_horse,
             itm.steppe_horse,
         ],
@@ -3943,7 +5429,39 @@ troops = [
         khergit_face_young_1,
         khergit_face_old_2,
     ],
-    ############
+    [
+        "black_khergit_guard",
+        "Black Khergit Guard",
+        "Black Khergit Guard",
+        tf_mounted
+        | tf_guarantee_ranged
+        | tf_guarantee_gloves
+        | tf_guarantee_boots
+        | tf_guarantee_helmet
+        | tf_guarantee_armor
+        | tf_guarantee_horse,
+        0,
+        0,
+        fac.outlaws,
+        [
+            itm.khergit_arrows,
+            itm.sword_khergit_3b,
+            itm.sword_khergit_4b,
+            itm.winged_mace,
+            itm.lance,
+            itm.khergit_bow,
+            itm.khergit_guard_helmet,
+            itm.khergit_guard_boots,
+            itm.khergit_guard_armor,
+            itm.lamellar_gauntlets,
+            itm.warhorse_steppe,
+        ],
+        def_attrib | level(28),
+        wp(140),
+        knows_riding_6 | knows_ironflesh_4 | knows_horse_archery_6 | knows_power_draw_6,
+        khergit_face_middle_1,
+        khergit_face_old_2,
+    ],
     # Manhunters
     ############
     [
@@ -3961,7 +5479,7 @@ troops = [
         fac.manhunters,
         [
             itm.mace_3,
-            itm.winged_mace,
+            itm.mace_4,
             itm.nasal_helmet,
             itm.padded_cloth,
             itm.aketon_green,
@@ -3977,16 +5495,90 @@ troops = [
         bandit_face1,
         bandit_face2,
     ],
-    ##  ["deserter","Deserter","Deserters",tf_guarantee_boots|tf_guarantee_armor,0,0,fac.swadian_deserters,
-    ##   [itm.arrows,itm.spear,itm.fighting_pick,itm.short_bow,itm.sword,itm.voulge,itm.nordic_shield,itm.round_shield,itm.kettle_hat,itm.leather_cap,itm.padded_cloth,itm.leather_armor,itm.scale_armor,itm.saddle_horse],
-    ##   def_attrib|level(12),wp(60),knows_common,bandit_face1, bandit_face2],
-    # fac.slavers
-    ##  ["slave_keeper","Slave Keeper","Slave Keepers",tf_guarantee_armor ,0,0,fac.slavers,
-    ##   [itm.cudgel,itm.club,itm.woolen_cap,itm.rawhide_coat,itm.coarse_tunic,itm.nomad_armor,itm.nordic_shield,itm.nomad_boots,itm.wrapping_boots,itm.sumpter_horse],
-    ##   def_attrib|level(10),wp(60),knows_common,bandit_face1, bandit_face2],
-    #########
+    [
+        "bounty_hunter",
+        "Bounty Hunter",
+        "Bounty Hunters",
+        tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet
+        | tf_guarantee_horse
+        | tf_guarantee_shield,
+        0,
+        0,
+        fac.manhunters,
+        [
+            itm.spiked_mace,
+            itm.winged_mace,
+            itm.kettle_hat,
+            itm.mail_shirt,
+            itm.nordic_shield,
+            itm.leather_boots,
+            itm.leather_gloves,
+            itm.hunter,
+        ],
+        def_attrib | level(16),
+        wp(90),
+        knows_common,
+        bandit_face1,
+        bandit_face2,
+    ],
+    [
+        "knight_errant",
+        "Knight Errant",
+        "Knights Errant",
+        tf_mounted | tf_guarantee_all_wo_ranged,
+        0,
+        0,
+        fac.manhunters,
+        [
+            itm.military_hammer,
+            itm.warhammer,
+            itm.jousting_lance,
+            itm.mail_with_surcoat,
+            itm.great_helmet,
+            itm.guard_helmet,
+            itm.mail_mittens,
+            itm.tab_shield_heater_cav_a,
+            itm.mail_chausses,
+            itm.splinted_leather_greaves,
+            itm.warhorse,
+        ],
+        def_attrib | level(22),
+        wp(120),
+        knows_common | knows_riding_4 | knows_power_strike_4,
+        bandit_face1,
+        bandit_face2,
+    ],
     # Slavers
     #########
+    [
+        "slave_keeper",
+        "Slave Keeper",
+        "Slave Keepers",
+        tf_mounted | tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.slavers,
+        [
+            itm.cudgel,
+            itm.club,
+            itm.woolen_cap,
+            itm.rawhide_coat,
+            itm.coarse_tunic,
+            itm.nomad_armor,
+            itm.wooden_round_shield,
+            itm.nomad_boots,
+            itm.wrapping_boots,
+            itm.sumpter_horse,
+        ],
+        def_attrib | level(10),
+        wp(60),
+        knows_common,
+        bandit_face1,
+        bandit_face2,
+    ],
     [
         "slave_driver",
         "Slave Driver",
@@ -4003,7 +5595,7 @@ troops = [
             itm.club_with_spike_head,
             itm.segmented_helmet,
             itm.tribal_warrior_outfit,
-            itm.nordic_shield,
+            itm.leather_covered_round_shield,
             itm.leather_boots,
             itm.leather_gloves,
             itm.khergit_leather_boots,
@@ -4029,11 +5621,11 @@ troops = [
         0,
         fac.slavers,
         [
-            itm.winged_mace,
+            itm.mace_4,
             itm.maul,
-            itm.kettle_hat,
-            itm.mail_shirt,
-            itm.tab_shield_round_c,
+            itm.spiked_helmet,
+            itm.studded_leather_coat,
+            itm.tab_shield_small_round_a,
             itm.leather_boots,
             itm.leather_gloves,
             itm.courser,
@@ -4059,12 +5651,12 @@ troops = [
         fac.slavers,
         [
             itm.sledgehammer,
-            itm.spiked_mace,
+            itm.mace_3,
             itm.mail_hauberk,
             itm.bascinet_2,
             itm.bascinet_3,
             itm.mail_mittens,
-            itm.tab_shield_round_d,
+            itm.tab_shield_small_round_b,
             itm.mail_chausses,
             itm.splinted_leather_greaves,
             itm.hunter,
@@ -4101,22 +5693,23 @@ troops = [
         bandit_face1,
         bandit_face2,
     ],
-    ################
     # Fighting Women
     ################
     [
         "follower_woman",
         "Camp Follower",
         "Camp Follower",
-        tf_female | tf_guarantee_armor,
+        tf_female | tf_guarantee_boots | tf_guarantee_armor,
         0,
         0,
         fac.commoners,
         [
             itm.bolts,
-            itm.light_crossbow,
+            itm.arrows,
+            itm.hunting_bow,
             itm.short_bow,
-            itm.crossbow,
+            itm.hunting_crossbow,
+            itm.light_crossbow,
             itm.nordic_shield,
             itm.hide_covered_round_shield,
             itm.hatchet,
@@ -4132,22 +5725,23 @@ troops = [
         def_attrib | level(5),
         wp(70),
         knows_common,
-        refugee_face1,
-        refugee_face2,
+        woman_face_1,
+        woman_face_2,
     ],
     [
         "hunter_woman",
         "Huntress",
         "Huntresses",
-        tf_female | tf_guarantee_armor,
+        tf_female | tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_ranged,
         0,
         0,
         fac.commoners,
         [
             itm.bolts,
             itm.arrows,
-            itm.light_crossbow,
             itm.short_bow,
+            itm.short_bow,
+            itm.light_crossbow,
             itm.crossbow,
             itm.nordic_shield,
             itm.hide_covered_round_shield,
@@ -4156,36 +5750,32 @@ troops = [
             itm.voulge,
             itm.fighting_pick,
             itm.club,
-            itm.dress,
             itm.leather_jerkin,
+            itm.leather_vest,
             itm.skullcap,
             itm.wrapping_boots,
         ],
         def_attrib | level(10),
         wp(85),
         knows_common | knows_power_strike_1,
-        refugee_face1,
-        refugee_face2,
+        woman_face_1,
+        woman_face_2,
     ],
     [
-        "fighter_woman",
-        "Camp Defender",
-        "Camp Defenders",
-        tf_female | tf_guarantee_boots | tf_guarantee_armor,
+        "ranger_woman",
+        "Ranger",
+        "Rangers",
+        tf_female | tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_ranged,
         0,
         0,
         fac.commoners,
         [
-            itm.bolts,
             itm.arrows,
-            itm.light_crossbow,
             itm.short_bow,
-            itm.crossbow,
-            itm.fur_covered_shield,
+            itm.nordic_shield,
             itm.hide_covered_round_shield,
             itm.hatchet,
             itm.voulge,
-            itm.mail_shirt,
             itm.byrnie,
             itm.skullcap,
             itm.wrapping_boots,
@@ -4194,11 +5784,111 @@ troops = [
         wp(100),
         knows_common
         | knows_riding_3
+        | knows_power_draw_2
+        | knows_power_strike_1
+        | knows_athletics_2
+        | knows_ironflesh_1,
+        woman_face_1,
+        woman_face_2,
+    ],
+    [
+        "shield_maiden",
+        "Shield Maiden",
+        "Shield Maidens",
+        tf_female
+        | tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_gloves
+        | tf_guarantee_shield
+        | tf_guarantee_ranged
+        | tf_guarantee_horse,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.bodkin_arrows_cav,
+            itm.sword_viking_2,
+            itm.sword_khergit_2,
+            itm.tab_shield_round_e,
+            itm.strong_bow,
+            itm.banded_armor,
+            itm.splinted_leather_greaves,
+            itm.nordic_warlord_helmet,
+            itm.nordic_huscarl_helmet,
+            itm.courser,
+            itm.leather_gloves,
+        ],
+        def_attrib | level(22),
+        wp(140),
+        knows_common
+        | knows_power_draw_3
+        | knows_horse_archery_2
+        | knows_riding_5
+        | knows_athletics_3
+        | knows_ironflesh_1
+        | knows_power_strike_1,
+        woman_face_1,
+        woman_face_2,
+    ],
+    [
+        "fighter_woman",
+        "Defender",
+        "Defenders",
+        tf_female | tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_ranged,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.bolts,
+            itm.light_crossbow,
+            itm.crossbow,
+            itm.nordic_shield,
+            itm.wooden_shield,
+            itm.sword_medieval_a,
+            itm.shortened_spear,
+            itm.mail_shirt,
+            itm.skullcap,
+            itm.hide_boots,
+        ],
+        def_attrib | level(16),
+        wp(100),
+        knows_common
+        | knows_riding_3
         | knows_power_strike_2
         | knows_athletics_2
         | knows_ironflesh_1,
-        refugee_face1,
-        refugee_face2,
+        woman_face_1,
+        woman_face_2,
+    ],
+    [
+        "chukonu_woman",
+        "Sentinel",
+        "Sentinels",
+        tf_female | tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_ranged,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.bolts,
+            itm.rpt_crossbow,
+            itm.nordic_shield,
+            itm.wooden_shield,
+            itm.sword_medieval_a,
+            itm.shortened_spear,
+            itm.mail_shirt,
+            itm.skullcap,
+            itm.hide_boots,
+        ],
+        def_attrib | level(16),
+        wp(100),
+        knows_common
+        | knows_riding_3
+        | knows_power_strike_2
+        | knows_athletics_2
+        | knows_ironflesh_1,
+        woman_face_1,
+        woman_face_2,
     ],
     [
         "sword_sister",
@@ -4210,6 +5900,7 @@ troops = [
         | tf_guarantee_armor
         | tf_guarantee_gloves
         | tf_guarantee_shield
+        | tf_guarantee_ranged
         | tf_guarantee_horse,
         0,
         0,
@@ -4218,6 +5909,7 @@ troops = [
             itm.bolts,
             itm.sword_medieval_b,
             itm.sword_khergit_3,
+            itm.arabian_sword_c,
             itm.plate_covered_round_shield,
             itm.tab_shield_small_round_c,
             itm.crossbow,
@@ -4237,36 +5929,11 @@ troops = [
         | knows_athletics_3
         | knows_ironflesh_2
         | knows_shield_2,
-        refugee_face1,
-        refugee_face2,
+        woman_face_1,
+        woman_face_2,
     ],
-    [
-        "refugee",
-        "Refugee",
-        "Refugees",
-        tf_female | tf_guarantee_armor,
-        0,
-        0,
-        fac.commoners,
-        [
-            itm.knife,
-            itm.pitch_fork,
-            itm.sickle,
-            itm.hatchet,
-            itm.club,
-            itm.dress,
-            itm.robe,
-            itm.woolen_dress,
-            itm.headcloth,
-            itm.woolen_hood,
-            itm.wrapping_boots,
-        ],
-        def_attrib | level(1),
-        wp(45),
-        knows_common,
-        refugee_face1,
-        refugee_face2,
-    ],
+    # Civilians
+    ###########
     [
         "peasant_woman",
         "Peasant Woman",
@@ -4290,8 +5957,35 @@ troops = [
         def_attrib | level(1),
         wp(40),
         knows_common,
-        refugee_face1,
-        refugee_face2,
+        woman_face_1,
+        woman_face_2,
+    ],
+    [
+        "townswoman",
+        "Townswoman",
+        "Townswomen",
+        tf_female | tf_guarantee_armor,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.knife,
+            itm.dagger,
+            itm.sickle,
+            itm.hatchet,
+            itm.club,
+            itm.dress,
+            itm.robe,
+            itm.woolen_dress,
+            itm.headcloth,
+            itm.woolen_hood,
+            itm.wrapping_boots,
+        ],
+        def_attrib | level(1),
+        wp(45),
+        knows_common,
+        woman_face_1,
+        woman_face_2,
     ],
     [
         "caravan_master",
@@ -4305,9 +5999,6 @@ troops = [
             itm.sword_medieval_c,
             itm.fur_coat,
             itm.hide_boots,
-            itm.saddle_horse,
-            itm.saddle_horse,
-            itm.saddle_horse,
             itm.saddle_horse,
             itm.leather_jacket,
             itm.leather_cap,
@@ -4336,7 +6027,7 @@ troops = [
     ],
     # This troop is the troop marked as town_walkers_begin
     [
-        "town_walker_1",
+        "town_walker_m",
         "Townsman",
         "Townsmen",
         tf_guarantee_boots | tf_guarantee_armor,
@@ -4373,7 +6064,7 @@ troops = [
         man_face_old_2,
     ],
     [
-        "town_walker_2",
+        "town_walker_f",
         "Townswoman",
         "Townswomen",
         tf_female | tf_guarantee_boots | tf_guarantee_armor,
@@ -4398,29 +6089,264 @@ troops = [
         woman_face_2,
     ],
     [
-        "khergit_townsman",
+        "town_walker_1_m",
         "Townsman",
         "Townsmen",
         tf_guarantee_boots | tf_guarantee_armor,
         0,
         0,
-        fac.kingdom_6,
+        fac.commoners,
         [
-            itm.sarranid_felt_hat,
-            itm.turban,
-            itm.wrapping_boots,
-            itm.khergit_leather_boots,
-            itm.sarranid_cloth_robe,
-            itm.sarranid_cloth_robe_b,
+            itm.short_tunic,
+            itm.red_tunic,
+            itm.green_tunic,
+            itm.blue_tunic,
+            itm.arena_tunic_yellow,
+            itm.arena_tunic_white,
+            itm.tabard,
+            itm.leather_apron,
+            itm.gambeson,
+            itm.blue_gambeson,
+            itm.red_gambeson,
+            itm.woolen_hose,
+            itm.blue_hose,
+            itm.hide_boots,
+            itm.ankle_boots,
+            itm.leather_boots,
+            itm.leather_cap,
+            itm.straw_hat,
+            itm.felt_hat,
+            itm.felt_hat_b,
         ],
         def_attrib | level(4),
         wp(60),
         knows_common,
         swadian_face_younger_1,
-        swadian_face_middle_2,
+        swadian_face_old_2,
     ],
     [
-        "khergit_townswoman",
+        "town_walker_1_f",
+        "Townswoman",
+        "Townswomen",
+        tf_female | tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.blue_dress,
+            itm.dress,
+            itm.woolen_dress,
+            itm.woolen_hose,
+            itm.blue_hose,
+            itm.wimple_a,
+            itm.wimple_with_veil,
+            itm.female_hood,
+        ],
+        def_attrib | level(2),
+        wp(40),
+        knows_common,
+        swadian_woman_face_younger_1,
+        swadian_woman_face_old_2,
+    ],
+    [
+        "town_walker_2_m",
+        "Townsman",
+        "Townsmen",
+        tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.linen_tunic,
+            itm.fur_coat,
+            itm.coarse_tunic,
+            itm.nomad_vest,
+            itm.leather_vest,
+            itm.shirt,
+            itm.leather_jacket,
+            itm.nomad_boots,
+            itm.hide_boots,
+            itm.leather_boots,
+            itm.fur_hat,
+            itm.fur_hat,
+            itm.fur_hat,
+            itm.leather_cap,
+        ],
+        def_attrib | level(4),
+        wp(60),
+        knows_common,
+        vaegir_face_younger_1,
+        vaegir_face_old_2,
+    ],
+    [
+        "town_walker_2_f",
+        "Townswoman",
+        "Townswomen",
+        tf_female | tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.linen_tunic,
+            itm.woolen_dress,
+            itm.peasant_dress,
+            itm.hide_boots,
+            itm.blue_hose,
+        ],
+        def_attrib | level(2),
+        wp(40),
+        knows_common,
+        vaegir_woman_face_younger_1,
+        vaegir_woman_face_old_2,
+    ],
+    [
+        "town_walker_3_m",
+        "Townsman",
+        "Townsmen",
+        tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.headcloth,
+            itm.wrapping_boots,
+            itm.khergit_leather_boots,
+            itm.linen_tunic,
+            itm.leather_vest,
+            itm.nomad_vest,
+            itm.robe,
+            itm.leather_jacket,
+        ],
+        def_attrib | level(4),
+        wp(60),
+        knows_common,
+        khergit_face_younger_1,
+        khergit_face_old_2,
+    ],
+    [
+        "town_walker_3_f",
+        "Townswoman",
+        "Townswomen",
+        tf_female | tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.leather_vest,
+            itm.woolen_dress,
+            itm.wrapping_boots,
+            itm.khergit_leather_boots,
+            itm.headcloth,
+            itm.headcloth,
+            itm.headcloth,
+        ],
+        def_attrib | level(2),
+        wp(40),
+        knows_common,
+        khergit_woman_face_younger_1,
+        khergit_woman_face_old_2,
+    ],
+    [
+        "town_walker_4_m",
+        "Townsman",
+        "Townsmen",
+        tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.coarse_tunic,
+            itm.leather_jacket,
+            itm.nomad_vest,
+            itm.leather_apron,
+            itm.linen_tunic,
+            itm.arena_tunic_white,
+            itm.arena_tunic_green,
+            itm.arena_tunic_blue,
+            itm.arena_tunic_red,
+            itm.arena_tunic_yellow,
+            itm.gambeson,
+            itm.blue_gambeson,
+            itm.red_gambeson,
+            itm.woolen_hose,
+            itm.nomad_boots,
+            itm.blue_hose,
+            itm.hide_boots,
+            itm.leather_boots,
+        ],
+        def_attrib | level(4),
+        wp(60),
+        knows_common,
+        nord_face_younger_1,
+        nord_face_old_2,
+    ],
+    [
+        "town_walker_4_f",
+        "Townswoman",
+        "Townswomen",
+        tf_female | tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.blue_dress,
+            itm.woolen_dress,
+            itm.peasant_dress,
+            itm.nomad_vest,
+            itm.linen_tunic,
+            itm.hide_boots,
+            itm.leather_boots,
+            itm.blue_hose,
+        ],
+        def_attrib | level(2),
+        wp(40),
+        knows_common,
+        nord_woman_face_younger_1,
+        nord_woman_face_old_2,
+    ],
+    [
+        "town_walker_5_m",
+        "Townsman",
+        "Townsmen",
+        tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.short_tunic,
+            itm.linen_tunic,
+            itm.leather_jacket,
+            itm.coarse_tunic,
+            itm.tabard,
+            itm.leather_apron,
+            itm.arena_tunic_white,
+            itm.arena_tunic_green,
+            itm.arena_tunic_blue,
+            itm.arena_tunic_red,
+            itm.arena_tunic_yellow,
+            itm.gambeson,
+            itm.blue_gambeson,
+            itm.red_gambeson,
+            itm.woolen_hose,
+            itm.nomad_boots,
+            itm.blue_hose,
+            itm.hide_boots,
+            itm.ankle_boots,
+            itm.leather_boots,
+            itm.straw_hat,
+            itm.leather_cap,
+            itm.straw_hat,
+            itm.felt_hat_b,
+            itm.felt_hat_b,
+        ],
+        def_attrib | level(4),
+        wp(60),
+        knows_common,
+        rhodok_face_younger_1,
+        rhodok_face_old_2,
+    ],
+    [
+        "town_walker_5_f",
         "Townswoman",
         "Townswomen",
         tf_female | tf_guarantee_boots | tf_guarantee_armor,
@@ -4436,38 +6362,47 @@ troops = [
             itm.blue_hose,
             itm.wimple_a,
             itm.wimple_with_veil,
+            itm.woolen_hood,
             itm.female_hood,
+            itm.straw_hat,
+            itm.straw_hat,
         ],
         def_attrib | level(2),
         wp(40),
         knows_common,
-        woman_face_1,
-        woman_face_2,
+        rhodok_woman_face_younger_1,
+        rhodok_woman_face_old_2,
     ],
     [
-        "sarranid_townsman",
+        "town_walker_6_m",
         "Townsman",
         "Townsmen",
         tf_guarantee_boots | tf_guarantee_armor,
         0,
         0,
-        fac.kingdom_6,
+        fac.commoners,
         [
             itm.sarranid_felt_hat,
             itm.turban,
             itm.wrapping_boots,
             itm.sarranid_boots_a,
+            itm.sarranid_boots_b,
             itm.sarranid_cloth_robe,
             itm.sarranid_cloth_robe_b,
+            itm.robe,
+            itm.sarranid_cloth_robe,
+            itm.sarranid_cloth_robe_b,
+            itm.sarranid_cloth_robe,
+            itm.tunic_with_green_cape,
         ],
         def_attrib | level(4),
         wp(60),
         knows_common,
-        swadian_face_younger_1,
-        swadian_face_middle_2,
+        sarranid_face_younger_1,
+        sarranid_face_old_2,
     ],
     [
-        "sarranid_townswoman",
+        "town_walker_6_f",
         "Townswoman",
         "Townswomen",
         tf_female | tf_guarantee_boots | tf_guarantee_armor,
@@ -4477,7 +6412,6 @@ troops = [
         [
             itm.sarranid_common_dress,
             itm.sarranid_common_dress_b,
-            itm.woolen_hose,
             itm.sarranid_boots_a,
             itm.sarranid_felt_head_cloth,
             itm.sarranid_felt_head_cloth_b,
@@ -4485,19 +6419,27 @@ troops = [
         def_attrib | level(2),
         wp(40),
         knows_common,
-        woman_face_1,
-        woman_face_2,
+        sarranid_woman_face_younger_1,
+        sarranid_woman_face_old_2,
     ],
     # This troop is the troop marked as town_walkers_end and village_walkers_begin
     [
-        "village_walker_1",
-        "Villager",
-        "Villagers",
+        "village_walker_m",
+        "Peasant",
+        "Peasants",
         tf_guarantee_boots | tf_guarantee_armor,
         0,
         0,
         fac.commoners,
         [
+            itm.cleaver,
+            itm.knife,
+            itm.pitch_fork,
+            itm.sickle,
+            itm.scythe,
+            itm.staff,
+            itm.club,
+            itm.stones,
             itm.short_tunic,
             itm.linen_tunic,
             itm.coarse_tunic,
@@ -4514,6 +6456,7 @@ troops = [
             itm.leather_cap,
             itm.straw_hat,
             itm.felt_hat,
+            itm.woolen_cap,
         ],
         def_attrib | level(4),
         wp(60),
@@ -4522,15 +6465,21 @@ troops = [
         man_face_older_2,
     ],
     [
-        "village_walker_2",
-        "Villager",
-        "Villagers",
+        "village_walker_f",
+        "Peasant Woman",
+        "Peasant Women",
         tf_female | tf_guarantee_boots | tf_guarantee_armor,
         0,
         0,
         fac.commoners,
         [
-            itm.blue_dress,
+            itm.knife,
+            itm.sickle,
+            itm.staff,
+            itm.hatchet,
+            itm.club,
+            itm.stones,
+            itm.stones,
             itm.dress,
             itm.woolen_dress,
             itm.peasant_dress,
@@ -4546,9 +6495,275 @@ troops = [
         woman_face_1,
         woman_face_2,
     ],
+    [
+        "village_walker_1_m",
+        "Swadian Peasant",
+        "Swadian Peasants",
+        tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.kingdom_1,
+        [
+            itm.scythe,
+            itm.pitch_fork,
+            itm.staff,
+            itm.hatchet,
+            itm.pickaxe,
+            itm.club,
+            itm.stones,
+            itm.coarse_tunic,
+            itm.leather_apron,
+            itm.shirt,
+            itm.nomad_boots,
+            itm.hide_boots,
+            itm.wrapping_boots,
+            itm.wrapping_boots,
+            itm.felt_hat,
+            itm.leather_cap,
+            itm.straw_hat,
+            itm.felt_hat,
+            itm.woolen_cap,
+        ],
+        def_attrib | level(4),
+        wp(60),
+        knows_common,
+        swadian_face_younger_1,
+        swadian_face_old_2,
+    ],
+    [
+        "village_walker_2_m",
+        "Vaegir Peasant",
+        "Vaegir Peasants",
+        tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.kingdom_2,
+        [
+            itm.scythe,
+            itm.staff,
+            itm.hatchet,
+            itm.cudgel,
+            itm.axe,
+            itm.stones,
+            itm.linen_tunic,
+            itm.coarse_tunic,
+            itm.leather_vest,
+            itm.leather_apron,
+            itm.shirt,
+            itm.nomad_boots,
+            itm.hide_boots,
+            itm.hunter_boots,
+            itm.fur_hat,
+            itm.leather_cap,
+            itm.woolen_cap,
+        ],
+        def_attrib | level(4),
+        wp(60),
+        knows_common,
+        vaegir_face_younger_1,
+        vaegir_face_old_2,
+    ],
+    [
+        "village_walker_3_m",
+        "Khergit Villager",
+        "Khergit Villagers",
+        tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.kingdom_3,
+        [
+            itm.arrows,
+            itm.wooden_stick,
+            itm.mace_1,
+            itm.staff,
+            itm.hunting_bow,
+            itm.butchering_knife,
+            itm.hatchet,
+            itm.axe,
+            itm.leather_steppe_cap_a,
+            itm.nomad_cap_b,
+            itm.woolen_cap,
+            itm.wrapping_boots,
+            itm.nomad_boots,
+            itm.hunter_boots,
+            itm.khergit_leather_boots,
+            itm.pelt_coat,
+            itm.leather_vest,
+            itm.nomad_armor,
+            itm.khergit_armor,
+            itm.rawhide_coat,
+            itm.shirt,
+        ],
+        def_attrib | level(5),
+        wp(50),
+        knows_common | knows_power_draw_1,
+        khergit_face_younger_1,
+        khergit_face_old_2,
+    ],
+    [
+        "village_walker_3_f",
+        "Village Woman",
+        "Village Women",
+        tf_female | tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.arrows,
+            itm.arrows,
+            itm.wooden_stick,
+            itm.staff,
+            itm.hunting_bow,
+            itm.hunting_bow,
+            itm.butchering_knife,
+            itm.sickle,
+            itm.leather_vest,
+            itm.shirt,
+            itm.sarranid_common_dress_b,
+            itm.wrapping_boots,
+            itm.khergit_leather_boots,
+            itm.headcloth,
+            itm.headcloth,
+            itm.headcloth,
+        ],
+        def_attrib | level(3),
+        wp(40),
+        knows_common | knows_power_draw_1,
+        khergit_woman_face_younger_1,
+        khergit_woman_face_middle_2,
+    ],
+    [
+        "village_walker_4_m",
+        "Nord Peasant",
+        "Nord Peasants",
+        tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.kingdom_4,
+        [
+            itm.hatchet,
+            itm.hatchet,
+            itm.axe,
+            itm.axe,
+            itm.pitch_fork,
+            itm.sickle,
+            itm.scythe,
+            itm.staff,
+            itm.club,
+            itm.red_tunic,
+            itm.green_tunic,
+            itm.blue_tunic,
+            itm.coarse_tunic,
+            itm.coarse_tunic,
+            itm.leather_apron,
+            itm.shirt,
+            itm.nomad_boots,
+            itm.hide_boots,
+            itm.wrapping_boots,
+            itm.hunter_boots,
+        ],
+        def_attrib | level(5),
+        wp(60),
+        knows_common | knows_power_strike_1,
+        nord_face_younger_1,
+        nord_face_old_2,
+    ],
+    [
+        "village_walker_5_m",
+        "Rhodok Peasant",
+        "Rhodok Peasants",
+        tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.kingdom_5,
+        [
+            itm.pitch_fork,
+            itm.pitch_fork,
+            itm.pitch_fork,
+            itm.scythe,
+            itm.staff,
+            itm.red_tunic,
+            itm.green_tunic,
+            itm.blue_tunic,
+            itm.linen_tunic,
+            itm.coarse_tunic,
+            itm.coarse_tunic,
+            itm.coarse_tunic,
+            itm.shirt,
+            itm.wrapping_boots,
+            itm.wrapping_boots,
+            itm.nomad_boots,
+            itm.nomad_boots,
+            itm.hide_boots,
+            itm.straw_hat,
+            itm.straw_hat,
+        ],
+        def_attrib | level(4),
+        wp(55),
+        knows_common | knows_ironflesh_1,
+        rhodok_face_younger_1,
+        rhodok_face_old_2,
+    ],
+    [
+        "village_walker_6_m",
+        "Sarranid Villager",
+        "Sarranid Villagers",
+        tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.kingdom_6,
+        [
+            itm.scythe,
+            itm.hatchet,
+            itm.pickaxe,
+            itm.club,
+            itm.stones,
+            itm.sarranid_felt_hat,
+            itm.turban,
+            itm.desert_turban,
+            itm.wrapping_boots,
+            itm.sarranid_boots_a,
+            itm.sarranid_cloth_robe,
+            itm.sarranid_cloth_robe_b,
+            itm.tunic_with_green_cape,
+        ],
+        def_attrib | level(4),
+        wp(60),
+        knows_common,
+        sarranid_face_younger_1,
+        sarranid_face_old_2,
+    ],
+    [
+        "village_walker_6_f",
+        "Village Woman",
+        "Village Women",
+        tf_female | tf_guarantee_boots | tf_guarantee_armor,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.staff,
+            itm.sickle,
+            itm.knife,
+            itm.butchering_knife,
+            itm.stones,
+            itm.stones,
+            itm.stones,
+            itm.sarranid_common_dress,
+            itm.sarranid_common_dress_b,
+            itm.sarranid_boots_a,
+            itm.sarranid_felt_head_cloth,
+            itm.sarranid_felt_head_cloth_b,
+        ],
+        def_attrib | level(2),
+        wp(40),
+        knows_common,
+        sarranid_woman_face_younger_1,
+        sarranid_woman_face_middle_2,
+    ],
     # This troop is the troop marked as village_walkers_end and spy_walkers_begin
     [
-        "spy_walker_1",
+        "spy_walker_m",
         "Townsman",
         "Townsmen",
         tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_helmet,
@@ -4559,11 +6774,15 @@ troops = [
             itm.short_tunic,
             itm.linen_tunic,
             itm.coarse_tunic,
-            itm.tabard,
-            itm.leather_vest,
-            itm.robe,
             itm.leather_apron,
-            itm.shirt,
+            itm.arena_tunic_white,
+            itm.arena_tunic_green,
+            itm.arena_tunic_blue,
+            itm.arena_tunic_red,
+            itm.arena_tunic_yellow,
+            itm.gambeson,
+            itm.blue_gambeson,
+            itm.red_gambeson,
             itm.woolen_hose,
             itm.nomad_boots,
             itm.blue_hose,
@@ -4574,15 +6793,18 @@ troops = [
             itm.leather_cap,
             itm.straw_hat,
             itm.felt_hat,
+            itm.felt_hat_b,
+            itm.common_hood,
+            itm.woolen_cap,
         ],
         def_attrib | level(4),
         wp(60),
         knows_common,
-        man_face_middle_1,
-        man_face_old_2,
+        mercenary_face_1,
+        mercenary_face_2,
     ],
     [
-        "spy_walker_2",
+        "spy_walker_f",
         "Townswoman",
         "Townswomen",
         tf_female | tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_helmet,
@@ -4598,7 +6820,98 @@ troops = [
             itm.blue_hose,
             itm.wimple_a,
             itm.wimple_with_veil,
+            itm.woolen_hood,
             itm.female_hood,
+        ],
+        def_attrib | level(2),
+        wp(40),
+        knows_common,
+        woman_face_1,
+        woman_face_2,
+    ],
+    [
+        "spy_walker_3_m",
+        "Townsman",
+        "Townsmen",
+        tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_helmet,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.headcloth,
+            itm.wrapping_boots,
+            itm.khergit_leather_boots,
+            itm.leather_vest,
+            itm.robe,
+        ],
+        def_attrib | level(4),
+        wp(60),
+        knows_common,
+        mercenary_face_1,
+        mercenary_face_2,
+    ],
+    [
+        "spy_walker_3_f",
+        "Townswoman",
+        "Townswomen",
+        tf_female | tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_helmet,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.leather_vest,
+            itm.woolen_dress,
+            itm.wrapping_boots,
+            itm.khergit_leather_boots,
+            itm.headcloth,
+        ],
+        def_attrib | level(2),
+        wp(40),
+        knows_common,
+        woman_face_1,
+        woman_face_2,
+    ],
+    [
+        "spy_walker_6_m",
+        "Townsman",
+        "Townsmen",
+        tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_helmet,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.sarranid_felt_hat,
+            itm.turban,
+            itm.desert_turban,
+            itm.wrapping_boots,
+            itm.sarranid_boots_a,
+            itm.sarranid_boots_b,
+            itm.sarranid_cloth_robe,
+            itm.sarranid_cloth_robe_b,
+            itm.robe,
+            itm.sarranid_cloth_robe,
+            itm.sarranid_cloth_robe_b,
+        ],
+        def_attrib | level(4),
+        wp(60),
+        knows_common,
+        mercenary_face_1,
+        mercenary_face_2,
+    ],
+    [
+        "spy_walker_6_f",
+        "Townswoman",
+        "Townswomen",
+        tf_female | tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_helmet,
+        0,
+        0,
+        fac.commoners,
+        [
+            itm.sarranid_common_dress,
+            itm.sarranid_common_dress_b,
+            itm.sarranid_boots_a,
+            itm.sarranid_felt_head_cloth,
+            itm.sarranid_felt_head_cloth_b,
         ],
         def_attrib | level(2),
         wp(40),
@@ -4612,84 +6925,139 @@ troops = [
     [
         "tournament_master",
         "Tournament Master",
-        "Tournament Master",
+        "{!}Tournament Master",
         tf_hero,
-        scn.zendar_center | entry(1),
+        scn.zendar_center | entry(8),
         reserved,
         fac.commoners,
-        [itm.nomad_armor, itm.nomad_boots],
+        [itm.nomad_armor, itm.falchion, itm.nomad_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        0x000000000008414401E28F534C8A2D09,
-    ],
-    [
-        "trainer",
-        "Trainer",
-        "Trainer",
-        tf_hero,
-        scn.zendar_center | entry(2),
-        reserved,
-        fac.commoners,
-        [itm.leather_jerkin, itm.hide_boots],
-        def_attrib | level(2),
-        wp(20),
-        knows_common,
-        0x00000000000430C701EA98836781647F,
+        0x000000088B0005113B5646C91B8E329C00000000001CB6D20000000000000000,
     ],
     [
         "constable_hareck",
         "Constable Hareck",
-        "Constable Hareck",
+        "{!}Constable Hareck",
         tf_hero,
-        scn.zendar_center | entry(5),
+        scn.zendar_center | entry(11),
         reserved,
-        fac.commoners,
-        [itm.leather_jacket, itm.hide_boots],
+        fac.neutral,
+        [itm.mail_with_surcoat, itm.mace_2, itm.leather_boots],
         def_attrib | level(5),
         wp(20),
         knows_common,
-        0x00000000000C41C001FB15234EB6DD3F,
+        0x0000000D7D00521348AD655B225AB51C00000000001DBA9D0000000000000000,
     ],
-    # Ryan BEGIN
     [
-        "ramun_the_slave_trader",
-        "Ramun, the slave trader",
-        "Ramun, the slave trader",
+        "mercenary_master",
+        "Mercenary Master",
+        "{!}Mercenary Master",
         tf_hero,
-        no_scene,
+        scn.zendar_center | entry(13),
         reserved,
         fac.commoners,
-        [itm.leather_jacket, itm.hide_boots],
-        def_attrib | level(5),
+        [itm.leather_jerkin, itm.sword_viking_1, itm.hide_boots],
+        def_attrib | level(2),
         wp(20),
         knows_common,
-        0x0000000FD5105592385281C55B8E44EB00000000001D9B220000000000000000,
+        0x000000018200410627953194B256446500000000000D3CEB0000000000000000,
     ],
     [
-        "guide",
-        "Quick Jimmy",
-        "Quick Jimmy",
-        tf_hero,
-        no_scene,
+        "zendar_armorer",
+        "Armorer",
+        "{!}Zendar Armorer",
+        tf_hero | tf_female | tf_is_merchant,
+        scn.zendar_center | entry(9),
         0,
         fac.commoners,
-        [itm.coarse_tunic, itm.hide_boots],
+        [itm.aketon_green, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        0x00000000000C318301F24E38A36E38E3,
+        0x000000079F0010067ADC95CA5C663D1900000000001E28660000000000000000,
     ],
-    # Ryan END
+    [
+        "zendar_weaponsmith",
+        "Weaponsmith",
+        "{!}Zendar Weaponsmith",
+        tf_hero | tf_is_merchant,
+        scn.zendar_center | entry(10),
+        0,
+        fac.commoners,
+        [itm.leather_apron, itm.wrapping_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_inventory_management_10,
+        0x000000043D00501433A449A8EB9A5759000000000012A8740000000000000000,
+    ],
+    [
+        "zendar_horse_merchant",
+        "Horse Merchant",
+        "{!}Zendar Horse Merchant",
+        tf_hero | tf_is_merchant,
+        scn.zendar_center | entry(12),
+        0,
+        fac.commoners,
+        [itm.coarse_tunic, itm.straw_hat, itm.hide_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_inventory_management_10,
+        0x0000000FDD00761232E22A559DB64C1900000000001D28F40000000000000000,
+    ],
+    [
+        "zendar_merchant",
+        "Pawnbroker",
+        "{!}Zendar Merchant",
+        tf_hero | tf_is_merchant,
+        scn.zendar_merchant | entry(9),
+        0,
+        fac.commoners,
+        [itm.rich_outfit, itm.ankle_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_inventory_management_10,
+        0x0000000D7F0001521CCA5B326D48A74E00000000001E3AEE0000000000000000,
+    ],
+    [
+        "zendar_bodger",
+        "Bodger",
+        "{!}Zendar Bodger",
+        tf_hero | tf_is_merchant,
+        scn.zendar_bodger | entry(9),
+        0,
+        fac.commoners,
+        [itm.leather_apron, itm.ankle_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_inventory_management_10,
+        0x00000009BF005393575B67448B68B55400000000001DEA9C0000000000000000,
+    ],
+    [
+        "zendar_tavernkeeper",
+        "Tavern Keeper",
+        "{!}Tavern Keeper",
+        tf_hero | tf_randomize_face | tf_female,
+        scn.the_happy_boar | entry(9),
+        0,
+        fac.commoners,
+        [itm.peasant_dress, itm.hide_boots],
+        def_attrib | level(2),
+        wp(20),
+        knows_common,
+        woman_face_1,
+        woman_face_2,
+    ],
     [
         "xerina",
         "Xerina",
         "Xerina",
         tf_hero | tf_female,
-        scn.the_happy_boar | entry(5),
+        scn.the_happy_boar | entry(14),
         reserved,
         fac.commoners,
-        [itm.leather_jerkin, itm.hide_boots],
+        [itm.leather_jerkin, itm.sword_medieval_c_small, itm.hide_boots],
         def_attrib | str_15 | agi_15 | level(39),
         wp(312),
         knows_power_strike_5
@@ -4705,10 +7073,10 @@ troops = [
         "Dranton",
         "Dranton",
         tf_hero,
-        scn.the_happy_boar | entry(2),
+        scn.the_happy_boar | entry(12),
         reserved,
         fac.commoners,
-        [itm.leather_vest, itm.hide_boots],
+        [itm.leather_vest, itm.sword_khergit_3, itm.hide_boots],
         def_attrib | str_15 | agi_14 | level(42),
         wp(324),
         knows_power_strike_5
@@ -4724,10 +7092,10 @@ troops = [
         "Kradus",
         "Kradus",
         tf_hero,
-        scn.the_happy_boar | entry(3),
+        scn.the_happy_boar | entry(13),
         reserved,
         fac.commoners,
-        [itm.padded_leather, itm.hide_boots],
+        [itm.padded_leather, itm.bastard_sword_a, itm.hide_boots],
         def_attrib | str_15 | agi_14 | level(43),
         wp(270),
         knows_power_strike_5
@@ -4737,6 +7105,367 @@ troops = [
         | knows_athletics_4
         | knows_shield_3,
         0x0000000F5B1052C61CE1A9521DB1375200000000001ED31B0000000000000000,
+    ],
+    [
+        "fight_promoter",
+        "Rough-Looking Guy",
+        "Rough-Looking Guy",
+        tf_hero | tf_randomize_face,
+        scn.the_happy_boar | entry(10),
+        0,
+        fac.commoners,
+        [itm.nomad_vest, itm.nomad_boots, itm.woolen_cap, itm.spiked_club],
+        def_attrib | str_20 | agi_16 | level(20),
+        wp(180),
+        knows_common | knows_power_strike_5 | knows_ironflesh_3,
+        bandit_face1,
+        bandit_face2,
+    ],
+    # Salt mine
+    [
+        "barezan",
+        "Barezan",
+        "Barezan",
+        tf_hero | tf_is_merchant,
+        scn.salt_mine | entry(9),
+        reserved,
+        fac.commoners,
+        [itm.leather_apron, itm.hammer, itm.leather_boots],
+        def_attrib | level(2),
+        wp(20),
+        knows_inventory_management_10,
+        0x0000000BFF0061533AC3DDB722965EDD00000000001D24F20000000000000000,
+    ],
+    [
+        "galeas",
+        "Galeas",
+        "Galeas",
+        tf_hero,
+        scn.salt_mine | entry(10),
+        reserved,
+        fac.slavers,
+        [itm.leather_jacket, itm.mace_3, itm.khergit_leather_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_common,
+        0x0000000FF100610524D671A71C674B0B00000000001DB5090000000000000000,
+    ],
+    # Dhorak keep
+    [
+        "sister_tajel",
+        "Sister Tajel",
+        "{!}Sister Tajel",
+        tf_hero | tf_female,
+        scn.dhorak_keep | entry(11),
+        0,
+        fac.manhunters,
+        [itm.blue_dress, itm.arabian_sword_b, itm.wimple_a, itm.blue_hose],
+        def_attrib | level(5),
+        wp(20),
+        knows_common,
+        0x0000000019000004177D30D6A350123500000000001E476A0000000000000000,
+    ],
+    [
+        "sister_yuna",
+        "Sister Yuna",
+        "{!}Sister Yuna",
+        tf_hero | tf_female,
+        scn.dhorak_keep | entry(8),
+        0,
+        fac.manhunters,
+        [itm.mail_shirt, itm.morningstar_short, itm.mail_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_common,
+        0x000000003F00300660129E26016204D000000000001E08210000000000000000,
+    ],
+    [
+        "dhorak_armorer",
+        "Armorer",
+        "{!}Dhorak Keep Armorer",
+        tf_hero | tf_female | tf_is_merchant,
+        scn.dhorak_keep | entry(9),
+        0,
+        fac.commoners,
+        [itm.leather_apron, itm.leather_gloves, itm.leather_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_inventory_management_10,
+        0x000000002F0020024E6428C4DAB23AA400000000001F67590000000000000000,
+    ],
+    [
+        "dhorak_weaponsmith",
+        "Weaponsmith",
+        "{!}Dhorak Keep Weaponsmith",
+        tf_hero | tf_female | tf_is_merchant,
+        scn.dhorak_keep | entry(10),
+        0,
+        fac.commoners,
+        [itm.leather_jerkin, itm.hide_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_inventory_management_10,
+        0x0000000A4600200435338CB5328D448A00000000001E48E30000000000000000,
+    ],
+    [
+        "dhorak_horse_merchant",
+        "Horse Merchant",
+        "{!}Dhorak Keep Horse Merchant",
+        tf_hero | tf_is_merchant | tf_female,
+        scn.dhorak_keep | entry(12),
+        0,
+        fac.commoners,
+        [itm.peasant_dress, itm.wimple_a, itm.nomad_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_inventory_management_10,
+        0x0000000A7B0010034499A9B69D4AB32300000000001D470C0000000000000000,
+    ],
+    # Four Ways Inn
+    [
+        "four_ways_guide",
+        "Quick Jimmy",
+        "{!}Quick Jimmy",
+        tf_hero,
+        scn.four_ways_inn | entry(11),
+        0,
+        fac.outlaws,
+        [itm.coarse_tunic, itm.butchering_knife, itm.leather_boots],
+        def_attrib | level(2),
+        wp(20),
+        knows_inventory_management_10,
+        0x0000000D400025D176C26A371DB1E87400000000001C57550000000000000000,
+    ],
+    [
+        "four_ways_armorer",
+        "Armorer",
+        "{!}Four Ways Inn Armorer",
+        tf_hero | tf_is_merchant,
+        scn.four_ways_inn | entry(9),
+        0,
+        fac.commoners,
+        [itm.tribal_warrior_outfit, itm.hide_boots],
+        def_attrib | level(2),
+        wp(20),
+        knows_inventory_management_10,
+        0x0000000B7500730B1A9E5224EB92DAEC000000000012C4AB0000000000000000,
+    ],
+    [
+        "four_ways_weaponsmith",
+        "Weaponsmith",
+        "{!}Four Ways Inn Weaponsmith",
+        tf_hero | tf_is_merchant,
+        scn.four_ways_inn | entry(10),
+        0,
+        fac.commoners,
+        [itm.leather_jerkin, itm.nomad_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_inventory_management_10,
+        0x0000000B620003073B22862D1499D89B00000000001DB7630000000000000000,
+    ],
+    [
+        "four_ways_horse_merchant",
+        "Horse Merchant",
+        "{!}Four Ways Inn Horse Merchant",
+        tf_hero | tf_is_merchant,
+        scn.four_ways_inn | entry(12),
+        0,
+        fac.commoners,
+        [itm.pelt_coat, itm.knife, itm.wrapping_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_inventory_management_10,
+        0x0000000B7C00054316AC6E25A56DCC6900000000001E19110000000000000000,
+    ],
+    [
+        "four_ways_bandit_chief",
+        "Ronnie the Sly",
+        "{!}Bandit Chief",
+        tf_hero,
+        scn.the_smiling_fox | entry(8),
+        0,
+        fac.outlaws,
+        [itm.nomad_vest, itm.sword_viking_1, itm.nomad_boots],
+        def_attrib | level(2),
+        wp(20),
+        knows_common,
+        0x0000000AFF0000CB64AC5247655A570C00000000001F69250000000000000000,
+    ],
+    [
+        "four_ways_tavernkeeper",
+        "Tavern Keeper",
+        "{!}Tavern Keeper",
+        tf_hero | tf_randomize_face | tf_female,
+        scn.the_smiling_fox | entry(9),
+        0,
+        fac.commoners,
+        [itm.peasant_dress, itm.blue_hose],
+        def_attrib | level(2),
+        wp(20),
+        knows_common,
+        woman_face_1,
+        woman_face_2,
+    ],
+    [
+        "four_ways_bouncer",
+        "Bouncer",
+        "{!}Bouncer",
+        tf_hero | tf_randomize_face,
+        scn.the_smiling_fox | entry(10),
+        0,
+        fac.outlaws,
+        [itm.nomad_armor, itm.mace_1, itm.nomad_boots],
+        def_attrib | level(2),
+        wp(20),
+        knows_common,
+        bandit_face1,
+        bandit_face2,
+    ],
+    [
+        "four_ways_owner",
+        "Smiling Louie",
+        "{!}Smiling Louie",
+        tf_hero,
+        scn.the_smiling_fox | entry(11),
+        0,
+        fac.slavers,
+        [itm.leather_jacket, itm.dagger, itm.khergit_leather_boots],
+        def_attrib | level(2),
+        wp(20),
+        knows_common,
+        0x0000000ACF001094489E73CB15B7A2A400000000001DAA6B0000000000000000,
+    ],
+    [
+        "four_ways_barmaid_1",
+        "Barmaid",
+        "{!}Barmaid",
+        tf_hero | tf_female | tf_randomize_face,
+        scn.the_smiling_fox | entry(12),
+        0,
+        fac.commoners,
+        [itm.red_dress, itm.woolen_hose],
+        def_attrib | level(2),
+        wp(20),
+        knows_common,
+        swadian_woman_face_younger_1,
+        swadian_woman_face_young_2,
+    ],
+    [
+        "four_ways_barmaid_2",
+        "Barmaid",
+        "{!}Barmaid",
+        tf_hero | tf_female | tf_randomize_face,
+        scn.the_smiling_fox | entry(13),
+        0,
+        fac.commoners,
+        [itm.brown_dress, itm.woolen_hose],
+        def_attrib | level(2),
+        wp(20),
+        knows_common,
+        vaegir_woman_face_younger_1,
+        vaegir_woman_face_young_2,
+    ],
+    [
+        "four_ways_barmaid_3",
+        "Barmaid",
+        "{!}Barmaid",
+        tf_hero | tf_female | tf_randomize_face,
+        scn.the_smiling_fox | entry(14),
+        0,
+        fac.commoners,
+        [itm.green_dress, itm.blue_hose],
+        def_attrib | level(2),
+        wp(20),
+        knows_common,
+        khergit_woman_face_younger_1,
+        khergit_woman_face_young_2,
+    ],
+    [
+        "four_ways_barmaid_4",
+        "Barmaid",
+        "{!}Barmaid",
+        tf_hero | tf_female | tf_randomize_face,
+        scn.the_smiling_fox | entry(15),
+        0,
+        fac.commoners,
+        [itm.blue_dress, itm.blue_hose],
+        def_attrib | level(2),
+        wp(20),
+        knows_common,
+        nord_woman_face_younger_1,
+        nord_woman_face_young_2,
+    ],
+    [
+        "four_ways_smuggler_1",
+        "Alhazar",
+        "{!}Smuggler",
+        tf_hero | tf_is_merchant,
+        0,
+        reserved,
+        fac.commoners,
+        [itm.robe, itm.headcloth, itm.khergit_leather_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_common,
+        0x00000007360061C0375C8D395C99320C00000000001D56EC0000000000000000,
+    ],
+    [
+        "four_ways_smuggler_2",
+        "Cheng Zhen",
+        "{!}Smuggler",
+        tf_hero | tf_is_merchant,
+        0,
+        reserved,
+        fac.commoners,
+        [itm.fur_coat, itm.hide_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_common,
+        0x0000000D3F00438B221E70B44360A8C400000000001DC6FF0000000000000000,
+    ],
+    [
+        "four_ways_smuggler_3",
+        "Hanzo",
+        "{!}Smuggler",
+        tf_hero | tf_is_merchant,
+        0,
+        reserved,
+        fac.commoners,
+        [itm.steppe_armor, itm.woolen_cap, itm.nomad_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_common,
+        0x0000000FEC00600A3CCD55C6919AB69B00000000001CA88B0000000000000000,
+    ],
+    [
+        "four_ways_smuggler_4",
+        "Fortunato",
+        "{!}Smuggler",
+        tf_hero | tf_is_merchant,
+        0,
+        reserved,
+        fac.commoners,
+        [itm.pilgrim_disguise, itm.pilgrim_hood, itm.wrapping_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_common,
+        0x000000047F0020CF3D1EAA2B5CD1BB1B00000000001E48920000000000000000,
+    ],
+    # Stays in Thir for now...
+    [
+        "ramun",
+        "Ramun",
+        "Ramun",
+        tf_hero,
+        no_scene,
+        reserved,
+        fac.slavers,
+        [itm.leather_jacket, itm.club, itm.hide_boots],
+        def_attrib | level(5),
+        wp(20),
+        knows_common,
+        0x0000000FD5105592385281C55B8E44EB00000000001D9B220000000000000000,
     ],
     # Tutorial
     [
@@ -4751,7 +7480,7 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        0x000000000008414401E28F534C8A2D09,
+        0x0000000D600023D168EB8E485CCA230C00000000000E594A0000000000000000,
     ],
     [
         "tutorial_student_1",
@@ -4847,24 +7576,6 @@ troops = [
         swadian_face_young_1,
         swadian_face_old_2,
     ],
-    # Sargoth
-    # halkard, hardawk. lord_taucard lord_caupard. lord_paugard
-    # Salt mine
-    [
-        "galeas",
-        "Galeas",
-        "Galeas",
-        tf_hero,
-        0,
-        reserved,
-        fac.commoners,
-        [itm.leather_jacket, itm.hide_boots],
-        def_attrib | level(5),
-        wp(20),
-        knows_common,
-        0x000000000004718201C073191A9BB10C,
-    ],
-    # Dhorak keep
     [
         "farmer_from_bandit_village",
         "Farmer",
@@ -5258,6 +7969,127 @@ troops = [
         merchant_face_1,
         merchant_face_2,
     ],
+    # Tavern captain.
+    [
+        "tavern_captain_1",
+        "Captain Leif",
+        "Leif",
+        tf_hero | tf_randomize_face,
+        0,
+        reserved,
+        fac.commoners,
+        [itm.byrnie, itm.leather_boots, itm.one_handed_battle_axe_a],
+        def_attrib | level(5),
+        wp(60),
+        knows_tracker_npc,
+        nord_face_middle_1,
+        nord_face_old_2,
+    ],
+    [
+        "tavern_captain_2",
+        "Captain Ulfyn",
+        "Ulfyn",
+        tf_hero | tf_randomize_face,
+        0,
+        reserved,
+        fac.commoners,
+        [itm.leather_jerkin, itm.hide_boots, itm.one_handed_war_axe_a],
+        def_attrib | level(5),
+        wp(60),
+        knows_tracker_npc,
+        nord_face_old_1,
+        nord_face_older_2,
+    ],
+    [
+        "tavern_captain_5",
+        "Captain Andreo",
+        "Andreo",
+        tf_hero | tf_randomize_face,
+        0,
+        reserved,
+        fac.commoners,
+        [itm.short_tunic, itm.felt_hat_b, itm.hide_boots, itm.falchion],
+        def_attrib | level(5),
+        wp(60),
+        knows_tracker_npc,
+        rhodok_face_middle_1,
+        rhodok_face_old_2,
+    ],
+    [
+        "tavern_captain_6",
+        "Captain Heiko",
+        "Heiko",
+        tf_hero | tf_randomize_face,
+        0,
+        reserved,
+        fac.commoners,
+        [itm.gambeson, itm.ankle_boots, itm.sword_medieval_c],
+        def_attrib | level(5),
+        wp(60),
+        knows_tracker_npc,
+        swadian_face_middle_1,
+        swadian_face_old_2,
+    ],
+    [
+        "tavern_captain_12",
+        "Captain Gundrid",
+        "Gundrid",
+        tf_hero | tf_female | tf_randomize_face,
+        0,
+        reserved,
+        fac.commoners,
+        [itm.nomad_vest, itm.nomad_boots, itm.sword_viking_2],
+        def_attrib | level(5),
+        wp(60),
+        knows_tracker_npc,
+        nord_woman_face_middle_1,
+        nord_woman_face_old_2,
+    ],
+    [
+        "tavern_captain_13",
+        "Captain Pjotr",
+        "Pjotr",
+        tf_hero | tf_randomize_face,
+        0,
+        reserved,
+        fac.commoners,
+        [itm.fur_coat, itm.fur_hat, itm.hide_boots, itm.sword_khergit_2],
+        def_attrib | level(5),
+        wp(60),
+        knows_tracker_npc,
+        vaegir_face_old_1,
+        vaegir_face_older_2,
+    ],
+    [
+        "tavern_captain_15",
+        "Captain Marco",
+        "Marco",
+        tf_hero | tf_randomize_face,
+        0,
+        reserved,
+        fac.commoners,
+        [itm.leather_jacket, itm.hide_boots, itm.sword_medieval_b_small],
+        def_attrib | level(5),
+        wp(60),
+        knows_tracker_npc,
+        rhodok_face_old_1,
+        rhodok_face_older_2,
+    ],
+    [
+        "tavern_captain_19",
+        "Captain Hannu",
+        "Hannu",
+        tf_hero | tf_randomize_face,
+        0,
+        reserved,
+        fac.commoners,
+        [itm.archers_vest, itm.headcloth, itm.sarranid_boots_a, itm.scimitar],
+        def_attrib | level(5),
+        wp(60),
+        knows_tracker_npc,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
+    ],
     # Tavern traveler.
     [
         "tavern_bookseller_1",
@@ -5327,7 +8159,7 @@ troops = [
         knows_common,
         merchant_face_1,
         merchant_face_2,
-    ],  # lute
+    ],
     [
         "tavern_minstrel_2",
         "Wandering Bard",
@@ -5346,7 +8178,7 @@ troops = [
         knows_common,
         merchant_face_1,
         merchant_face_2,
-    ],  # early harp/lyre
+    ],
     [
         "tavern_minstrel_3",
         "Wandering Ashik",
@@ -5365,7 +8197,7 @@ troops = [
         knows_common,
         merchant_face_1,
         merchant_face_2,
-    ],  # lute/oud or rebab
+    ],
     [
         "tavern_minstrel_4",
         "Wandering Skald",
@@ -5384,7 +8216,7 @@ troops = [
         knows_common,
         merchant_face_1,
         merchant_face_2,
-    ],  # No instrument or lyre
+    ],
     [
         "tavern_minstrel_5",
         "Wandering Troubadour",
@@ -5403,7 +8235,7 @@ troops = [
         knows_common,
         merchant_face_1,
         merchant_face_2,
-    ],  # Lute or Byzantine/Occitan lyra
+    ],
     # NPC system changes begin
     # Companions
     [
@@ -5437,7 +8269,7 @@ troops = [
         | knows_pathfinding_3
         | knows_athletics_2
         | knows_tracking_1
-        | knows_riding_2,  # skills 2/3 player at that level
+        | knows_riding_2,
         0x00000004BF086143259D061A9046E23500000000001DB52C0000000000000000,
     ],
     [
@@ -5783,7 +8615,7 @@ troops = [
             itm.gauntlets,
             itm.military_pick,
             itm.tab_shield_kite_cav_b,
-            itm.vaegir_mask,
+            itm.vaegir_war_mask,
         ],
         knight_attrib_5,
         wp(220),
@@ -5880,14 +8712,14 @@ troops = [
             itm.sarranid_boots_c,
             itm.sarranid_mail_coif,
             itm.mail_mittens,
-            itm.sarranid_cavalry_sword,
+            itm.arabian_sword_c,
             itm.tab_shield_small_round_c,
         ],
         knight_attrib_4,
         wp(220),
         knight_skills_5 | knows_trainer_5,
-        0x0000000A4B103354189C71D6D386E8AC00000000001E24EB0000000000000000,
-        rhodok_face_old_2,
+        0x0000000A4B107354189C71D6D386E8AC00000000001E24EB0000000000000000,
+        sarranid_face_old_2,
     ],
     #    Imbrea   Belinda Ruby Qaelmas Rose    Willow
     #  Alin  Ganzo            Zelka Rabugti
@@ -6100,7 +8932,6 @@ troops = [
         0x0000000C330855054AA9AA431A48D74600000000001ED5240000000000000000,
         swadian_face_older_2,
     ],
-    # Swadian younger knights
     [
         "knight_1_9",
         "Count Plais",
@@ -6907,7 +9738,6 @@ troops = [
         0x0000000F800021C63B0A6E4994AE272A00000000001DB4E10000000000000000,
         vaegir_face_older_2,
     ],
-    # khergit civilian clothes: itm.leather_vest, itm.nomad_vest, itm.nomad_robe, itm.lamellar_vest,itm.tribal_warrior_outfit
     [
         "knight_3_1",
         "Alagur Noyan",
@@ -8459,14 +11289,14 @@ troops = [
             itm.sarranid_warrior_cap,
             itm.leather_gloves,
             itm.heavy_lance,
-            itm.sarranid_cavalry_sword,
+            itm.arabian_sword_c,
             itm.tab_shield_small_round_c,
         ],
         knight_attrib_1,
         wp(130),
         knight_skills_1 | knows_trainer_3,
-        0x00000000600C2084486195383349EAE500000000001D16A30000000000000000,
-        rhodok_face_middle_2,
+        0x00000000600C7084486195383349EAE500000000001D16A30000000000000000,
+        sarranid_face_middle_2,
     ],
     [
         "knight_6_2",
@@ -8491,8 +11321,8 @@ troops = [
         knight_attrib_2,
         wp(160),
         knight_skills_2 | knows_trainer_4,
-        0x00000001380825D444CB68B92B8D3B1D00000000001DD71E0000000000000000,
-        rhodok_face_old_2,
+        0x00000001380875D444CB68B92B8D3B1D00000000001DD71E0000000000000000,
+        sarranid_face_old_2,
     ],
     [
         "knight_6_3",
@@ -8514,8 +11344,8 @@ troops = [
         knight_attrib_3,
         wp(190),
         knight_skills_3,
-        0x000000002208428579723147247AD4E500000000001F14D40000000000000000,
-        rhodok_face_older_2,
+        0x000000002208728579723147247AD4E500000000001F14D40000000000000000,
+        sarranid_face_older_2,
     ],
     [
         "knight_6_4",
@@ -8530,7 +11360,7 @@ troops = [
             itm.sarranid_mail_shirt,
             itm.sarranid_boots_c,
             itm.sarranid_mail_coif,
-            itm.sarranid_cavalry_sword,
+            itm.arabian_sword_c,
             itm.lamellar_gauntlets,
             itm.lance,
             itm.tab_shield_small_round_c,
@@ -8538,8 +11368,8 @@ troops = [
         knight_attrib_4,
         wp(220),
         knight_skills_4,
-        0x00000009BF084285050CAA7D285BE51A00000000001D11010000000000000000,
-        rhodok_face_older_2,
+        0x00000009BF087285050CAA7D285BE51A00000000001D11010000000000000000,
+        sarranid_face_older_2,
     ],
     [
         "knight_6_5",
@@ -8560,8 +11390,8 @@ troops = [
         knight_attrib_5,
         wp(250),
         knight_skills_5,
-        0x000000002A084003330175AAE175DA9C00000000001E02150000000000000000,
-        rhodok_face_older_2,
+        0x000000002A087003330175AAE175DA9C00000000001E02150000000000000000,
+        sarranid_face_older_2,
     ],
     [
         "knight_6_6",
@@ -8578,14 +11408,14 @@ troops = [
             itm.splinted_greaves,
             itm.sarranid_helmet1,
             itm.lance,
-            itm.sarranid_cavalry_sword,
+            itm.arabian_sword_c,
             itm.tab_shield_small_round_c,
         ],
         knight_attrib_1,
         wp(130),
         knight_skills_1,
-        0x00000001830043834733294C89B128E200000000001259510000000000000000,
-        rhodok_face_middle_2,
+        0x00000001830073834733294C89B128E200000000001259510000000000000000,
+        sarranid_face_middle_2,
     ],
     [
         "knight_6_7",
@@ -8600,15 +11430,15 @@ troops = [
             itm.sarranid_mail_shirt,
             itm.sarranid_boots_c,
             itm.sarranid_mail_coif,
-            itm.sarranid_cavalry_sword,
+            itm.arabian_sword_c,
             itm.lamellar_gauntlets,
             itm.tab_shield_small_round_c,
         ],
         knight_attrib_2,
         wp(160),
         knight_skills_2,
-        0x0000000CBF10434020504BBBDA9135D500000000001F62380000000000000000,
-        rhodok_face_old_2,
+        0x0000000CBF10734020504BBBDA9135D500000000001F62380000000000000000,
+        sarranid_face_old_2,
     ],
     [
         "knight_6_8",
@@ -8626,14 +11456,14 @@ troops = [
             itm.sarranid_helmet1,
             itm.military_pick,
             itm.lance,
-            itm.sarranid_cavalry_sword,
+            itm.arabian_sword_c,
             itm.tab_shield_small_round_c,
         ],
         knight_attrib_3,
         wp(190),
         knight_skills_3 | knows_trainer_3,
-        0x0000000190044003336DCD3CA2CACAE300000000001F47640000000000000000,
-        rhodok_face_older_2,
+        0x0000000190047003336DCD3CA2CACAE300000000001F47640000000000000000,
+        sarranid_face_older_2,
     ],
     [
         "knight_6_9",
@@ -8655,8 +11485,8 @@ troops = [
         knight_attrib_4,
         wp(220),
         knight_skills_4 | knows_trainer_6,
-        0x0000000DDE0040C4549DD5CA6F4DD56500000000001E291B0000000000000000,
-        rhodok_face_older_2,
+        0x0000000DDE0070C4549DD5CA6F4DD56500000000001E291B0000000000000000,
+        sarranid_face_older_2,
     ],
     [
         "knight_6_10",
@@ -8674,14 +11504,14 @@ troops = [
             itm.sarranid_helmet1,
             itm.lamellar_gauntlets,
             itm.lance,
-            itm.sarranid_cavalry_sword,
+            itm.arabian_sword_c,
             itm.tab_shield_small_round_c,
         ],
         knight_attrib_5,
         wp(250),
         knight_skills_5 | knows_trainer_4,
-        0x00000001A60441C66CE99256B4AD4B3300000000001D392C0000000000000000,
-        rhodok_face_older_2,
+        0x00000001A60471C66CE99256B4AD4B3300000000001D392C0000000000000000,
+        sarranid_face_older_2,
     ],
     [
         "knight_6_11",
@@ -8704,8 +11534,8 @@ troops = [
         knight_attrib_1,
         wp(130),
         knight_skills_1,
-        0x0000000FFF08134726C28AF8DC96E4DA00000000001E541D0000000000000000,
-        rhodok_face_middle_2,
+        0x0000000FFF08734726C28AF8DC96E4DA00000000001E541D0000000000000000,
+        sarranid_face_middle_2,
     ],
     [
         "knight_6_12",
@@ -8728,8 +11558,8 @@ troops = [
         knight_attrib_2,
         wp(160),
         knight_skills_2 | knows_trainer_5,
-        0x0000000035104084635B74BA5491A7A400000000001E46D60000000000000000,
-        rhodok_face_old_2,
+        0x0000000035107084635B74BA5491A7A400000000001E46D60000000000000000,
+        sarranid_face_old_2,
     ],
     [
         "knight_6_13",
@@ -8752,8 +11582,8 @@ troops = [
         knight_attrib_3,
         wp(190),
         knight_skills_3,
-        0x00000000001021435B734D4AD94EBA9400000000001EB8EB0000000000000000,
-        rhodok_face_older_2,
+        0x00000000001071435B734D4AD94EBA9400000000001EB8EB0000000000000000,
+        sarranid_face_older_2,
     ],
     [
         "knight_6_14",
@@ -8770,14 +11600,14 @@ troops = [
             itm.sarranid_boots_c,
             itm.sarranid_mail_coif,
             itm.lance,
-            itm.sarranid_cavalry_sword,
+            itm.arabian_sword_c,
             itm.tab_shield_small_round_c,
         ],
         knight_attrib_4,
         wp(220),
         knight_skills_4,
-        0x000000000C0C45C63A5B921AC22DB8E200000000001CCA530000000000000000,
-        rhodok_face_older_2,
+        0x000000000C0C75C63A5B921AC22DB8E200000000001CCA530000000000000000,
+        sarranid_face_older_2,
     ],
     [
         "knight_6_15",
@@ -8799,8 +11629,8 @@ troops = [
         knight_attrib_5,
         wp(250),
         knight_skills_5,
-        0x000000001B0C4185369A6938CECDE95600000000001F25210000000000000000,
-        rhodok_face_older_2,
+        0x000000001B0C7185369A6938CECDE95600000000001F25210000000000000000,
+        sarranid_face_older_2,
     ],
     [
         "knight_6_16",
@@ -8824,8 +11654,8 @@ troops = [
         knight_attrib_1,
         wp(120),
         knight_skills_1,
-        0x00000007770841C80A01E1C5EB51FFFF00000000001F12D80000000000000000,
-        rhodok_face_middle_2,
+        0x00000007770871C80A01E1C5EB51FFFF00000000001F12D80000000000000000,
+        sarranid_face_middle_2,
     ],
     [
         "knight_6_17",
@@ -8842,14 +11672,14 @@ troops = [
             itm.sarranid_boots_c,
             itm.sarranid_mail_coif,
             itm.leather_gloves,
-            itm.sarranid_cavalry_sword,
+            itm.arabian_sword_c,
             itm.tab_shield_small_round_c,
         ],
         knight_attrib_2,
         wp(150),
         knight_skills_2,
-        0x000000007F0462C32419F47A1ABA8BCF00000000001E7E090000000000000000,
-        rhodok_face_old_2,
+        0x000000007F0472C32419F47A1ABA8BCF00000000001E7E090000000000000000,
+        sarranid_face_old_2,
     ],
     [
         "knight_6_18",
@@ -8872,8 +11702,8 @@ troops = [
         knight_attrib_3,
         wp(180),
         knight_skills_3,
-        0x000000003410410070D975CAAC91ACA500000000001C27530000000000000000,
-        rhodok_face_older_2,
+        0x000000003410710070D975CAAC91ACA500000000001C27530000000000000000,
+        sarranid_face_older_2,
     ],
     [
         "knight_6_19",
@@ -8897,8 +11727,8 @@ troops = [
         knight_attrib_4,
         wp(210),
         knight_skills_4 | knows_trainer_5,
-        0x000000018A08618016AC36BC8B6E4A9900000000001DD45D0000000000000000,
-        rhodok_face_older_2,
+        0x000000018A08718016AC36BC8B6E4A9900000000001DD45D0000000000000000,
+        sarranid_face_older_2,
     ],
     [
         "knight_6_20",
@@ -8915,14 +11745,14 @@ troops = [
             itm.sarranid_boots_c,
             itm.sarranid_veiled_helmet,
             itm.lance,
-            itm.sarranid_cavalry_sword,
+            itm.arabian_sword_c,
             itm.tab_shield_small_round_c,
         ],
         knight_attrib_5,
         wp(240),
         knight_skills_5 | knows_trainer_6,
-        0x00000001BD0040C0281A899AC956B94B00000000001EC8910000000000000000,
-        rhodok_face_older_2,
+        0x00000001BD0070C0281A899AC956B94B00000000001EC8910000000000000000,
+        sarranid_face_older_2,
     ],
     [
         "kingdom_1_pretender",
@@ -8947,7 +11777,6 @@ troops = [
         knight_skills_5,
         0x00000000EF00000237DC71B90C31631200000000001E371B0000000000000000,
     ],
-    # claims pre-salic descent
     [
         "kingdom_2_pretender",
         "Prince Valdym the Bastard",
@@ -8972,7 +11801,6 @@ troops = [
         0x00000000200412142452ED631B30365C00000000001C94E80000000000000000,
         vaegir_face_middle_2,
     ],
-    # had his patrimony falsified
     [
         "kingdom_3_pretender",
         "Dustum Khan",
@@ -8997,7 +11825,6 @@ troops = [
         0x000000065504310B30D556B51238F66100000000001C256D0000000000000000,
         khergit_face_middle_2,
     ],
-    # of the family
     [
         "kingdom_4_pretender",
         "Lethwin Far-Seeker",
@@ -9022,7 +11849,6 @@ troops = [
         0x00000004340C01841D89949529A6776A00000000001C910A0000000000000000,
         nord_face_young_2,
     ],
-    # dispossessed and wronged
     [
         "kingdom_5_pretender",
         "Lord Kastor of Veluca",
@@ -9047,7 +11873,6 @@ troops = [
         0x0000000BED1031051DA9ABC49ECCE25E00000000001E98680000000000000000,
         rhodok_face_old_2,
     ],
-    # republican
     [
         "kingdom_6_pretender",
         "Arwa the Pearled One",
@@ -9060,29 +11885,15 @@ troops = [
             itm.arabian_horse_b,
             itm.sarranid_mail_shirt,
             itm.sarranid_boots_c,
-            itm.sarranid_cavalry_sword,
+            itm.arabian_sword_c,
             itm.tab_shield_small_round_c,
         ],
         lord_attrib,
         wp(220),
         knight_skills_5,
-        0x000000050B003004072D51C293A9A70B00000000001DD6A90000000000000000,
+        0x000000050B004004072D51C293A9A70B00000000001DD6A90000000000000000,
     ],
     # Royal family members
-    [
-        "knight_1_1_wife",
-        "Error - knight_1_1_wife should not appear in game",
-        "knight_1_1_wife",
-        tf_hero | tf_female | tf_unmoveable_in_party_window,
-        0,
-        reserved,
-        fac.commoners,
-        [itm.lady_dress_ruby, itm.turret_hat_ruby, itm.leather_boots],
-        def_attrib | level(2),
-        wp(50),
-        knows_common | knows_riding_2,
-        0x000000055910200107632D675A92B92D00000000001E45620000000000000000,
-    ],
     # Swadian ladies - eight mothers, eight daughters, four sisters
     [
         "kingdom_1_lady_1",
@@ -9370,7 +12181,6 @@ troops = [
         knows_common | knows_riding_2,
         swadian_woman_face_2,
     ],
-    # Vaegir ladies
     [
         "kingdom_2_lady_1",
         "Lady Junitha",
@@ -10030,7 +12840,7 @@ troops = [
         0x00000000000C000469A4D5CDA4B1349C00000000001CD6600000000000000000,
     ],
     [
-        "knight_4_2b_daughter_1",
+        "kingdom_4_lady_8",
         "Lady Thera",
         "Thera",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10058,7 +12868,7 @@ troops = [
         0x000000054B100003274D65D2D239EB1300000000001D49080000000000000000,
     ],
     [
-        "knight_4_2c_wife_1",
+        "kingdom_4_lady_10",
         "Lady Endegrid",
         "Endegrid",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10086,7 +12896,7 @@ troops = [
         0x00000000000C000469A4D5CDA4B1349C00000000001CD6600000000000000000,
     ],
     [
-        "knight_4_2c_daughter",
+        "kingdom_4_lady_12",
         "Lady Svipul",
         "Svipul",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10100,7 +12910,7 @@ troops = [
         0x00000000000000021564D196E2AA279400000000001DC4ED0000000000000000,
     ],
     [
-        "knight_4_1b_wife",
+        "kingdom_4_lady_13",
         "Lady Ingunn",
         "Ingunn",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10128,7 +12938,7 @@ troops = [
         0x000000058610000664D3693664F0C54B00000000001D332D0000000000000000,
     ],
     [
-        "knight_4_1b_daughter",
+        "kingdom_4_lady_15",
         "Lady Eilif",
         "Eilif",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10142,7 +12952,7 @@ troops = [
         0x00000000000C000469A4D5CDA4B1349C00000000001CD6600000000000000000,
     ],
     [
-        "knight_4_2b_daughter_2",
+        "kingdom_4_lady_16",
         "Lady Gudrun",
         "Gudrun",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10170,7 +12980,7 @@ troops = [
         0x000000054B100003274D65D2D239EB1300000000001D49080000000000000000,
     ],
     [
-        "knight_4_2c_wife_2",
+        "kingdom_4_lady_18",
         "Lady Aesa",
         "Aesa",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10184,7 +12994,7 @@ troops = [
         0x000000058610000664D3693664F0C54B00000000001D332D0000000000000000,
     ],
     [
-        "knight_4_1c_daughter",
+        "kingdom_4_lady_19",
         "Lady Alfrun",
         "Alfrun",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10268,7 +13078,7 @@ troops = [
         0x000000057A0000014123DAE69E8E48E200000000001E08DB0000000000000000,
     ],
     [
-        "kingdom_5_5_wife",
+        "kingdom_5_lady_5",
         "Lady Saraten",
         "Saraten",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10282,7 +13092,7 @@ troops = [
         swadian_woman_face_1,
     ],
     [
-        "kingdom_5_2b_wife_1",
+        "kingdom_5_lady_6",
         "Lady Baotheia",
         "Baotheia",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10296,7 +13106,7 @@ troops = [
         0x00000000BF0400035913AA236B4D975A00000000001EB69C0000000000000000,
     ],
     [
-        "kingdom_5_1c_daughter_1",
+        "kingdom_5_lady_7",
         "Lady Eleandra",
         "Eleandra",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10310,7 +13120,7 @@ troops = [
         0x00000001B9002002364DD8AA5475D76400000000001DB8D30000000000000000,
     ],
     [
-        "kingdom_5_2c_daughter_1",
+        "kingdom_5_lady_8",
         "Lady Meraced",
         "Meraced",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10324,7 +13134,7 @@ troops = [
         0x000000057A0000014123DAE69E8E48E200000000001E08DB0000000000000000,
     ],
     [
-        "kingdom_5_1c_wife_1",
+        "kingdom_5_lady_9",
         "Lady Adelisa",
         "Adelisa",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10338,7 +13148,7 @@ troops = [
         0x00000007E900200416ED96E88B8D595A00000000001CB8AC0000000000000000,
     ],
     [
-        "kingdom_5_2c_wife_1",
+        "kingdom_5_lady_10",
         "Lady Calantina",
         "Calantina",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10352,7 +13162,7 @@ troops = [
         0x000000057008200222D432CF6D4A2AE300000000001D37A10000000000000000,
     ],
     [
-        "kingdom_5_1c_daughter_2",
+        "kingdom_5_lady_11",
         "Lady Forbesa",
         "Forbesa",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10366,7 +13176,7 @@ troops = [
         0x00000001B9002002364DD8AA5475D76400000000001DB8D30000000000000000,
     ],
     [
-        "kingdom_5_2c_daughter_2",
+        "kingdom_5_lady_12",
         "Lady Claudora",
         "Claudora",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10380,7 +13190,7 @@ troops = [
         0x000000057A0000014123DAE69E8E48E200000000001E08DB0000000000000000,
     ],
     [
-        "kingdom_5_1b_wife",
+        "kingdom_5_lady_13",
         "Lady Anais",
         "Anais",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10394,7 +13204,7 @@ troops = [
         0x00000007E900200416ED96E88B8D595A00000000001CB8AC0000000000000000,
     ],
     [
-        "kingdom_5_2b_wife_2",
+        "kingdom_5_lady_14",
         "Lady Miraeia",
         "Miraeia",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10408,7 +13218,7 @@ troops = [
         0x000000057008200222D432CF6D4A2AE300000000001D37A10000000000000000,
     ],
     [
-        "kingdom_5_1c_daughter_3",
+        "kingdom_5_lady_15",
         "Lady Agasia",
         "Agasia",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10436,7 +13246,7 @@ troops = [
         0x000000057A0000014123DAE69E8E48E200000000001E08DB0000000000000000,
     ],
     [
-        "kingdom_5_1c_wife_2",
+        "kingdom_5_lady_17",
         "Lady Gwenael",
         "Gwenael",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10450,7 +13260,7 @@ troops = [
         0x00000007E900200416ED96E88B8D595A00000000001CB8AC0000000000000000,
     ],
     [
-        "kingdom_5_2c_wife_2",
+        "kingdom_5_lady_18",
         "Lady Ysueth",
         "Ysueth",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10464,7 +13274,7 @@ troops = [
         0x000000057008200222D432CF6D4A2AE300000000001D37A10000000000000000,
     ],
     [
-        "kingdom_5_1c_daughter_4",
+        "kingdom_5_lady_19",
         "Lady Ellian",
         "Ellian",
         tf_hero | tf_female | tf_unmoveable_in_party_window,
@@ -10491,7 +13301,6 @@ troops = [
         knows_common | knows_riding_2,
         0x000000057A0000014123DAE69E8E48E200000000001E08DB0000000000000000,
     ],
-    # Sarranid ladies
     [
         "kingdom_6_lady_1",
         "Lady Rayma",
@@ -10504,7 +13313,7 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        0x000000055910200107632D675A92B92D00000000001E45620000000000000000,
+        0x000000055910400107632D675A92B92D00000000001E45620000000000000000,
     ],
     [
         "kingdom_6_lady_2",
@@ -10518,7 +13327,7 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        0x000000054F08100232636AA90D6E194B00000000001E43130000000000000000,
+        0x000000054F08400232636AA90D6E194B00000000001E43130000000000000000,
     ],
     [
         "kingdom_6_lady_3",
@@ -10532,7 +13341,7 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        0x000000018F0410064854C742DB74B52200000000001D448B0000000000000000,
+        0x000000018F0440064854C742DB74B52200000000001D448B0000000000000000,
     ],
     [
         "kingdom_6_lady_4",
@@ -10546,7 +13355,7 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        0x000000000204200629B131E90D6A8AE400000000001E28DD0000000000000000,
+        0x000000000204400629B131E90D6A8AE400000000001E28DD0000000000000000,
     ],
     [
         "kingdom_6_lady_5",
@@ -10560,8 +13369,8 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        swadian_woman_face_1,
-        swadian_woman_face_2,
+        sarranid_woman_face_1,
+        sarranid_woman_face_2,
     ],
     [
         "kingdom_6_lady_6",
@@ -10575,7 +13384,7 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        0x000000000D0820011693B142CA6A271A00000000001DB6920000000000000000,
+        0x000000000D0840011693B142CA6A271A00000000001DB6920000000000000000,
     ],
     [
         "kingdom_6_lady_7",
@@ -10589,8 +13398,8 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        swadian_woman_face_1,
-        swadian_woman_face_2,
+        sarranid_woman_face_1,
+        sarranid_woman_face_2,
     ],
     [
         "kingdom_6_lady_8",
@@ -10604,7 +13413,7 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        0x000000001900000542AC4E76D5D0D35300000000001E26A40000000000000000,
+        0x000000001900400542AC4E76D5D0D35300000000001E26A40000000000000000,
     ],
     [
         "kingdom_6_lady_9",
@@ -10618,8 +13427,8 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        swadian_woman_face_1,
-        swadian_woman_face_2,
+        sarranid_woman_face_1,
+        sarranid_woman_face_2,
     ],
     [
         "kingdom_6_lady_10",
@@ -10633,7 +13442,7 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        0x000000003A00200646A129464BAAA6DB00000000001DE7A00000000000000000,
+        0x000000003A00400646A129464BAAA6DB00000000001DE7A00000000000000000,
     ],
     [
         "kingdom_6_lady_11",
@@ -10647,8 +13456,8 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        swadian_woman_face_1,
-        swadian_woman_face_2,
+        sarranid_woman_face_1,
+        sarranid_woman_face_2,
     ],
     [
         "kingdom_6_lady_12",
@@ -10662,7 +13471,7 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        0x000000003F04100148D245D6526D456B00000000001E3B350000000000000000,
+        0x000000003F04400148D245D6526D456B00000000001E3B350000000000000000,
     ],
     [
         "kingdom_6_lady_13",
@@ -10676,8 +13485,8 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        swadian_woman_face_1,
-        swadian_woman_face_2,
+        sarranid_woman_face_1,
+        sarranid_woman_face_2,
     ],
     [
         "kingdom_6_lady_14",
@@ -10691,7 +13500,7 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        0x000000003A0C3003358A56D51C8E399400000000000944DC0000000000000000,
+        0x000000003A0C4003358A56D51C8E399400000000000944DC0000000000000000,
     ],
     [
         "kingdom_6_lady_15",
@@ -10705,8 +13514,8 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        swadian_woman_face_1,
-        swadian_woman_face_2,
+        sarranid_woman_face_1,
+        sarranid_woman_face_2,
     ],
     [
         "kingdom_6_lady_16",
@@ -10720,7 +13529,7 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        0x000000003B080003531E8932E432BB5A000000000008DB6A0000000000000000,
+        0x000000003B084003531E8932E432BB5A000000000008DB6A0000000000000000,
     ],
     [
         "kingdom_6_lady_17",
@@ -10734,7 +13543,7 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        0x00000000000C000446E4B4C2CC5234D200000000001EA3120000000000000000,
+        0x00000000000C400446E4B4C2CC5234D200000000001EA3120000000000000000,
     ],
     [
         "kingdom_6_lady_18",
@@ -10748,7 +13557,7 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        0x0000000000083006465800000901161200000000001E38CC0000000000000000,
+        0x0000000000084006465800000901161200000000001E38CC0000000000000000,
     ],
     [
         "kingdom_6_lady_19",
@@ -10762,7 +13571,7 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        swadian_woman_face_1,
+        sarranid_woman_face_1,
     ],
     [
         "kingdom_6_lady_20",
@@ -10776,7 +13585,7 @@ troops = [
         def_attrib | level(2),
         wp(50),
         knows_common | knows_riding_2,
-        swadian_woman_face_2,
+        sarranid_woman_face_2,
     ],
     [
         "heroes_end",
@@ -10792,1003 +13601,982 @@ troops = [
         knows_common,
         0x000000000008318101F390C515555594,
     ],
-    # Merchants                                                                              AT                      SILAH                   ZIRH                        BOT                         Head_wear
-    ##  ["merchant_1", "merchant_1_F", "merchant_1_F",tf_hero|tf_female,  0,0, fac.kingdom_1,[itm.courser,            itm.fighting_axe,       itm.leather_jerkin,         itm.leather_boots,          itm.straw_hat],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x000000000008200201e54c137a940c91],
-    ##  ["merchant_2", "merchant_2", "merchant_2", tf_hero,               0,0, fac.kingdom_2,[itm.saddle_horse,       itm.arming_sword,       itm.light_leather,          itm.woolen_hose,                            ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x000000000000000601db6db6db6db6db],
-    ##  ["merchant_3", "merchant_3", "merchant_3", tf_hero,               0,0, fac.kingdom_3,[itm.courser,            itm.nordic_sword,       itm.leather_jerkin,         itm.woolen_hose,                            ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x000000000008100701db6db6db6db6db],
-    ##  ["merchant_4", "merchant_4_F", "merchant_4_F",tf_hero|tf_female,  0,0, fac.kingdom_4,[itm.saddle_horse,       itm.falchion,           itm.light_leather,          itm.blue_hose,                              ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x000000000010500401e54c137a945c91],
-    ##  ["merchant_5", "merchant_5", "merchant_5", tf_hero,               0,0, fac.kingdom_5,[itm.saddle_horse,       itm.sword,              itm.ragged_outfit,          itm.hide_boots,                             ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x000000000008038001e54c135a945c91],
-    ##  ["merchant_6", "merchant_6", "merchant_6", tf_hero,               0,0, fac.kingdom_1,[itm.saddle_horse,      itm.scimitar,           itm.leather_jerkin,         itm.leather_boots,                          ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x000000000000248e01e54c1b5a945c91],
-    ##  ["merchant_7", "merchant_7_F", "merchant_7_F",tf_hero|tf_female,  0,0, fac.kingdom_2,[itm.hunter,            itm.arming_sword,       itm.padded_leather,         itm.blue_hose,                              ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x000000000004200601c98ad39c97557a],
-    ##  ["merchant_8", "merchant_8", "merchant_8", tf_hero,               0,0, fac.kingdom_3,[itm.saddle_horse,      itm.nordic_sword,       itm.light_leather,          itm.leather_boots,          itm.woolen_hood],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x00000000001095ce01d6aad3a497557a],
-    ##  ["merchant_9", "merchant_9", "merchant_9", tf_hero,               0,0, fac.kingdom_4,[itm.saddle_horse,      itm.sword,              itm.padded_leather,         itm.hide_boots,                             ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x000000000010519601ec26ae99898697],
-    ##  ["merchant_10","merchant_10","merchant_10",tf_hero,               0,0, fac.merchants,[itm.hunter,             itm.bastard_sword,      itm.light_leather,          itm.woolen_hose,                            ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x00000000000884c401f6837d3294e28a],
-    ##  ["merchant_11","merchant_11","merchant_11",tf_hero,               0,0, fac.merchants,[itm.saddle_horse,       itm.sword,              itm.leather_jacket,         itm.woolen_hose,                            ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x00000000000c450501e289dd2c692694],
-    ##  ["merchant_12","merchant_12","merchant_12",tf_hero,               0,0, fac.merchants,[itm.hunter,             itm.falchion,           itm.leather_jerkin,         itm.hide_boots,                             ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x00000000000c660a01e5af3cb2763401],
-    ##  ["merchant_13","merchant_13","merchant_13",tf_hero,               0,0, fac.merchants,[itm.sumpter_horse,      itm.nordic_sword,       itm.padded_leather,         itm.leather_boots,                          ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x00000000001001d601ec912a89e4d534],
-    ##  ["merchant_14","merchant_14","merchant_14",tf_hero,               0,0, fac.merchants,[itm.courser,            itm.bastard_sword,      itm.light_leather,          itm.hide_boots,                             ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x000000000004335601ea2c04a8b6a394],
-    ##  ["merchant_15","merchant_15","merchant_15",tf_hero,               0,0, fac.merchants,[itm.saddle_horse,       itm.sword,              itm.padded_leather,         itm.woolen_hose,            itm.fur_hat],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x000000000008358e01dbf27b6436089d],
-    ##  ["merchant_16","merchant_16_F","merchant_16_F",tf_hero|tf_female, 0,0, fac.merchants,[itm.hunter,             itm.bastard_sword,      itm.light_leather,          itm.hide_boots,                             ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x00000000000c300101db0b9921494add],
-    ##  ["merchant_17","merchant_17","merchant_17",tf_hero,               0,0, fac.merchants,[itm.saddle_horse,       itm.sword,              itm.leather_jacket,         itm.blue_hose,                              ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x000000000008740f01e945c360976a0a],
-    ##  ["merchant_18","merchant_18","merchant_18",tf_hero,               0,0, fac.merchants,[itm.saddle_horse,       itm.nordic_sword,       itm.padded_leather,         itm.leather_boots,                          ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x000000000008020c01fc2db3b4c97685],
-    ##  ["merchant_19","merchant_19","merchant_19",tf_hero,               0,0, fac.merchants,[itm.saddle_horse,       itm.falchion,           itm.leather_jerkin,         itm.woolen_hose,                            ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x000000000008118301f02af91892725b],
-    ##  ["merchant_20","merchant_20_F","merchant_20_F",tf_hero|tf_female, 0,0, fac.merchants,[itm.courser,            itm.arming_sword,       itm.padded_leather,         itm.leather_boots,                          ],              def_attrib|level(15),wp(100),knows_inventory_management_10, 0x000000000010500401f6837d27688212],
-    # Seneschals
+    # Chests (used to be seneschals, but that job is now done by ministers and ladies)
     [
-        "town_1_seneschal",
-        "{!}Town 1 Seneschal",
-        "{!}Town 1 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_1_chest",
+        "{!}Town 1 Chest",
+        "{!}Town 1 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.coarse_tunic, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C218501EF4F5D2CCB0026,
     ],
     [
-        "town_2_seneschal",
-        "{!}Town 2 Seneschal",
-        "{!}Town 2 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_2_chest",
+        "{!}Town 2 Chest",
+        "{!}Town 2 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C03CC01CC34A9A467FDFD,
     ],
     [
-        "town_3_seneschal",
-        "{!}Town 3 Seneschal",
-        "{!}Town 3 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_3_chest",
+        "{!}Town 3 Chest",
+        "{!}Town 3 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.coarse_tunic, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C500E01DBB2115A55F3CD,
     ],
     [
-        "town_4_seneschal",
-        "{!}Town 4 Seneschal",
-        "{!}Town 4 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_4_chest",
+        "{!}Town 4 Chest",
+        "{!}Town 4 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000008035201E6EEBAF3F3EB2B,
     ],
     [
-        "town_5_seneschal",
-        "{!}Town 5 Seneschal",
-        "{!}Town 5 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_5_chest",
+        "{!}Town 5 Chest",
+        "{!}Town 5 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jerkin, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000000249101E7898999AC54C6,
     ],
     [
-        "town_6_seneschal",
-        "{!}Town 6 Seneschal",
-        "{!}Town 6 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_6_chest",
+        "{!}Town 6 Chest",
+        "{!}Town 6 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.red_gambeson, itm.nomad_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000010360B01CEF8B57553D34E,
     ],
     [
-        "town_7_seneschal",
-        "{!}Town 7 Seneschal",
-        "{!}Town7 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_7_chest",
+        "{!}Town 7 Chest",
+        "{!}Town 7 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jerkin, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000000018101F9487AA831DCE4,
     ],
     [
-        "town_8_seneschal",
-        "{!}Town 8 Seneschal",
-        "{!}Town 8 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_8_chest",
+        "{!}Town 8 Chest",
+        "{!}Town 8 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.red_gambeson, itm.nomad_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000004715201EA236C60A2BCAE,
     ],
     [
-        "town_9_seneschal",
-        "{!}Town 9 Seneschal",
-        "{!}Town 9 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_9_chest",
+        "{!}Town 9 Chest",
+        "{!}Town 9 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.coarse_tunic, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000440C601E1CD45CFB38550,
     ],
     [
-        "town_10_seneschal",
-        "{!}Town 10 Seneschal",
-        "{!}Town 10 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_10_chest",
+        "{!}Town 10 Chest",
+        "{!}Town 10 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jerkin, itm.blue_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000010230C01EF41BADB50465E,
     ],
     [
-        "town_11_seneschal",
-        "{!}Town 11 Seneschal",
-        "{!}Town 11 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_11_chest",
+        "{!}Town 11 Chest",
+        "{!}Town 11 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jacket, itm.nomad_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000008061301FB89ACFB95332F,
     ],
     [
-        "town_12_seneschal",
-        "{!}Town 12 Seneschal",
-        "{!}Town 12 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_12_chest",
+        "{!}Town 12 Chest",
+        "{!}Town 12 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.coarse_tunic, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C13CE01DC4723AB936C82,
     ],
     [
-        "town_13_seneschal",
-        "{!}Town 13 Seneschal",
-        "{!}Town 13 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_13_chest",
+        "{!}Town 13 Chest",
+        "{!}Town 13 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jerkin, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000008548E01D952A9B25D6D5A,
     ],
     [
-        "town_14_seneschal",
-        "{!}Town 14 Seneschal",
-        "{!}Town 14 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_14_chest",
+        "{!}Town 14 Chest",
+        "{!}Town 14 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000004728B01C293C694944B05,
     ],
     [
-        "town_15_seneschal",
-        "{!}Town 15 Seneschal",
-        "{!}Town 14 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_15_chest",
+        "{!}Town 15 Chest",
+        "{!}Town 15 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000004728B01C293C694944B05,
     ],
     [
-        "town_16_seneschal",
-        "{!}Town 16 Seneschal",
-        "{!}Town 14 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_16_chest",
+        "{!}Town 16 Chest",
+        "{!}Town 16 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000004728B01C293C694944B05,
     ],
     [
-        "town_17_seneschal",
-        "{!}Town17 Seneschal",
-        "{!}Town 14 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_17_chest",
+        "{!}Town 17 Chest",
+        "{!}Town 17 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000004728B01C293C694944B05,
     ],
     [
-        "town_18_seneschal",
-        "{!}Town 18 Seneschal",
-        "{!}Town 14 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_18_chest",
+        "{!}Town 18 Chest",
+        "{!}Town 18 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000004728B01C293C694944B05,
     ],
     [
-        "town_19_seneschal",
-        "{!}Town 19 Seneschal",
-        "{!}Town 14 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_19_chest",
+        "{!}Town 19 Chest",
+        "{!}Town 19 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000004728B01C293C694944B05,
     ],
     [
-        "town_20_seneschal",
-        "{!}Town 20 Seneschal",
-        "{!}Town 14 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_20_chest",
+        "{!}Town 20 Chest",
+        "{!}Town 20 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000004728B01C293C694944B05,
     ],
     [
-        "town_21_seneschal",
-        "{!}Town 21 Seneschal",
-        "{!}Town 14 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_21_chest",
+        "{!}Town 21 Chest",
+        "{!}Town 21 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000004728B01C293C694944B05,
     ],
     [
-        "town_22_seneschal",
-        "{!}Town 22 Seneschal",
-        "{!}Town 14 Seneschal",
-        tf_hero | tf_is_merchant,
+        "town_22_chest",
+        "{!}Town 22 Chest",
+        "{!}Town 22 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000004728B01C293C694944B05,
     ],
     [
-        "castle_1_seneschal",
-        "{!}Castle 1 Seneschal",
-        "{!}Castle 1 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_1_chest",
+        "{!}Castle 1 Chest",
+        "{!}Castle 1 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.coarse_tunic, itm.hide_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000010360B01CEF8B57553D34E,
     ],
     [
-        "castle_2_seneschal",
-        "{!}Castle 2 Seneschal",
-        "{!}Castle 2 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_2_chest",
+        "{!}Castle 2 Chest",
+        "{!}Castle 2 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.nomad_armor, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000008061301FB89ACFB95332F,
     ],
     [
-        "castle_3_seneschal",
-        "{!}Castle 3 Seneschal",
-        "{!}Castle 3 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_3_chest",
+        "{!}Castle 3 Chest",
+        "{!}Castle 3 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000008548E01D952A9B25D6D5A,
     ],
     [
-        "castle_4_seneschal",
-        "{!}Castle 4 Seneschal",
-        "{!}Castle 4 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_4_chest",
+        "{!}Castle 4 Chest",
+        "{!}Castle 4 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.linen_tunic, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000004715201EA236C60A2BCAE,
     ],
     [
-        "castle_5_seneschal",
-        "{!}Castle 5 Seneschal",
-        "{!}Castle 5 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_5_chest",
+        "{!}Castle 5 Chest",
+        "{!}Castle 5 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jerkin, itm.hide_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C500E01DBB2115A55F3CD,
     ],
     [
-        "castle_6_seneschal",
-        "{!}Castle 6 Seneschal",
-        "{!}Castle 6 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_6_chest",
+        "{!}Castle 6 Chest",
+        "{!}Castle 6 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.coarse_tunic, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C03CC01CC34A9A467FDFD,
     ],
     [
-        "castle_7_seneschal",
-        "{!}Castle 7 Seneschal",
-        "{!}Castle 7 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_7_chest",
+        "{!}Castle 7 Chest",
+        "{!}Castle 7 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C13CE01DC4723AB936C82,
     ],
     [
-        "castle_8_seneschal",
-        "{!}Castle 8 Seneschal",
-        "{!}Castle 8 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_8_chest",
+        "{!}Castle 8 Chest",
+        "{!}Castle 8 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.hide_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C218501EF4F5D2CCB0026,
     ],
     [
-        "castle_9_seneschal",
-        "{!}Castle 9 Seneschal",
-        "{!}Castle 9 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_9_chest",
+        "{!}Castle 9 Chest",
+        "{!}Castle 9 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jacket, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000008035201E6EEBAF3F3EB2B,
     ],
     [
-        "castle_10_seneschal",
-        "{!}Castle 10 Seneschal",
-        "{!}Castle 10 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_10_chest",
+        "{!}Castle 10 Chest",
+        "{!}Castle 10 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000440C601E1CD45CFB38550,
     ],
     [
-        "castle_11_seneschal",
-        "{!}Castle 11 Seneschal",
-        "{!}Castle 11 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_11_chest",
+        "{!}Castle 11 Chest",
+        "{!}Castle 11 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000440C601E1CD45CFB38550,
     ],
     [
-        "castle_12_seneschal",
-        "{!}Castle 2 Seneschal",
-        "{!}Castle 2 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_12_chest",
+        "{!}Castle 12 Chest",
+        "{!}Castle 12 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.nomad_armor, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000008061301FB89ACFB95332F,
     ],
     [
-        "castle_13_seneschal",
-        "{!}Castle 3 Seneschal",
-        "{!}Castle 3 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_13_chest",
+        "{!}Castle 13 Chest",
+        "{!}Castle 13 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000008548E01D952A9B25D6D5A,
     ],
     [
-        "castle_14_seneschal",
-        "{!}Castle 4 Seneschal",
-        "{!}Castle 4 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_14_chest",
+        "{!}Castle 14 Chest",
+        "{!}Castle 14 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.linen_tunic, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000004715201EA236C60A2BCAE,
     ],
     [
-        "castle_15_seneschal",
-        "{!}Castle 5 Seneschal",
-        "{!}Castle 5 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_15_chest",
+        "{!}Castle 15 Chest",
+        "{!}Castle 15 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jerkin, itm.hide_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C500E01DBB2115A55F3CD,
     ],
     [
-        "castle_16_seneschal",
-        "{!}Castle 6 Seneschal",
-        "{!}Castle 6 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_16_chest",
+        "{!}Castle 16 Chest",
+        "{!}Castle 16 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.coarse_tunic, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C03CC01CC34A9A467FDFD,
     ],
     [
-        "castle_17_seneschal",
-        "{!}Castle 7 Seneschal",
-        "{!}Castle 7 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_17_chest",
+        "{!}Castle 17 Chest",
+        "{!}Castle 17 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C13CE01DC4723AB936C82,
     ],
     [
-        "castle_18_seneschal",
-        "{!}Castle 8 Seneschal",
-        "{!}Castle 8 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_18_chest",
+        "{!}Castle 18 Chest",
+        "{!}Castle 18 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.hide_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C218501EF4F5D2CCB0026,
     ],
     [
-        "castle_19_seneschal",
-        "{!}Castle 9 Seneschal",
-        "{!}Castle 9 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_19_chest",
+        "{!}Castle 19 Chest",
+        "{!}Castle 19 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jacket, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000008035201E6EEBAF3F3EB2B,
     ],
     [
-        "castle_20_seneschal",
-        "{!}Castle 20 Seneschal",
-        "{!}Castle 20 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_20_chest",
+        "{!}Castle 20 Chest",
+        "{!}Castle 20 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000440C601E1CD45CFB38550,
     ],
     [
-        "castle_21_seneschal",
-        "{!}Castle 11 Seneschal",
-        "{!}Castle 11 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_21_chest",
+        "{!}Castle 21 Chest",
+        "{!}Castle 21 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000440C601E1CD45CFB38550,
     ],
     [
-        "castle_22_seneschal",
-        "{!}Castle 2 Seneschal",
-        "{!}Castle 2 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_22_chest",
+        "{!}Castle 22 Chest",
+        "{!}Castle 22 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.nomad_armor, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000008061301FB89ACFB95332F,
     ],
     [
-        "castle_23_seneschal",
-        "{!}Castle 3 Seneschal",
-        "{!}Castle 3 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_23_chest",
+        "{!}Castle 23 Chest",
+        "{!}Castle 23 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000008548E01D952A9B25D6D5A,
     ],
     [
-        "castle_24_seneschal",
-        "{!}Castle 4 Seneschal",
-        "{!}Castle 4 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_24_chest",
+        "{!}Castle 24 Chest",
+        "{!}Castle 24 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.linen_tunic, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000004715201EA236C60A2BCAE,
     ],
     [
-        "castle_25_seneschal",
-        "{!}Castle 5 Seneschal",
-        "{!}Castle 5 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_25_chest",
+        "{!}Castle 25 Chest",
+        "{!}Castle 25 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jerkin, itm.hide_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C500E01DBB2115A55F3CD,
     ],
     [
-        "castle_26_seneschal",
-        "{!}Castle 6 Seneschal",
-        "{!}Castle 6 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_26_chest",
+        "{!}Castle 26 Chest",
+        "{!}Castle 26 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.coarse_tunic, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C03CC01CC34A9A467FDFD,
     ],
     [
-        "castle_27_seneschal",
-        "{!}Castle 7 Seneschal",
-        "{!}Castle 7 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_27_chest",
+        "{!}Castle 27 Chest",
+        "{!}Castle 27 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C13CE01DC4723AB936C82,
     ],
     [
-        "castle_28_seneschal",
-        "{!}Castle 8 Seneschal",
-        "{!}Castle 8 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_28_chest",
+        "{!}Castle 28 Chest",
+        "{!}Castle 28 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.hide_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C218501EF4F5D2CCB0026,
     ],
     [
-        "castle_29_seneschal",
-        "{!}Castle 9 Seneschal",
-        "{!}Castle 9 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_29_chest",
+        "{!}Castle 29 Chest",
+        "{!}Castle 29 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jacket, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000008035201E6EEBAF3F3EB2B,
     ],
     [
-        "castle_30_seneschal",
-        "{!}Castle 20 Seneschal",
-        "{!}Castle 20 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_30_chest",
+        "{!}Castle 30 Chest",
+        "{!}Castle 30 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000440C601E1CD45CFB38550,
     ],
     [
-        "castle_31_seneschal",
-        "{!}Castle 11 Seneschal",
-        "{!}Castle 11 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_31_chest",
+        "{!}Castle 31 Chest",
+        "{!}Castle 31 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000440C601E1CD45CFB38550,
     ],
     [
-        "castle_32_seneschal",
-        "{!}Castle 2 Seneschal",
-        "{!}Castle 2 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_32_chest",
+        "{!}Castle 32 Chest",
+        "{!}Castle 32 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.nomad_armor, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000008061301FB89ACFB95332F,
     ],
     [
-        "castle_33_seneschal",
-        "{!}Castle 3 Seneschal",
-        "{!}Castle 3 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_33_chest",
+        "{!}Castle 33 Chest",
+        "{!}Castle 33 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000008548E01D952A9B25D6D5A,
     ],
     [
-        "castle_34_seneschal",
-        "{!}Castle 4 Seneschal",
-        "{!}Castle 4 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_34_chest",
+        "{!}Castle 34 Chest",
+        "{!}Castle 34 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.linen_tunic, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000004715201EA236C60A2BCAE,
     ],
     [
-        "castle_35_seneschal",
-        "{!}Castle 5 Seneschal",
-        "{!}Castle 5 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_35_chest",
+        "{!}Castle 35 Chest",
+        "{!}Castle 35 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jerkin, itm.hide_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C500E01DBB2115A55F3CD,
     ],
     [
-        "castle_36_seneschal",
-        "{!}Castle 6 Seneschal",
-        "{!}Castle 6 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_36_chest",
+        "{!}Castle 36 Chest",
+        "{!}Castle 36 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.coarse_tunic, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C03CC01CC34A9A467FDFD,
     ],
     [
-        "castle_37_seneschal",
-        "{!}Castle 7 Seneschal",
-        "{!}Castle 7 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_37_chest",
+        "{!}Castle 37 Chest",
+        "{!}Castle 37 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C13CE01DC4723AB936C82,
     ],
     [
-        "castle_38_seneschal",
-        "{!}Castle 8 Seneschal",
-        "{!}Castle 8 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_38_chest",
+        "{!}Castle 38 Chest",
+        "{!}Castle 38 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.hide_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000C218501EF4F5D2CCB0026,
     ],
     [
-        "castle_39_seneschal",
-        "{!}Castle 9 Seneschal",
-        "{!}Castle 9 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_39_chest",
+        "{!}Castle 39 Chest",
+        "{!}Castle 39 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jacket, itm.leather_boots],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x000000000008035201E6EEBAF3F3EB2B,
     ],
     [
-        "castle_40_seneschal",
-        "{!}Castle 20 Seneschal",
-        "{!}Castle 20 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_40_chest",
+        "{!}Castle 40 Chest",
+        "{!}Castle 40 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000440C601E1CD45CFB38550,
     ],
     [
-        "castle_41_seneschal",
-        "{!}Castle 20 Seneschal",
-        "{!}Castle 20 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_41_chest",
+        "{!}Castle 41 Chest",
+        "{!}Castle 41 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000440C601E1CD45CFB38550,
     ],
     [
-        "castle_42_seneschal",
-        "{!}Castle 20 Seneschal",
-        "{!}Castle 20 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_42_chest",
+        "{!}Castle 42 Chest",
+        "{!}Castle 42 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000440C601E1CD45CFB38550,
     ],
     [
-        "castle_43_seneschal",
-        "{!}Castle 20 Seneschal",
-        "{!}Castle 20 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_43_chest",
+        "{!}Castle 43 Chest",
+        "{!}Castle 43 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000440C601E1CD45CFB38550,
     ],
     [
-        "castle_44_seneschal",
-        "{!}Castle 20 Seneschal",
-        "{!}Castle 20 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_44_chest",
+        "{!}Castle 44 Chest",
+        "{!}Castle 44 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000440C601E1CD45CFB38550,
     ],
     [
-        "castle_45_seneschal",
-        "{!}Castle 20 Seneschal",
-        "{!}Castle 20 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_45_chest",
+        "{!}Castle 45 Chest",
+        "{!}Castle 45 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000440C601E1CD45CFB38550,
     ],
     [
-        "castle_46_seneschal",
-        "{!}Castle 20 Seneschal",
-        "{!}Castle 20 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_46_chest",
+        "{!}Castle 46 Chest",
+        "{!}Castle 46 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000440C601E1CD45CFB38550,
     ],
     [
-        "castle_47_seneschal",
-        "{!}Castle 20 Seneschal",
-        "{!}Castle 20 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_47_chest",
+        "{!}Castle 47 Chest",
+        "{!}Castle 47 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
         0x00000000000440C601E1CD45CFB38550,
     ],
     [
-        "castle_48_seneschal",
-        "{!}Castle 20 Seneschal",
-        "{!}Castle 20 Seneschal",
-        tf_hero | tf_is_merchant,
+        "castle_48_chest",
+        "{!}Castle 48 Chest",
+        "{!}Castle 48 Chest",
+        tf_hero | tf_inactive | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [],
         def_attrib | level(2),
         wp(20),
         knows_common,
@@ -11807,8 +14595,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        nord_face_middle_1,
+        nord_face_older_2,
     ],
     [
         "town_2_arena_master",
@@ -11822,8 +14610,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        nord_face_middle_1,
+        nord_face_older_2,
     ],
     [
         "town_3_arena_master",
@@ -11837,8 +14625,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        rhodok_face_middle_1,
+        rhodok_face_older_2,
     ],
     [
         "town_4_arena_master",
@@ -11852,8 +14640,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        swadian_face_middle_1,
+        swadian_face_older_2,
     ],
     [
         "town_5_arena_master",
@@ -11867,8 +14655,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        rhodok_face_middle_1,
+        rhodok_face_older_2,
     ],
     [
         "town_6_arena_master",
@@ -11882,8 +14670,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        swadian_face_middle_1,
+        swadian_face_older_2,
     ],
     [
         "town_7_arena_master",
@@ -11897,8 +14685,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        swadian_face_middle_1,
+        swadian_face_older_2,
     ],
     [
         "town_8_arena_master",
@@ -11912,8 +14700,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        vaegir_face_middle_1,
+        vaegir_face_older_2,
     ],
     [
         "town_9_arena_master",
@@ -11923,12 +14711,12 @@ troops = [
         scn.town_9_arena | entry(52),
         reserved,
         fac.commoners,
-        [itm.padded_leather, itm.leather_boots],
+        [itm.leather_jerkin, itm.leather_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        vaegir_face_middle_1,
+        vaegir_face_older_2,
     ],
     [
         "town_10_arena_master",
@@ -11942,8 +14730,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        khergit_face_middle_1,
+        khergit_face_older_2,
     ],
     [
         "town_11_arena_master",
@@ -11957,8 +14745,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        vaegir_face_middle_1,
+        vaegir_face_older_2,
     ],
     [
         "town_12_arena_master",
@@ -11968,12 +14756,12 @@ troops = [
         scn.town_12_arena | entry(52),
         reserved,
         fac.commoners,
-        [itm.leather_jerkin, itm.hide_boots],
+        [itm.padded_leather, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        nord_face_middle_1,
+        nord_face_older_2,
     ],
     [
         "town_13_arena_master",
@@ -11987,8 +14775,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        vaegir_face_middle_1,
+        vaegir_face_older_2,
     ],
     [
         "town_14_arena_master",
@@ -11998,12 +14786,12 @@ troops = [
         scn.town_14_arena | entry(52),
         reserved,
         fac.commoners,
-        [itm.padded_leather, itm.hide_boots],
+        [itm.tribal_warrior_outfit, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        khergit_face_middle_1,
+        khergit_face_older_2,
     ],
     [
         "town_15_arena_master",
@@ -12017,8 +14805,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        rhodok_face_middle_1,
+        rhodok_face_older_2,
     ],
     [
         "town_16_arena_master",
@@ -12032,8 +14820,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        swadian_face_middle_1,
+        swadian_face_older_2,
     ],
     [
         "town_17_arena_master",
@@ -12043,12 +14831,12 @@ troops = [
         scn.town_17_arena | entry(52),
         reserved,
         fac.commoners,
-        [itm.padded_leather, itm.hide_boots],
+        [itm.nomad_robe, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        khergit_face_middle_1,
+        khergit_face_older_2,
     ],
     [
         "town_18_arena_master",
@@ -12058,12 +14846,12 @@ troops = [
         scn.town_18_arena | entry(52),
         reserved,
         fac.commoners,
-        [itm.padded_leather, itm.hide_boots],
+        [itm.tribal_warrior_outfit, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        khergit_face_middle_1,
+        khergit_face_older_2,
     ],
     [
         "town_19_arena_master",
@@ -12073,12 +14861,12 @@ troops = [
         scn.town_19_arena | entry(52),
         reserved,
         fac.commoners,
-        [itm.padded_leather, itm.hide_boots],
+        [itm.sarranid_leather_armor, itm.sarranid_boots_b],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
     ],
     [
         "town_20_arena_master",
@@ -12088,12 +14876,12 @@ troops = [
         scn.town_20_arena | entry(52),
         reserved,
         fac.commoners,
-        [itm.fur_coat, itm.hide_boots],
+        [itm.archers_vest, itm.sarranid_boots_b],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
     ],
     [
         "town_21_arena_master",
@@ -12103,12 +14891,12 @@ troops = [
         scn.town_21_arena | entry(52),
         reserved,
         fac.commoners,
-        [itm.padded_leather, itm.hide_boots],
+        [itm.sarranid_leather_armor, itm.sarranid_boots_b],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
     ],
     [
         "town_22_arena_master",
@@ -12118,31 +14906,14 @@ troops = [
         scn.town_22_arena | entry(52),
         reserved,
         fac.commoners,
-        [itm.padded_leather, itm.hide_boots],
+        [itm.sarranid_leather_armor, itm.sarranid_boots_b],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        man_face_older_2,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
     ],
-    # Underground
-    ##  ["town_1_crook","Town 1 Crook","Town 1 Crook",tf_hero,                0,0, fac.neutral,[itm.linen_tunic,        itm.leather_boots       ],def_attrib|level(2),wp(20),knows_inventory_management_10, 0x000000000004428401f46e44a27144e3],
-    ##  ["town_2_crook","Town 2 Crook","Town 2 Crook",tf_hero|tf_female,      0,0, fac.neutral,[itm.lady_dress_ruby,    itm.turret_hat_ruby     ],def_attrib|level(2),wp(20),knows_inventory_management_10, 0x000000000004300101c36db6db6db6db],
-    ##  ["town_3_crook","Town 3 Crook","Town 3 Crook",tf_hero,                0,0, fac.neutral,[itm.leather_apron,      itm.hide_boots          ],def_attrib|level(2),wp(20),knows_inventory_management_10, 0x00000000000c530701f17944a25164e1],
-    ##  ["town_4_crook","Town 4 Crook","Town 4 Crook",tf_hero,                0,0, fac.neutral,[itm.coarse_tunic,       itm.hide_boots          ],def_attrib|level(5),wp(20),knows_inventory_management_10, 0x00000000000c840501f36db6db7134db],
-    ##  ["town_5_crook","Town 5 Crook","Town 5 Crook",tf_hero,                0,0, fac.neutral,[itm.red_gambeson,       itm.blue_hose           ],def_attrib|level(5),wp(20),knows_inventory_management_10, 0x00000000000c000601f36db6db7134db],
-    ##  ["town_6_crook","Town 6 Crook","Town 6 Crook",tf_hero,                0,0, fac.neutral,[itm.coarse_tunic,       itm.hide_boots          ],def_attrib|level(5),wp(20),knows_inventory_management_10, 0x00000000000c10c801db6db6dd7598aa],
-    ##  ["town_7_crook","Town 7 Crook","Town 7 Crook",tf_hero|tf_female,      0,0, fac.neutral,[itm.woolen_dress,       itm.woolen_hood         ],def_attrib|level(5),wp(20),knows_inventory_management_10, 0x000000000010214101de2f64db6db58d],
-    ##
-    ##  ["town_8_crook","Town 8 Crook","Town 8 Crook",tf_hero,                0,0, fac.neutral,[itm.leather_jacket,     itm.leather_boots       ],def_attrib|level(5),wp(20),knows_inventory_management_10, 0x000000000010318401c96db4db6db58d],
-    ##  ["town_9_crook","Town 9 Crook","Town 9 Crook",tf_hero,                0,0, fac.neutral,[itm.linen_tunic,        itm.hide_boots          ],def_attrib|level(5),wp(20),knows_inventory_management_10, 0x000000000008520501f16db4db6db58d],
-    ##  ["town_10_crook","Town 10 Crook","Town 10 Crook",tf_hero,             0,0, fac.neutral,[itm.coarse_tunic,      itm.nomad_boots         ],def_attrib|level(5),wp(20),knows_inventory_management_10, 0x000000000008600701f35144db6db8a2],
-    ##  ["town_11_crook","Town 11 Crook","Town 11 Crook",tf_hero|tf_female,   0,0, fac.neutral,[itm.blue_dress,        itm.wimple_with_veil    ],def_attrib|level(5),wp(20),knows_inventory_management_10, 0x000000000008408101f386c4db4dd514],
-    ##  ["town_12_crook","Town 12 Crook","Town 12 Crook",tf_hero,             0,0, fac.neutral,[itm.coarse_tunic,      itm.hide_boots          ],def_attrib|level(5),wp(20),knows_inventory_management_10, 0x00000000000870c501f386c4f34dbaa1],
-    ##  ["town_13_crook","Town 13 Crook","Town 13 Crook",tf_hero,             0,0, fac.neutral,[itm.blue_gambeson,     itm.nomad_boots         ],def_attrib|level(5),wp(20),knows_inventory_management_10, 0x00000000000c114901f245caf34dbaa1],
-    ##  ["town_14_crook","Town 14 Crook","Town 14 Crook",tf_hero|tf_female,   0,0, fac.neutral,[itm.woolen_dress,      itm.turret_hat_ruby     ],def_attrib|level(5),wp(20),knows_inventory_management_10, 0x00000000001021c001f545a49b6eb2bc],
     # Armor Merchants
-    # arena_masters_end = zendar_armorer
     [
         "town_1_armorer",
         "Armorer",
@@ -12155,8 +14926,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        nord_face_young_1,
+        nord_face_old_2,
     ],
     [
         "town_2_armorer",
@@ -12166,12 +14937,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.woolen_dress, itm.straw_hat],
+        [itm.peasant_dress, itm.hide_boots, itm.straw_hat],
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        nord_woman_face_middle_1,
+        nord_woman_face_old_2,
     ],
     [
         "town_3_armorer",
@@ -12185,8 +14956,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        rhodok_face_young_1,
+        rhodok_face_old_2,
     ],
     [
         "town_4_armorer",
@@ -12200,8 +14971,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        swadian_face_young_1,
+        swadian_face_old_2,
     ],
     [
         "town_5_armorer",
@@ -12215,8 +14986,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        rhodok_face_young_1,
+        rhodok_face_old_2,
     ],
     [
         "town_6_armorer",
@@ -12226,12 +14997,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.fur_coat, itm.nomad_boots],
+        [itm.leather_apron, itm.ankle_boots],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        swadian_face_young_1,
+        swadian_face_old_2,
     ],
     [
         "town_7_armorer",
@@ -12241,12 +15012,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.leather_jerkin, itm.blue_hose],
+        [itm.leather_jerkin, itm.hide_boots],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        swadian_face_young_1,
+        swadian_face_old_2,
     ],
     [
         "town_8_armorer",
@@ -12256,12 +15027,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.padded_leather, itm.leather_boots],
+        [itm.fur_coat, itm.leather_boots],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        vaegir_face_young_1,
+        vaegir_face_old_2,
     ],
     [
         "town_9_armorer",
@@ -12275,8 +15046,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        vaegir_face_young_1,
+        vaegir_face_old_2,
     ],
     [
         "town_10_armorer",
@@ -12290,8 +15061,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        khergit_face_young_1,
+        khergit_face_old_2,
     ],
     [
         "town_11_armorer",
@@ -12305,8 +15076,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        vaegir_face_young_1,
+        vaegir_face_old_2,
     ],
     [
         "town_12_armorer",
@@ -12320,8 +15091,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        nord_face_young_1,
+        nord_face_old_2,
     ],
     [
         "town_13_armorer",
@@ -12335,8 +15106,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        vaegir_face_young_1,
+        vaegir_face_old_2,
     ],
     [
         "town_14_armorer",
@@ -12346,12 +15117,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.woolen_dress, itm.headcloth],
+        [itm.woolen_dress, itm.wrapping_boots, itm.headcloth],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        khergit_woman_face_middle_1,
+        khergit_woman_face_old_2,
     ],
     [
         "town_15_armorer",
@@ -12365,8 +15136,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        rhodok_face_young_1,
+        rhodok_face_old_2,
     ],
     [
         "town_16_armorer",
@@ -12376,12 +15147,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.fur_coat, itm.nomad_boots],
+        [itm.padded_leather, itm.leather_boots],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        swadian_face_young_1,
+        swadian_face_old_2,
     ],
     [
         "town_17_armorer",
@@ -12391,12 +15162,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.fur_coat, itm.hide_boots],
+        [itm.tribal_warrior_outfit, itm.hide_boots],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        khergit_face_young_1,
+        khergit_face_old_2,
     ],
     [
         "town_18_armorer",
@@ -12406,12 +15177,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.woolen_dress, itm.headcloth],
+        [itm.leather_vest, itm.khergit_leather_boots, itm.headcloth],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        khergit_woman_face_middle_1,
+        khergit_woman_face_old_2,
     ],
     [
         "town_19_armorer",
@@ -12421,12 +15192,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.blue_gambeson, itm.leather_boots],
+        [itm.sarranid_cloth_robe_b, itm.sarranid_boots_b],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        sarranid_face_young_1,
+        sarranid_face_older_2,
     ],
     [
         "town_20_armorer",
@@ -12436,12 +15207,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.fur_coat, itm.nomad_boots],
+        [itm.tunic_with_green_cape, itm.nomad_boots],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        sarranid_face_young_1,
+        sarranid_face_older_2,
     ],
     [
         "town_21_armorer",
@@ -12451,12 +15222,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.fur_coat, itm.hide_boots],
+        [itm.sarranid_cloth_robe, itm.sarranid_boots_b],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        sarranid_face_young_1,
+        sarranid_face_older_2,
     ],
     [
         "town_22_armorer",
@@ -12466,12 +15237,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.sarranid_common_dress, itm.sarranid_head_cloth],
+        [itm.sarranid_common_dress, itm.sarranid_head_cloth, itm.sarranid_boots_a],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        sarranid_woman_face_young_1,
+        sarranid_woman_face_older_2,
     ],
     # Weapon merchants
     [
@@ -12486,8 +15257,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        nord_woman_face_middle_1,
+        nord_woman_face_old_2,
     ],
     [
         "town_2_weaponsmith",
@@ -12501,8 +15272,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        nord_face_young_1,
+        nord_face_old_2,
     ],
     [
         "town_3_weaponsmith",
@@ -12516,8 +15287,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        rhodok_face_young_1,
+        rhodok_face_old_2,
     ],
     [
         "town_4_weaponsmith",
@@ -12531,8 +15302,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        swadian_face_young_1,
+        swadian_face_old_2,
     ],
     [
         "town_5_weaponsmith",
@@ -12546,8 +15317,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        rhodok_face_young_1,
+        rhodok_face_old_2,
     ],
     [
         "town_6_weaponsmith",
@@ -12561,8 +15332,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        swadian_face_young_1,
+        swadian_face_old_2,
     ],
     [
         "town_7_weaponsmith",
@@ -12576,8 +15347,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        swadian_face_young_1,
+        swadian_face_old_2,
     ],
     [
         "town_8_weaponsmith",
@@ -12591,8 +15362,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        vaegir_woman_face_young_1,
+        vaegir_woman_face_old_2,
     ],
     [
         "town_9_weaponsmith",
@@ -12606,8 +15377,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        vaegir_face_young_1,
+        vaegir_face_old_2,
     ],
     [
         "town_10_weaponsmith",
@@ -12617,12 +15388,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.linen_tunic, itm.hide_boots],
+        [itm.nomad_armor, itm.hide_boots],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        khergit_face_young_1,
+        khergit_face_old_2,
     ],
     [
         "town_11_weaponsmith",
@@ -12636,8 +15407,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        vaegir_face_young_1,
+        vaegir_face_old_2,
     ],
     [
         "town_12_weaponsmith",
@@ -12651,8 +15422,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        nord_face_young_1,
+        nord_face_old_2,
     ],
     [
         "town_13_weaponsmith",
@@ -12666,8 +15437,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        vaegir_face_young_1,
+        vaegir_face_old_2,
     ],
     [
         "town_14_weaponsmith",
@@ -12677,12 +15448,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.arena_tunic_blue, itm.wrapping_boots],
+        [itm.khergit_armor, itm.wrapping_boots],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        khergit_face_young_1,
+        khergit_face_old_2,
     ],
     [
         "town_15_weaponsmith",
@@ -12696,8 +15467,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        rhodok_face_young_1,
+        rhodok_face_old_2,
     ],
     [
         "town_16_weaponsmith",
@@ -12711,8 +15482,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        swadian_face_young_1,
+        swadian_face_old_2,
     ],
     [
         "town_17_weaponsmith",
@@ -12722,12 +15493,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.arena_tunic_green, itm.wrapping_boots],
+        [itm.khergit_armor, itm.wrapping_boots],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        khergit_face_young_1,
+        khergit_face_old_2,
     ],
     [
         "town_18_weaponsmith",
@@ -12737,12 +15508,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.linen_tunic, itm.wrapping_boots],
+        [itm.nomad_armor, itm.wrapping_boots],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        khergit_face_young_1,
+        khergit_face_old_2,
     ],
     [
         "town_19_weaponsmith",
@@ -12756,8 +15527,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        sarranid_face_young_1,
+        sarranid_face_old_2,
     ],
     [
         "town_20_weaponsmith",
@@ -12767,12 +15538,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.shirt, itm.sarranid_boots_a],
+        [itm.leather_apron, itm.sarranid_boots_a],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        sarranid_face_young_1,
+        sarranid_face_old_2,
     ],
     [
         "town_21_weaponsmith",
@@ -12782,12 +15553,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.arena_tunic_green, itm.sarranid_boots_a],
+        [itm.tunic_with_green_cape, itm.sarranid_boots_a],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        sarranid_face_young_1,
+        sarranid_face_old_2,
     ],
     [
         "town_22_weaponsmith",
@@ -12797,12 +15568,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.linen_tunic, itm.sarranid_boots_a],
+        [itm.sarranid_cloth_robe, itm.sarranid_boots_a],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        mercenary_face_1,
-        mercenary_face_2,
+        sarranid_face_young_1,
+        sarranid_face_old_2,
     ],
     # Tavern keepers
     [
@@ -12817,8 +15588,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        mercenary_face_1,
-        mercenary_face_2,
+        nord_face_young_1,
+        nord_face_old_2,
     ],
     [
         "town_2_tavernkeeper",
@@ -12832,8 +15603,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        mercenary_face_1,
-        mercenary_face_2,
+        nord_face_young_1,
+        nord_face_old_2,
     ],
     [
         "town_3_tavernkeeper",
@@ -12847,8 +15618,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        woman_face_1,
-        woman_face_2,
+        rhodok_woman_face_young_1,
+        rhodok_woman_face_old_2,
     ],
     [
         "town_4_tavernkeeper",
@@ -12862,8 +15633,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        mercenary_face_1,
-        mercenary_face_2,
+        swadian_face_young_1,
+        swadian_face_old_2,
     ],
     [
         "town_5_tavernkeeper",
@@ -12877,8 +15648,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        mercenary_face_1,
-        mercenary_face_2,
+        rhodok_face_young_1,
+        rhodok_face_old_2,
     ],
     [
         "town_6_tavernkeeper",
@@ -12892,8 +15663,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        woman_face_1,
-        woman_face_2,
+        swadian_woman_face_young_1,
+        swadian_woman_face_old_2,
     ],
     [
         "town_7_tavernkeeper",
@@ -12907,8 +15678,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        woman_face_1,
-        woman_face_2,
+        swadian_woman_face_young_1,
+        swadian_woman_face_old_2,
     ],
     [
         "town_8_tavernkeeper",
@@ -12922,8 +15693,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        mercenary_face_1,
-        mercenary_face_2,
+        vaegir_face_young_1,
+        vaegir_face_old_2,
     ],
     [
         "town_9_tavernkeeper",
@@ -12937,8 +15708,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        woman_face_1,
-        woman_face_2,
+        vaegir_woman_face_young_1,
+        vaegir_woman_face_old_2,
     ],
     [
         "town_10_tavernkeeper",
@@ -12952,8 +15723,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        woman_face_1,
-        woman_face_2,
+        khergit_woman_face_young_1,
+        khergit_woman_face_old_2,
     ],
     [
         "town_11_tavernkeeper",
@@ -12967,8 +15738,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        woman_face_1,
-        woman_face_2,
+        vaegir_woman_face_young_1,
+        vaegir_woman_face_old_2,
     ],
     [
         "town_12_tavernkeeper",
@@ -12982,8 +15753,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        mercenary_face_1,
-        mercenary_face_2,
+        nord_face_young_1,
+        nord_face_old_2,
     ],
     [
         "town_13_tavernkeeper",
@@ -12997,8 +15768,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        woman_face_1,
-        woman_face_2,
+        vaegir_woman_face_young_1,
+        vaegir_woman_face_old_2,
     ],
     [
         "town_14_tavernkeeper",
@@ -13012,8 +15783,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        mercenary_face_1,
-        mercenary_face_2,
+        khergit_face_young_1,
+        khergit_face_old_2,
     ],
     [
         "town_15_tavernkeeper",
@@ -13027,8 +15798,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        woman_face_1,
-        woman_face_2,
+        rhodok_woman_face_young_1,
+        rhodok_woman_face_old_2,
     ],
     [
         "town_16_tavernkeeper",
@@ -13042,8 +15813,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        mercenary_face_1,
-        mercenary_face_2,
+        swadian_face_young_1,
+        swadian_face_old_2,
     ],
     [
         "town_17_tavernkeeper",
@@ -13057,8 +15828,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        woman_face_1,
-        woman_face_2,
+        khergit_woman_face_young_1,
+        khergit_woman_face_old_2,
     ],
     [
         "town_18_tavernkeeper",
@@ -13072,8 +15843,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        mercenary_face_1,
-        mercenary_face_2,
+        khergit_face_young_1,
+        khergit_face_old_2,
     ],
     [
         "town_19_tavernkeeper",
@@ -13083,12 +15854,12 @@ troops = [
         scn.town_19_tavern | entry(9),
         0,
         fac.commoners,
-        [itm.woolen_dress, itm.sarranid_boots_a],
+        [itm.sarranid_common_dress_b, itm.sarranid_boots_a],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        woman_face_1,
-        woman_face_2,
+        sarranid_woman_face_young_1,
+        sarranid_woman_face_old_2,
     ],
     [
         "town_20_tavernkeeper",
@@ -13102,8 +15873,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        mercenary_face_1,
-        mercenary_face_2,
+        sarranid_face_young_1,
+        sarranid_face_old_2,
     ],
     [
         "town_21_tavernkeeper",
@@ -13117,8 +15888,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        woman_face_1,
-        woman_face_2,
+        sarranid_woman_face_young_1,
+        sarranid_woman_face_old_2,
     ],
     [
         "town_22_tavernkeeper",
@@ -13132,8 +15903,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        mercenary_face_1,
-        mercenary_face_2,
+        sarranid_face_young_1,
+        sarranid_face_old_2,
     ],
     # Goods Merchants
     [
@@ -13148,8 +15919,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        nord_face_young_1,
+        nord_face_older_2,
     ],
     [
         "town_2_merchant",
@@ -13163,8 +15934,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        nord_face_young_1,
+        nord_face_older_2,
     ],
     [
         "town_3_merchant",
@@ -13178,8 +15949,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        rhodok_woman_face_young_1,
+        rhodok_woman_face_older_2,
     ],
     [
         "town_4_merchant",
@@ -13193,8 +15964,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        swadian_face_young_1,
+        swadian_face_older_2,
     ],
     [
         "town_5_merchant",
@@ -13204,12 +15975,12 @@ troops = [
         scn.town_5_store | entry(9),
         0,
         fac.commoners,
-        [itm.nomad_armor, itm.leather_boots],
+        [itm.leather_apron, itm.leather_boots],
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        rhodok_face_young_1,
+        rhodok_face_older_2,
     ],
     [
         "town_6_merchant",
@@ -13223,8 +15994,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        swadian_face_young_1,
+        swadian_face_older_2,
     ],
     [
         "town_7_merchant",
@@ -13238,8 +16009,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        swadian_face_young_1,
+        swadian_face_older_2,
     ],
     [
         "town_8_merchant",
@@ -13249,12 +16020,12 @@ troops = [
         scn.town_8_store | entry(9),
         0,
         fac.commoners,
-        [itm.leather_apron, itm.leather_boots],
+        [itm.nomad_armor, itm.leather_boots],
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        vaegir_face_young_1,
+        vaegir_face_older_2,
     ],
     [
         "town_9_merchant",
@@ -13268,8 +16039,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        vaegir_face_young_1,
+        vaegir_face_older_2,
     ],
     [
         "town_10_merchant",
@@ -13283,8 +16054,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        khergit_face_young_1,
+        khergit_face_older_2,
     ],
     [
         "town_11_merchant",
@@ -13298,8 +16069,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        vaegir_face_young_1,
+        vaegir_face_older_2,
     ],
     [
         "town_12_merchant",
@@ -13313,8 +16084,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        nord_woman_face_middle_1,
+        nord_woman_face_older_2,
     ],
     [
         "town_13_merchant",
@@ -13328,8 +16099,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        vaegir_woman_face_middle_1,
+        vaegir_woman_face_older_2,
     ],
     [
         "town_14_merchant",
@@ -13343,8 +16114,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        khergit_face_young_1,
+        khergit_face_older_2,
     ],
     [
         "town_15_merchant",
@@ -13358,8 +16129,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        rhodok_face_young_1,
+        rhodok_face_older_2,
     ],
     [
         "town_16_merchant",
@@ -13369,12 +16140,12 @@ troops = [
         scn.town_16_store | entry(9),
         0,
         fac.commoners,
-        [itm.woolen_dress, itm.leather_boots, itm.female_hood],
+        [itm.blue_dress, itm.leather_boots, itm.female_hood],
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        swadian_woman_face_young_1,
+        swadian_woman_face_older_2,
     ],
     [
         "town_17_merchant",
@@ -13384,12 +16155,12 @@ troops = [
         scn.town_17_store | entry(9),
         0,
         fac.commoners,
-        [itm.dress, itm.leather_boots, itm.straw_hat],
+        [itm.woolen_dress, itm.leather_boots, itm.headcloth],
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        khergit_woman_face_young_1,
+        khergit_woman_face_older_2,
     ],
     [
         "town_18_merchant",
@@ -13403,8 +16174,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        khergit_face_young_1,
+        khergit_face_older_2,
     ],
     [
         "town_19_merchant",
@@ -13418,8 +16189,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        sarranid_face_young_1,
+        sarranid_face_older_2,
     ],
     [
         "town_20_merchant",
@@ -13437,8 +16208,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        sarranid_woman_face_young_1,
+        sarranid_woman_face_older_2,
     ],
     [
         "town_21_merchant",
@@ -13448,12 +16219,12 @@ troops = [
         scn.town_21_store | entry(9),
         0,
         fac.commoners,
-        [itm.woolen_dress, itm.sarranid_boots_a, itm.sarranid_felt_head_cloth],
+        [itm.sarranid_common_dress, itm.sarranid_boots_a, itm.sarranid_felt_head_cloth],
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        sarranid_woman_face_young_1,
+        sarranid_woman_face_older_2,
     ],
     [
         "town_22_merchant",
@@ -13467,22 +16238,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
-    ],
-    [
-        "salt_mine_merchant",
-        "Barezan",
-        "Barezan",
-        tf_hero | tf_is_merchant,
-        scn.salt_mine | entry(1),
-        0,
-        fac.commoners,
-        [itm.leather_apron, itm.leather_boots],
-        def_attrib | level(2),
-        wp(20),
-        knows_inventory_management_10,
-        0x00000000000C528601EA69B6E46DBDB6,
+        sarranid_face_young_1,
+        sarranid_face_older_2,
     ],
     # Horse Merchants
     [
@@ -13497,8 +16254,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        nord_woman_face_young_1,
+        nord_woman_face_older_2,
     ],
     [
         "town_2_horse_merchant",
@@ -13509,14 +16266,14 @@ troops = [
         0,
         fac.commoners,
         [
-            itm.linen_tunic,
+            itm.nomad_armor,
             itm.nomad_boots,
         ],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        nord_face_young_1,
+        nord_face_older_2,
     ],
     [
         "town_3_horse_merchant",
@@ -13526,12 +16283,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.nomad_armor, itm.hide_boots],
+        [itm.linen_tunic, itm.hide_boots],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        rhodok_face_young_1,
+        rhodok_face_older_2,
     ],
     [
         "town_4_horse_merchant",
@@ -13545,8 +16302,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        swadian_face_young_1,
+        swadian_face_older_2,
     ],
     [
         "town_5_horse_merchant",
@@ -13556,12 +16313,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.dress, itm.woolen_hose, itm.woolen_hood],
+        [itm.dress, itm.woolen_hose, itm.straw_hat],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        rhodok_woman_face_young_1,
+        rhodok_woman_face_older_2,
     ],
     [
         "town_6_horse_merchant",
@@ -13575,8 +16332,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        swadian_face_young_1,
+        swadian_face_older_2,
     ],
     [
         "town_7_horse_merchant",
@@ -13590,8 +16347,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        swadian_face_young_1,
+        swadian_face_older_2,
     ],
     [
         "town_8_horse_merchant",
@@ -13605,8 +16362,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        vaegir_face_young_1,
+        vaegir_face_older_2,
     ],
     [
         "town_9_horse_merchant",
@@ -13616,12 +16373,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.leather_jerkin, itm.woolen_hose],
+        [itm.leather_jerkin, itm.hunter_boots],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        vaegir_face_young_1,
+        vaegir_face_older_2,
     ],
     [
         "town_10_horse_merchant",
@@ -13631,12 +16388,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.blue_dress, itm.blue_hose, itm.straw_hat],
+        [itm.woolen_dress, itm.blue_hose, itm.headcloth],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        khergit_woman_face_young_1,
+        khergit_woman_face_older_2,
     ],
     [
         "town_11_horse_merchant",
@@ -13650,8 +16407,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        vaegir_face_young_1,
+        vaegir_face_older_2,
     ],
     [
         "town_12_horse_merchant",
@@ -13665,8 +16422,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        nord_face_young_1,
+        nord_face_older_2,
     ],
     [
         "town_13_horse_merchant",
@@ -13676,12 +16433,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.coarse_tunic, itm.nomad_boots],
+        [itm.nomad_armor, itm.nomad_boots],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        vaegir_face_young_1,
+        vaegir_face_older_2,
     ],
     [
         "town_14_horse_merchant",
@@ -13695,8 +16452,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        khergit_woman_face_young_1,
+        khergit_woman_face_older_2,
     ],
     [
         "town_15_horse_merchant",
@@ -13706,12 +16463,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.nomad_armor, itm.leather_boots],
+        [itm.coarse_tunic, itm.leather_boots],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        rhodok_face_young_1,
+        rhodok_face_older_2,
     ],
     [
         "town_16_horse_merchant",
@@ -13725,8 +16482,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        swadian_face_young_1,
+        swadian_face_older_2,
     ],
     [
         "town_17_horse_merchant",
@@ -13736,12 +16493,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.coarse_tunic, itm.nomad_boots],
+        [itm.khergit_armor, itm.nomad_boots],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        khergit_face_young_1,
+        khergit_face_older_2,
     ],
     [
         "town_18_horse_merchant",
@@ -13755,8 +16512,8 @@ troops = [
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        khergit_woman_face_young_1,
+        khergit_woman_face_older_2,
     ],
     [
         "town_19_horse_merchant",
@@ -13766,12 +16523,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.nomad_armor, itm.sarranid_boots_a],
+        [itm.skirmisher_armor, itm.sarranid_boots_a, itm.turban],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        sarranid_face_young_1,
+        sarranid_face_older_2,
     ],
     [
         "town_20_horse_merchant",
@@ -13781,12 +16538,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.sarranid_cloth_robe, itm.sarranid_boots_a],
+        [itm.sarranid_cloth_robe, itm.sarranid_boots_a, itm.sarranid_felt_hat],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        sarranid_face_young_1,
+        sarranid_face_older_2,
     ],
     [
         "town_21_horse_merchant",
@@ -13796,12 +16553,12 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.sarranid_cloth_robe_b, itm.sarranid_boots_a],
+        [itm.sarranid_cloth_robe_b, itm.sarranid_boots_a, itm.sarranid_felt_hat],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        man_face_young_1,
-        man_face_older_2,
+        sarranid_face_young_1,
+        sarranid_face_older_2,
     ],
     [
         "town_22_horse_merchant",
@@ -13811,14 +16568,18 @@ troops = [
         0,
         0,
         fac.commoners,
-        [itm.sarranid_common_dress_b, itm.blue_hose, itm.sarranid_felt_head_cloth_b],
+        [
+            itm.sarranid_common_dress_b,
+            itm.sarranid_boots_a,
+            itm.sarranid_felt_head_cloth_b,
+        ],
         def_attrib | level(5),
         wp(20),
         knows_inventory_management_10,
-        woman_face_1,
-        woman_face_2,
+        sarranid_woman_face_young_1,
+        sarranid_woman_face_older_2,
     ],
-    # Town Mayors    #itm.courtly_outfit itm.gambeson itm.blue_gambeson itm.red_gambeson itm.nobleman_outfit itm.rich_outfit
+    # Town Mayors
     [
         "town_1_mayor",
         "Guild_Master",
@@ -13831,8 +16592,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        nord_face_middle_1,
+        nord_face_older_2,
     ],
     [
         "town_2_mayor",
@@ -13846,8 +16607,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        nord_face_middle_1,
+        nord_face_older_2,
     ],
     [
         "town_3_mayor",
@@ -13861,8 +16622,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        rhodok_face_middle_1,
+        rhodok_face_older_2,
     ],
     [
         "town_4_mayor",
@@ -13872,12 +16633,12 @@ troops = [
         0,
         reserved,
         fac.neutral,
-        [itm.fur_coat, itm.blue_hose],
+        [itm.courtly_outfit, itm.blue_hose],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        swadian_face_middle_1,
+        swadian_face_older_2,
     ],
     [
         "town_5_mayor",
@@ -13891,8 +16652,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        rhodok_face_middle_1,
+        rhodok_face_older_2,
     ],
     [
         "town_6_mayor",
@@ -13902,12 +16663,12 @@ troops = [
         0,
         reserved,
         fac.neutral,
-        [itm.red_gambeson, itm.nomad_boots],
+        [itm.red_gambeson, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        swadian_face_middle_1,
+        swadian_face_older_2,
     ],
     [
         "town_7_mayor",
@@ -13921,8 +16682,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        swadian_face_middle_1,
+        swadian_face_older_2,
     ],
     [
         "town_8_mayor",
@@ -13936,8 +16697,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        vaegir_face_middle_1,
+        vaegir_face_older_2,
     ],
     [
         "town_9_mayor",
@@ -13947,12 +16708,12 @@ troops = [
         0,
         reserved,
         fac.neutral,
-        [itm.courtly_outfit, itm.leather_boots],
+        [itm.fur_coat, itm.leather_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        vaegir_face_middle_1,
+        vaegir_face_older_2,
     ],
     [
         "town_10_mayor",
@@ -13962,12 +16723,12 @@ troops = [
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jerkin, itm.blue_hose],
+        [itm.leather_jerkin, itm.nomad_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        khergit_face_middle_1,
+        khergit_face_older_2,
     ],
     [
         "town_11_mayor",
@@ -13981,8 +16742,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        vaegir_face_middle_1,
+        vaegir_face_older_2,
     ],
     [
         "town_12_mayor",
@@ -13996,8 +16757,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        nord_face_middle_1,
+        nord_face_older_2,
     ],
     [
         "town_13_mayor",
@@ -14011,8 +16772,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        vaegir_face_middle_1,
+        vaegir_face_older_2,
     ],
     [
         "town_14_mayor",
@@ -14022,12 +16783,12 @@ troops = [
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [itm.nomad_robe, itm.khergit_leather_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        khergit_face_middle_1,
+        khergit_face_older_2,
     ],
     [
         "town_15_mayor",
@@ -14041,8 +16802,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        rhodok_face_middle_1,
+        rhodok_face_older_2,
     ],
     [
         "town_16_mayor",
@@ -14052,12 +16813,12 @@ troops = [
         0,
         reserved,
         fac.neutral,
-        [itm.fur_coat, itm.leather_boots],
+        [itm.blue_gambeson, itm.blue_hose],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        swadian_face_middle_1,
+        swadian_face_older_2,
     ],
     [
         "town_17_mayor",
@@ -14071,8 +16832,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        khergit_face_middle_1,
+        khergit_face_older_2,
     ],
     [
         "town_18_mayor",
@@ -14082,12 +16843,12 @@ troops = [
         0,
         reserved,
         fac.neutral,
-        [itm.blue_gambeson, itm.blue_hose],
+        [itm.fur_coat, itm.leather_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        khergit_face_middle_1,
+        khergit_face_older_2,
     ],
     [
         "town_19_mayor",
@@ -14101,8 +16862,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
     ],
     [
         "town_20_mayor",
@@ -14112,12 +16873,12 @@ troops = [
         0,
         reserved,
         fac.neutral,
-        [itm.sarranid_cloth_robe, itm.sarranid_boots_a],
+        [itm.sarranid_cloth_robe, itm.sarranid_boots_b, itm.turban],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
     ],
     [
         "town_21_mayor",
@@ -14127,12 +16888,12 @@ troops = [
         0,
         reserved,
         fac.neutral,
-        [itm.sarranid_cloth_robe, itm.sarranid_boots_a],
+        [itm.sarranid_cloth_robe_b, itm.sarranid_boots_b],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
     ],
     [
         "town_22_mayor",
@@ -14142,14 +16903,14 @@ troops = [
         0,
         reserved,
         fac.neutral,
-        [itm.sarranid_cloth_robe, itm.sarranid_boots_a],
+        [itm.sarranid_cloth_robe, itm.sarranid_boots_a, itm.sarranid_felt_hat],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        sarranid_face_middle_1,
+        sarranid_face_older_2,
     ],
-    # Village stores
+    # Village elders (and stores)
     [
         "village_1_elder",
         "Village_Elder",
@@ -15512,8 +18273,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_92_elder",
@@ -15527,8 +18288,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_93_elder",
@@ -15542,8 +18303,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_94_elder",
@@ -15557,8 +18318,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_95_elder",
@@ -15572,8 +18333,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_96_elder",
@@ -15587,8 +18348,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_97_elder",
@@ -15602,8 +18363,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_98_elder",
@@ -15617,8 +18378,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_99_elder",
@@ -15632,8 +18393,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_100_elder",
@@ -15647,8 +18408,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_101_elder",
@@ -15662,8 +18423,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_102_elder",
@@ -15677,8 +18438,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_103_elder",
@@ -15692,8 +18453,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_104_elder",
@@ -15707,8 +18468,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_105_elder",
@@ -15722,8 +18483,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_106_elder",
@@ -15737,8 +18498,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_107_elder",
@@ -15752,8 +18513,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_108_elder",
@@ -15767,8 +18528,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_109_elder",
@@ -15782,8 +18543,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     [
         "village_110_elder",
@@ -15797,8 +18558,8 @@ troops = [
         def_attrib | level(2),
         wp(20),
         knows_inventory_management_10,
-        man_face_old_1,
-        man_face_older_2,
+        sarranid_face_old_1,
+        sarranid_face_older_2,
     ],
     # Place extra merchants before this point
     [
@@ -15819,7 +18580,7 @@ troops = [
     [
         "town_1_master_craftsman",
         "{!}Town 1 Craftsman",
-        "{!}Town 1 Seneschal",
+        "{!}Town 1 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
@@ -15833,12 +18594,12 @@ troops = [
     [
         "town_2_master_craftsman",
         "{!}Town 2 Craftsman",
-        "{!}Town 2 Seneschal",
+        "{!}Town 2 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.padded_leather, itm.woolen_hose],
+        [itm.padded_leather, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
@@ -15847,7 +18608,7 @@ troops = [
     [
         "town_3_master_craftsman",
         "{!}Town 3 Craftsman",
-        "{!}Town 3 Seneschal",
+        "{!}Town 3 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
@@ -15861,12 +18622,12 @@ troops = [
     [
         "town_4_master_craftsman",
         "{!}Town 4 Craftsman",
-        "{!}Town 4 Seneschal",
+        "{!}Town 4 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_apron, itm.blue_hose],
+        [itm.leather_apron, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
@@ -15875,12 +18636,12 @@ troops = [
     [
         "town_5_master_craftsman",
         "{!}Town 5 Craftsman",
-        "{!}Town 5 Seneschal",
+        "{!}Town 5 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jerkin, itm.woolen_hose],
+        [itm.leather_jerkin, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
@@ -15889,7 +18650,7 @@ troops = [
     [
         "town_6_master_craftsman",
         "{!}Town 6 Craftsman",
-        "{!}Town 6 Seneschal",
+        "{!}Town 6 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
@@ -15903,12 +18664,12 @@ troops = [
     [
         "town_7_master_craftsman",
         "{!}Town 7 Craftsman",
-        "{!}Town 7 Seneschal",
+        "{!}Town 7 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jerkin, itm.woolen_hose],
+        [itm.leather_jerkin, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
@@ -15917,7 +18678,7 @@ troops = [
     [
         "town_8_master_craftsman",
         "{!}Town 8 Craftsman",
-        "{!}Town 8 Seneschal",
+        "{!}Town 8 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
@@ -15931,7 +18692,7 @@ troops = [
     [
         "town_9_master_craftsman",
         "{!}Town 9 Craftsman",
-        "{!}Town 9 Seneschal",
+        "{!}Town 9 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
@@ -15945,12 +18706,12 @@ troops = [
     [
         "town_10_master_craftsman",
         "{!}Town 10 Craftsman",
-        "{!}Town 10 Seneschal",
+        "{!}Town 10 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jerkin, itm.blue_hose],
+        [itm.leather_jerkin, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
@@ -15959,7 +18720,7 @@ troops = [
     [
         "town_11_master_craftsman",
         "{!}Town 11 Craftsman",
-        "{!}Town 11 Seneschal",
+        "{!}Town 11 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
@@ -15972,8 +18733,8 @@ troops = [
     ],
     [
         "town_12_master_craftsman",
-        "{!}Town 12 Seneschal",
-        "{!}Town 12 Seneschal",
+        "{!}Town 12 Craftsman",
+        "{!}Town 12 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
@@ -15986,13 +18747,13 @@ troops = [
     ],
     [
         "town_13_master_craftsman",
-        "{!}Town 13 Seneschal",
-        "{!}Town 13 Seneschal",
+        "{!}Town 13 Craftsman",
+        "{!}Town 13 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_jerkin, itm.woolen_hose],
+        [itm.leather_jerkin, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
@@ -16000,13 +18761,13 @@ troops = [
     ],
     [
         "town_14_master_craftsman",
-        "{!}Town 14 Seneschal",
-        "{!}Town 14 Seneschal",
+        "{!}Town 14 Craftsman",
+        "{!}Town 14 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_apron, itm.blue_hose],
+        [itm.leather_apron, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
@@ -16014,13 +18775,13 @@ troops = [
     ],
     [
         "town_15_master_craftsman",
-        "{!}Town 15 Seneschal",
-        "{!}Town 14 Seneschal",
+        "{!}Town 15 Craftsman",
+        "{!}Town 15 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_apron, itm.blue_hose],
+        [itm.leather_apron, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
@@ -16028,13 +18789,13 @@ troops = [
     ],
     [
         "town_16_master_craftsman",
-        "{!}Town 16 Seneschal",
-        "{!}Town 14 Seneschal",
+        "{!}Town 16 Craftsman",
+        "{!}Town 16 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_apron, itm.blue_hose],
+        [itm.leather_apron, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
@@ -16042,13 +18803,13 @@ troops = [
     ],
     [
         "town_17_master_craftsman",
-        "{!}Town 17 Seneschal",
-        "{!}Town 14 Seneschal",
+        "{!}Town 17 Craftsman",
+        "{!}Town 17 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_apron, itm.blue_hose],
+        [itm.leather_apron, itm.nomad_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
@@ -16056,171 +18817,75 @@ troops = [
     ],
     [
         "town_18_master_craftsman",
-        "{!}Town 18 Seneschal",
-        "{!}Town 14 Seneschal",
+        "{!}Town 18 Craftsman",
+        "{!}Town 18 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.leather_apron, itm.blue_hose],
+        [itm.leather_apron, itm.nomad_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        0x0000000E7E0075523A6AA9B6DA61E8DD00000000001D96D30000000000000000,
+        0x0000000E7E0051003A6AA9B6DA61E8DD00000000001D96D30000000000000000,
     ],
     [
         "town_19_master_craftsman",
-        "{!}Town 19 Seneschal",
-        "{!}Town 14 Seneschal",
+        "{!}Town 19 Craftsman",
+        "{!}Town 19 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.sarranid_cloth_robe, itm.blue_hose],
+        [itm.sarranid_cloth_robe, itm.sarranid_boots_a],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        0x000000002408314852A432E88AAA42E100000000001E284E0000000000000000,
+        0x000000002408714852A432E88AAA42E100000000001E284E0000000000000000,
     ],
     [
         "town_20_master_craftsman",
-        "{!}Town 20 Seneschal",
-        "{!}Town 14 Seneschal",
+        "{!}Town 20 Craftsman",
+        "{!}Town 20 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.sarranid_cloth_robe_b, itm.blue_hose],
+        [itm.sarranid_cloth_robe_b, itm.sarranid_boots_a],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        0x000000001104449136E44CBD1C9352BC000000000005E8D10000000000000000,
+        0x000000001104749136E44CBD1C9352BC000000000005E8D10000000000000000,
     ],
     [
         "town_21_master_craftsman",
-        "{!}Town 21 Seneschal",
-        "{!}Town 14 Seneschal",
+        "{!}Town 21 Craftsman",
+        "{!}Town 21 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.sarranid_cloth_robe, itm.blue_hose],
+        [itm.sarranid_cloth_robe, itm.sarranid_boots_b],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        0x00000000131032D3351C6E43226EC96C000000000005B5240000000000000000,
+        0x00000000131072D3351C6E43226EC96C000000000005B5240000000000000000,
     ],
     [
         "town_22_master_craftsman",
-        "{!}Town 22 Seneschal",
-        "{!}Town 14 Seneschal",
+        "{!}Town 22 Craftsman",
+        "{!}Town 22 Craftsman",
         tf_hero | tf_is_merchant,
         0,
         reserved,
         fac.neutral,
-        [itm.sarranid_cloth_robe_b, itm.blue_hose],
+        [itm.sarranid_cloth_robe_b, itm.sarranid_boots_b],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        0x00000000200C658A5723B1A3148DC455000000000015AB920000000000000000,
+        0x00000000200C758A5723B1A3148DC455000000000015AB920000000000000000,
     ],
     # Chests
-    [
-        "zendar_chest",
-        "{!}Zendar Chest",
-        "{!}Zendar Chest",
-        tf_hero | tf_inactive,
-        0,
-        reserved,
-        fac.neutral,
-        [],
-        def_attrib | level(18),
-        wp(60),
-        knows_common,
-        0,
-    ],
-    [
-        "tutorial_chest_1",
-        "{!}Melee Weapons Chest",
-        "{!}Melee Weapons Chest",
-        tf_hero | tf_inactive,
-        0,
-        reserved,
-        fac.neutral,
-        [
-            itm.tutorial_sword,
-            itm.tutorial_axe,
-            itm.tutorial_spear,
-            itm.tutorial_club,
-            itm.tutorial_battle_axe,
-        ],
-        def_attrib | level(18),
-        wp(60),
-        knows_common,
-        0,
-    ],
-    [
-        "tutorial_chest_2",
-        "{!}Ranged Weapons Chest",
-        "{!}Ranged Weapons Chest",
-        tf_hero | tf_inactive,
-        0,
-        reserved,
-        fac.neutral,
-        [
-            itm.tutorial_short_bow,
-            itm.tutorial_arrows,
-            itm.tutorial_crossbow,
-            itm.tutorial_bolts,
-            itm.tutorial_throwing_daggers,
-        ],
-        def_attrib | level(18),
-        wp(60),
-        knows_common,
-        0,
-    ],
-    [
-        "bonus_chest_1",
-        "{!}Bonus Chest",
-        "{!}Bonus Chest",
-        tf_hero | tf_inactive,
-        0,
-        reserved,
-        fac.neutral,
-        [itm.strange_armor, itm.strange_short_sword],
-        def_attrib | level(18),
-        wp(60),
-        knows_common,
-        0,
-    ],
-    [
-        "bonus_chest_2",
-        "{!}Bonus Chest",
-        "{!}Bonus Chest",
-        tf_hero | tf_inactive,
-        0,
-        reserved,
-        fac.neutral,
-        [itm.strange_boots, itm.strange_sword],
-        def_attrib | level(18),
-        wp(60),
-        knows_common,
-        0,
-    ],
-    [
-        "bonus_chest_3",
-        "{!}Bonus Chest",
-        "{!}Bonus Chest",
-        tf_hero | tf_inactive,
-        0,
-        reserved,
-        fac.neutral,
-        [itm.strange_helmet, itm.strange_great_sword],
-        def_attrib | level(18),
-        wp(60),
-        knows_common,
-        0,
-    ],
     [
         "household_possessions",
         "{!}household_possessions",
@@ -16233,6 +18898,82 @@ troops = [
         def_attrib | level(18),
         wp(60),
         knows_inventory_management_10,
+        0,
+    ],
+    [
+        "bonus_chest_0",
+        "{!}Zendar Chest",
+        "{!}Bonus Chest",
+        tf_hero | tf_inactive,
+        0,
+        reserved,
+        fac.neutral,
+        [
+            itm.light_mail_and_plate,
+            itm.mail_and_plate,
+            itm.shield_kite_g,
+            itm.shield_kite_h,
+            itm.shield_kite_i,
+            itm.shield_kite_k,
+        ],
+        def_attrib | level(18),
+        wp(60),
+        knows_common,
+        0,
+    ],
+    [
+        "bonus_chest_1",
+        "{!}Four Ways Inn Chest",
+        "{!}Bonus Chest",
+        tf_hero | tf_inactive,
+        0,
+        reserved,
+        fac.neutral,
+        [
+            itm.hood_b,
+            itm.hood_c,
+            itm.hood_d,
+            itm.double_axe,
+            itm.norman_shield_1,
+            itm.norman_shield_2,
+            itm.norman_shield_3,
+            itm.norman_shield_4,
+            itm.norman_shield_5,
+            itm.norman_shield_6,
+            itm.norman_shield_7,
+            itm.norman_shield_8,
+        ],
+        def_attrib | level(18),
+        wp(60),
+        knows_common,
+        0,
+    ],
+    [
+        "bonus_chest_2",
+        "{!}Salt Mine Chest",
+        "{!}Bonus Chest",
+        tf_hero | tf_inactive,
+        0,
+        reserved,
+        fac.neutral,
+        [itm.burlap_tunic, itm.stone_hammer, itm.polehammer],
+        def_attrib | level(18),
+        wp(60),
+        knows_common,
+        0,
+    ],
+    [
+        "bonus_chest_3",
+        "{!}Dhorak Keep Chest",
+        "{!}Bonus Chest",
+        tf_hero | tf_inactive,
+        0,
+        reserved,
+        fac.neutral,
+        [itm.pilgrim_disguise, itm.pilgrim_hood, itm.broadsword],
+        def_attrib | level(18),
+        wp(60),
+        knows_common,
         0,
     ],
     # These are used as arrays in the scripts.
@@ -16362,23 +19103,6 @@ troops = [
         knows_common,
         0,
     ],
-    [
-        "multiplayer_data",
-        "{!}multiplayer_data",
-        "{!}multiplayer_data",
-        tf_hero | tf_inactive,
-        0,
-        reserved,
-        fac.neutral,
-        [],
-        def_attrib,
-        0,
-        knows_common,
-        0,
-    ],
-    ##  ["black_khergit_guard","Black Khergit Guard","Black Khergit Guard",tf_mounted|tf_guarantee_ranged|tf_guarantee_shield|tf_guarantee_boots|tf_guarantee_helmet|tf_guarantee_armor|tf_guarantee_horse,0,0,fac.black_khergits,
-    ##   [itm.arrows,itm.nomad_sabre,itm.scimitar,itm.winged_mace,itm.lance,itm.khergit_bow,itm.khergit_guard_helmet,itm.khergit_cavalry_helmet,itm.khergit_guard_boots,itm.khergit_guard_armor,itm.nomad_shield,itm.steppe_horse,itm.warhorse],
-    ##   def_attrib|level(28),wp(140),knows_riding_6|knows_ironflesh_4|knows_horse_archery_6|knows_power_draw_6,khergit_face1, khergit_face2],
     # Add Extra Quest NPCs below this point
     [
         "local_merchant",
@@ -16421,8 +19145,8 @@ troops = [
         def_attrib | level(4),
         wp(60),
         knows_common,
-        vaegir_face1,
-        vaegir_face2,
+        vaegir_face_young_1,
+        vaegir_face_older_2,
     ],
     [
         "trainee_peasant",
@@ -16450,8 +19174,8 @@ troops = [
         def_attrib | level(4),
         wp(60),
         knows_common,
-        vaegir_face1,
-        vaegir_face2,
+        vaegir_face_young_1,
+        vaegir_face_older_2,
     ],
     [
         "fugitive",
@@ -16514,34 +19238,6 @@ troops = [
         "hired_assassin",
         "Hired Assassin",
         "Hired Assassin",
-        tf_guarantee_boots | tf_guarantee_armor,
-        0,
-        0,
-        fac.commoners,  # they look like belligerent drunks
-        [
-            itm.short_tunic,
-            itm.linen_tunic,
-            itm.coarse_tunic,
-            itm.tabard,
-            itm.leather_vest,
-            itm.woolen_hose,
-            itm.nomad_boots,
-            itm.blue_hose,
-            itm.wrapping_boots,
-            itm.fur_hat,
-            itm.leather_cap,
-            itm.sword_viking_1,
-        ],
-        def_attrib | str_20 | agi_16 | level(20),
-        wp(180),
-        knows_common | knows_power_strike_5 | knows_ironflesh_3,
-        bandit_face1,
-        bandit_face2,
-    ],
-    [
-        "fight_promoter",
-        "Rough-Looking Character",
-        "Rough-Looking Character",
         tf_guarantee_boots | tf_guarantee_armor,
         0,
         0,
@@ -16613,14 +19309,14 @@ troops = [
         def_attrib | agi_11 | level(10),
         wp(130),
         knows_common,
-        vaegir_face1,
-        vaegir_face2,
+        vaegir_face_young_1,
+        vaegir_face_older_2,
     ],
     [
         "nurse_for_lady",
         "Nurse",
         "Nurse",
-        tf_female | tf_guarantee_armor,
+        tf_female | tf_guarantee_armor | tf_guarantee_boots,
         0,
         reserved,
         fac.commoners,
@@ -16646,13 +19342,6 @@ troops = [
         man_face_middle_1,
         man_face_older_2,
     ],
-    ##  ["conspirator","Conspirator","Conspirators", tf_mounted|tf_guarantee_boots|tf_guarantee_armor|tf_guarantee_gloves|tf_guarantee_horse,0,0,fac.neutral,
-    ##   [itm.sword,itm.leather_jerkin,itm.leather_boots,itm.hunter,itm.leather_gloves],
-    ##   def_attrib|agi_11|level(10),wp(130),knows_common,vaegir_face1, vaegir_face2],
-    ##  ["conspirator_leader","Conspirator","Conspirators", tf_mounted|tf_guarantee_boots|tf_guarantee_armor|tf_guarantee_gloves|tf_guarantee_horse,0,0,fac.neutral,
-    ##   [itm.sword,itm.leather_jerkin,itm.leather_boots,itm.hunter,itm.leather_gloves],
-    ##   def_attrib|agi_11|level(10),wp(130),knows_common,vaegir_face1, vaegir_face2],
-
     [
         "quick_battle_6_player",
         "{!}quick_battle_6_player",
@@ -16831,7 +19520,7 @@ troops = [
             itm.leather_gloves,
         ],
         str_9 | agi_15 | int_12 | cha_12 | level(15),
-        wpex(109, 33, 132, 15, 32, 100),
+        wpex(109, 33, 132, 15, 32, 100, 15),
         knows_riding_3
         | knows_athletics_5
         | knows_shield_3
@@ -16860,7 +19549,7 @@ troops = [
             itm.splinted_greaves,
         ],
         str_12 | agi_14 | int_11 | cha_18 | level(22),
-        wpex(182, 113, 112, 159, 82, 115),
+        wpex(182, 113, 112, 159, 82, 115, 55),
         knows_horse_archery_2
         | knows_riding_3
         | knows_athletics_4
@@ -16893,7 +19582,7 @@ troops = [
             itm.mail_boots,
         ],
         str_18 | agi_16 | int_12 | cha_11 | level(24),
-        wpex(90, 152, 102, 31, 33, 34),
+        wpex(90, 152, 102, 31, 33, 34, 30),
         knows_riding_5
         | knows_athletics_5
         | knows_shield_3
@@ -16921,7 +19610,7 @@ troops = [
             itm.mail_boots,
         ],
         str_18 | agi_15 | int_12 | cha_12 | level(24),
-        wpex(130, 150, 130, 30, 50, 90),
+        wpex(130, 150, 130, 30, 50, 90, 30),
         knows_riding_2
         | knows_athletics_5
         | knows_shield_4
@@ -16951,7 +19640,7 @@ troops = [
             itm.leather_boots,
         ],
         str_15 | agi_15 | int_12 | cha_12 | level(21),
-        wpex(110, 130, 110, 80, 15, 110),
+        wpex(110, 130, 110, 80, 15, 110, 15),
         knows_riding_1
         | knows_athletics_5
         | knows_shield_4
@@ -16982,7 +19671,7 @@ troops = [
             itm.ankle_boots,
         ],
         str_12 | agi_15 | int_15 | cha_9 | level(18),
-        wpex(70, 70, 100, 140, 15, 100),
+        wpex(70, 70, 100, 140, 15, 100, 15),
         knows_horse_archery_2
         | knows_riding_2
         | knows_athletics_5
@@ -17013,7 +19702,7 @@ troops = [
             itm.leather_boots,
         ],
         str_12 | agi_15 | int_15 | cha_12 | level(21),
-        wpex(100, 70, 70, 30, 140, 80),
+        wpex(100, 70, 70, 30, 140, 80, 30),
         knows_horse_archery_2
         | knows_riding_2
         | knows_athletics_5
@@ -17044,7 +19733,7 @@ troops = [
             itm.sarranid_boots_b,
         ],
         str_12 | agi_15 | int_12 | cha_12 | level(18),
-        wpex(100, 40, 100, 85, 15, 130),
+        wpex(100, 40, 100, 85, 15, 130, 15),
         knows_horse_archery_2
         | knows_riding_2
         | knows_athletics_5
@@ -17074,7 +19763,7 @@ troops = [
             itm.lamellar_vest,
         ],
         str_16 | agi_21 | int_12 | cha_14 | level(26),
-        wpex(182, 113, 112, 159, 82, 115),
+        wpex(182, 113, 112, 159, 82, 115, 65),
         knows_horse_archery_2
         | knows_riding_2
         | knows_athletics_7
@@ -17096,7 +19785,7 @@ troops = [
         0,
         fac.kingdom_1,
         [
-            itm.sarranid_cavalry_sword,
+            itm.arabian_sword_c,
             itm.strong_bow,
             itm.bodkin_arrows,
             itm.bodkin_arrows,
@@ -17106,7 +19795,7 @@ troops = [
             itm.sarranid_boots_b,
         ],
         str_13 | agi_18 | int_15 | cha_9 | level(18),
-        wpex(126, 19, 23, 149, 41, 26),
+        wpex(126, 19, 23, 149, 41, 26, 30),
         knows_horse_archery_6
         | knows_riding_6
         | knows_weapon_master_2
@@ -17136,7 +19825,7 @@ troops = [
             itm.leather_jacket,
         ],
         str_15 | agi_12 | int_14 | cha_20 | level(28),
-        wpex(101, 35, 136, 15, 17, 19),
+        wpex(101, 35, 136, 15, 17, 19, 15),
         knows_riding_4
         | knows_athletics_2
         | knows_shield_4
@@ -17337,86 +20026,118 @@ troops = [
         "swadian_merchant",
         "Merchant of Praven",
         "{!}Prominent",
-        tf_hero | tf_randomize_face,
+        tf_hero,
         0,
         reserved,
-        fac.kingdom_4,
-        [itm.sword_two_handed_a, itm.courtly_outfit, itm.leather_boots],
+        fac.kingdom_1,
+        [itm.light_leather_boots, itm.rich_outfit, itm.sword_medieval_c_small],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        0x0000000A2910305135AC7169644C5D6400000000001E5B2B0000000000000000,
+        0x0000000A2910305135AC7169644C5D6400000000001E5B2B0000000000000000,
     ],
     [
         "vaegir_merchant",
         "Merchant of Reyvadin",
         "{!}Prominent",
-        tf_hero | tf_randomize_face,
+        tf_hero,
         0,
         reserved,
-        fac.kingdom_5,
-        [itm.sword_two_handed_a, itm.nobleman_outfit, itm.woolen_hose],
+        fac.kingdom_2,
+        [
+            itm.fur_hat,
+            itm.leather_jacket,
+            itm.leather_gloves,
+            itm.hide_boots,
+            itm.sword_viking_2_small,
+        ],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        0x0000000B3F0402CF48E49BC55B91F7A400000000001DC6B50000000000000000,
+        0x0000000B3F0402CF48E49BC55B91F7A400000000001DC6B50000000000000000,
     ],
     [
         "khergit_merchant",
         "Merchant of Tulga",
         "{!}Prominent",
-        tf_hero | tf_randomize_face,
+        tf_hero,
         0,
         reserved,
-        fac.kingdom_1,
-        [itm.sword_two_handed_a, itm.red_gambeson, itm.nomad_boots],
+        fac.kingdom_3,
+        [
+            itm.khergit_leather_boots,
+            itm.leather_gloves,
+            itm.nomad_vest,
+            itm.nomad_cap,
+            itm.sword_khergit_3,
+        ],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        0x00000008E610338D151DAB4B1B516A7800000000001E52EB0000000000000000,
+        0x00000008E610338D151DAB4B1B516A7800000000001E52EB0000000000000000,
     ],
     [
         "nord_merchant",
         "Merchant of Sargoth",
         "{!}Prominent",
-        tf_hero | tf_randomize_face,
+        tf_hero,
         0,
         reserved,
-        fac.kingdom_2,
-        [itm.sword_two_handed_a, itm.red_gambeson, itm.nomad_boots],
+        fac.kingdom_4,
+        [
+            itm.sword_viking_2_small,
+            itm.leather_gloves,
+            itm.light_leather_boots,
+            itm.light_leather,
+        ],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        0x000000091900130F232355AB5D5338DD00000000001EB95C0000000000000000,
+        0x000000091900130F232355AB5D5338DD00000000001EB95C0000000000000000,
     ],
     [
         "rhodok_merchant",
         "Merchant of Jelkala",
         "{!}Prominent",
-        tf_hero | tf_randomize_face,
+        tf_hero,
         0,
         reserved,
-        fac.kingdom_3,
-        [itm.sword_two_handed_a, itm.leather_jerkin, itm.blue_hose],
+        fac.kingdom_5,
+        [itm.khergit_leather_boots, itm.courtly_outfit, itm.sword_medieval_c_small],
         def_attrib | level(2),
         wp(20),
         knows_common,
-        man_face_middle_1,
-        mercenary_face_2,
+        0x00000008B30C20C565344CD95D52272B00000000001DCB290000000000000000,
+        0x00000008B30C20C565344CD95D52272B00000000001DCB290000000000000000,
     ],
     [
         "sarranid_merchant",
         "Merchant of Shariz",
         "{!}Prominent",
-        tf_hero | tf_randomize_face,
+        tf_hero,
         0,
         reserved,
         fac.kingdom_6,
-        [itm.sword_two_handed_a, itm.sarranid_cloth_robe, itm.sarranid_boots_a],
+        [itm.scimitar, itm.sarranid_boots_b, itm.sarranid_cavalry_robe, itm.headcloth],
+        def_attrib | level(2),
+        wp(20),
+        knows_common,
+        0x000000093F0071C0376CB222EABA472600000000001E30190000000000000000,
+        0x000000093F0071C0376CB222EABA472600000000001E30190000000000000000,
+    ],
+    [
+        "default_merchant",
+        "Rich Merchant",
+        "{!}Prominent",
+        tf_hero | tf_randomize_face,
+        0,
+        reserved,
+        fac.commoners,
+        [itm.sword_two_handed_a, itm.rich_outfit, itm.hide_boots],
         def_attrib | level(2),
         wp(20),
         knows_common,
@@ -17424,60 +20145,19 @@ troops = [
         mercenary_face_2,
     ],
     [
-        "startup_merchants_end",
-        "startup_merchants_end",
-        "startup_merchants_end",
+        "relative_of_merchant",
+        "Merchant's Brother",
+        "{!}Prominent",
         tf_hero,
         0,
         0,
-        fac.commoners,
-        [],
-        def_attrib | level(2),
-        wp(20),
-        knows_inventory_management_10,
-        0,
-    ],
-    [
-        "sea_raider_leader",
-        "Sea Raider Captain",
-        "Sea Raider Captains",
-        tf_hero | tf_guarantee_all_wo_ranged,
-        0,
-        0,
-        fac.outlaws,
-        [
-            itm.arrows,
-            itm.sword_viking_1,
-            itm.sword_viking_2,
-            itm.fighting_axe,
-            itm.battle_axe,
-            itm.spear,
-            itm.nordic_shield,
-            itm.nordic_shield,
-            itm.nordic_shield,
-            itm.wooden_shield,
-            itm.long_bow,
-            itm.javelin,
-            itm.throwing_axes,
-            itm.nordic_helmet,
-            itm.nordic_helmet,
-            itm.nasal_helmet,
-            itm.mail_shirt,
-            itm.byrnie,
-            itm.mail_hauberk,
-            itm.leather_boots,
-            itm.nomad_boots,
-        ],
-        def_attrib | level(24),
-        wp(110),
-        knows_ironflesh_2
-        | knows_power_strike_2
-        | knows_power_draw_3
-        | knows_power_throw_2
-        | knows_riding_1
-        | knows_athletics_2,
-        nord_face_young_1,
-        nord_face_old_2,
+        fac.kingdom_2,
+        [itm.linen_tunic, itm.nomad_boots],
+        def_attrib | level(1),
+        wp_melee(10),
+        knows_athletics_1 | knows_ironflesh_2 | knows_shield_2,
+        0x00000000320410022D2595495491AFA400000000001D9AE30000000000000000,
+        mercenary_face_2,
     ],
     [
         "looter_leader",
@@ -17507,89 +20187,49 @@ troops = [
         0x00000001B80032473AC49738206626B200000000001DA7660000000000000000,
         bandit_face2,
     ],
-    [
-        "bandit_leaders_end",
-        "bandit_leaders_end",
-        "bandit_leaders_end",
-        tf_hero,
-        0,
-        0,
-        fac.commoners,
-        [],
-        def_attrib | level(2),
-        wp(20),
-        knows_inventory_management_10,
-        0,
-    ],
-    [
-        "relative_of_merchant",
-        "Merchant's Brother",
-        "{!}Prominent",
-        tf_hero,
-        0,
-        0,
-        fac.kingdom_2,
-        [itm.linen_tunic, itm.nomad_boots],
-        def_attrib | level(1),
-        wp_melee(10),
-        knows_athletics_1 | knows_ironflesh_2 | knows_shield_2,
-        0x00000000320410022D2595495491AFA400000000001D9AE30000000000000000,
-        mercenary_face_2,
-    ],
-    [
-        "relative_of_merchants_end",
-        "relative_of_merchants_end",
-        "relative_of_merchants_end",
-        tf_hero,
-        0,
-        0,
-        fac.commoners,
-        [],
-        def_attrib | level(2),
-        wp(20),
-        knows_inventory_management_10,
-        0,
-    ],
 ]
 
 
 # Troop upgrade declarations
 
+upgrade(troops, "village_walker_m", "watchman")
 upgrade(troops, "farmer", "watchman")
 upgrade(troops, "townsman", "watchman")
-upgrade2(troops, "watchman", "caravan_guard", "mercenary_crossbowman")
-upgrade2(troops, "caravan_guard", "mercenary_swordsman", "mercenary_horseman")
+upgrade2(troops, "watchman", "mercenary_footman", "caravan_guard")
+upgrade2(troops, "mercenary_footman", "mercenary_swordsman", "mercenary_crossbowman")
+upgrade2(troops, "mercenary_archer", "mercenary_horse_archer", "mercenary_longbowman")
 upgrade(troops, "mercenary_swordsman", "hired_blade")
+upgrade2(troops, "caravan_guard", "mercenary_horseman", "mercenary_horse_archer")
 upgrade(troops, "mercenary_horseman", "mercenary_cavalry")
 
+upgrade(troops, "village_walker_1_m", "swadian_militia")
 upgrade(troops, "swadian_recruit", "swadian_militia")
-
 upgrade2(troops, "swadian_militia", "swadian_footman", "swadian_skirmisher")
 upgrade2(troops, "swadian_footman", "swadian_man_at_arms", "swadian_infantry")
 upgrade(troops, "swadian_infantry", "swadian_sergeant")
 upgrade(troops, "swadian_skirmisher", "swadian_crossbowman")
-
 upgrade(troops, "swadian_crossbowman", "swadian_sharpshooter")
-
 upgrade(troops, "swadian_man_at_arms", "swadian_knight")
 
+upgrade(troops, "village_walker_2_m", "vaegir_footman")
 upgrade(troops, "vaegir_recruit", "vaegir_footman")
 upgrade2(troops, "vaegir_footman", "vaegir_veteran", "vaegir_skirmisher")
-
 upgrade(troops, "vaegir_skirmisher", "vaegir_archer")
-
 upgrade(troops, "vaegir_archer", "vaegir_marksman")
-
 upgrade2(troops, "vaegir_veteran", "vaegir_horseman", "vaegir_infantry")
-
 upgrade(troops, "vaegir_infantry", "vaegir_guard")
+upgrade(troops, "vaegir_raider", "vaegir_horseman")
 upgrade(troops, "vaegir_horseman", "vaegir_knight")
 
+upgrade(troops, "village_walker_3_m", "khergit_tribesman")
 upgrade(troops, "khergit_tribesman", "khergit_skirmisher")
-upgrade(troops, "khergit_skirmisher", "khergit_horseman")
-upgrade2(troops, "khergit_horseman", "khergit_lancer", "khergit_horse_archer")
+upgrade2(troops, "khergit_skirmisher", "khergit_horseman", "khergit_horse_archer")
+upgrade(troops, "khergit_horseman", "khergit_lancer")
+upgrade(troops, "khergit_lancer", "khergit_guard")
 upgrade(troops, "khergit_horse_archer", "khergit_veteran_horse_archer")
+upgrade(troops, "khergit_veteran_horse_archer", "khergit_guard")
 
+upgrade2(troops, "village_walker_4_m", "nord_footman", "nord_huntsman")
 upgrade2(troops, "nord_recruit", "nord_footman", "nord_huntsman")
 upgrade(troops, "nord_footman", "nord_trained_footman")
 upgrade(troops, "nord_trained_footman", "nord_warrior")
@@ -17597,52 +20237,58 @@ upgrade(troops, "nord_warrior", "nord_veteran")
 upgrade(troops, "nord_veteran", "nord_champion")
 upgrade(troops, "nord_huntsman", "nord_archer")
 upgrade(troops, "nord_archer", "nord_veteran_archer")
+upgrade(troops, "nord_handgunner", "nord_shocktrooper")
 
-upgrade2(troops, "rhodok_tribesman", "rhodok_spearman", "rhodok_crossbowman")
+upgrade2(troops, "village_walker_5_m", "rhodok_spearman", "rhodok_crossbowman")
+upgrade2(troops, "rhodok_recruit", "rhodok_spearman", "rhodok_crossbowman")
 upgrade(troops, "rhodok_spearman", "rhodok_trained_spearman")
 upgrade(troops, "rhodok_trained_spearman", "rhodok_veteran_spearman")
 upgrade(troops, "rhodok_veteran_spearman", "rhodok_sergeant")
-
 upgrade(troops, "rhodok_crossbowman", "rhodok_trained_crossbowman")
-upgrade(troops, "rhodok_trained_crossbowman", "rhodok_veteran_crossbowman")  # new 1.126
+upgrade(troops, "rhodok_trained_crossbowman", "rhodok_veteran_crossbowman")
 upgrade(troops, "rhodok_veteran_crossbowman", "rhodok_sharpshooter")
 
-
+upgrade(troops, "village_walker_6_m", "sarranid_footman")
 upgrade(troops, "sarranid_recruit", "sarranid_footman")
-
 upgrade2(troops, "sarranid_footman", "sarranid_veteran_footman", "sarranid_skirmisher")
 upgrade2(troops, "sarranid_veteran_footman", "sarranid_horseman", "sarranid_infantry")
 upgrade(troops, "sarranid_infantry", "sarranid_guard")
 upgrade(troops, "sarranid_skirmisher", "sarranid_archer")
-
 upgrade(troops, "sarranid_archer", "sarranid_master_archer")
-
+upgrade(troops, "sarranid_raider", "sarranid_horseman")
 upgrade(troops, "sarranid_horseman", "sarranid_mamluke")
-
-
-upgrade2(troops, "looter", "mountain_bandit", "forest_bandit")
+upgrade(troops, "sarranid_handgunner", "sarranid_janissary")
 
 # new tree connections
-upgrade(troops, "mountain_bandit", "rhodok_tribesman")
-upgrade(troops, "forest_bandit", "swadian_recruit")
-upgrade(troops, "steppe_bandit", "khergit_tribesman")
-upgrade(troops, "taiga_bandit", "vaegir_recruit")
-upgrade(troops, "sea_raider", "nord_recruit")
-upgrade(troops, "desert_bandit", "sarranid_recruit")
+upgrade(troops, "mountain_bandit", "mercenary_footman")
+upgrade(troops, "forest_bandit", "mercenary_archer")
+upgrade(troops, "steppe_bandit", "mercenary_horse_archer")
+upgrade(troops, "taiga_bandit", "mercenary_longbowman")
+upgrade(troops, "sea_raider", "mercenary_swordsman")
+upgrade(troops, "desert_bandit", "mercenary_horseman")
 # new tree connections ended
 
-upgrade2(troops, "bandit", "brigand", "mercenary_swordsman")
-upgrade(troops, "manhunter", "slave_driver")
+upgrade(troops, "looter", "bandit")
+upgrade2(troops, "bandit", "brigand", "mercenary_footman")
+upgrade(troops, "brigand", "mercenary_horseman")
 
-# upgrade(troops,"forest_bandit","mercenary_crossbowman")
+upgrade(troops, "black_khergit_horseman", "black_khergit_guard")
 
+
+upgrade(troops, "manhunter", "bounty_hunter")
+upgrade(troops, "bounty_hunter", "knight_errant")
+
+upgrade(troops, "slave_keeper", "slave_driver")
 upgrade(troops, "slave_driver", "slave_hunter")
 upgrade(troops, "slave_hunter", "slave_crusher")
 upgrade(troops, "slave_crusher", "slaver_chief")
 
-upgrade(troops, "follower_woman", "hunter_woman")
-upgrade(troops, "hunter_woman", "fighter_woman")
-
-upgrade(troops, "fighter_woman", "sword_sister")
-upgrade(troops, "refugee", "follower_woman")
+# upgrade(troops,"refugee","follower_woman")
+upgrade(troops, "village_walker_f", "follower_woman")
+upgrade(troops, "village_walker_3_f", "follower_woman")
+upgrade(troops, "village_walker_6_f", "follower_woman")
 upgrade(troops, "peasant_woman", "follower_woman")
+upgrade(troops, "follower_woman", "hunter_woman")
+upgrade2(troops, "hunter_woman", "ranger_woman", "fighter_woman")
+upgrade(troops, "ranger_woman", "shield_maiden")
+upgrade(troops, "fighter_woman", "sword_sister")

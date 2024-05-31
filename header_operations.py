@@ -1,5 +1,5 @@
 ################################################################################
-#                                 header_operations expanded v.1.0.4 by Liran  #
+#                    header_operations expanded MERGED by Liran                #
 #                    based on header_operations expanded v.1.0.2 (unofficial)  #
 #                    based on header_operations expanded v.1.0.3 (by Limik)    #  
 ################################################################################
