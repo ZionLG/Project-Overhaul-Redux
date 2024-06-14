@@ -20,6 +20,7 @@ pf_label_medium              = 0x00001000
 pf_label_large               = 0x00002000
 
 pf_always_visible            = 0x00004000
+pf_dont_send_to_clients      = 0x00008000  # multiplayer campaign, for parties used only for calculating on server-side
 pf_default_behavior          = 0x00010000
 pf_auto_remove_in_town       = 0x00020000
 pf_quest_party               = 0x00040000

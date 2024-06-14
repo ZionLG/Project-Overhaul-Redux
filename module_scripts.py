@@ -16,7 +16,7 @@ from compiler import *  # should be after all imports
 # [ ZA05 ] - Notes Menu
 # [ ZA06 ] - Other Strings
 # [ ZA07 ] - Cheat Mode
-# [ ZA08 ] - Multiplayer
+# [ ZA08 ] - Multiplayer (Removed)
 #
 #   _ZB_ - Economy and Trade
 # [ ZB01 ] - Initialization
@@ -96,6 +96,8 @@ from compiler import *  # should be after all imports
 #
 #   _ZO_ - Quick Battle
 #
+#   _ZP_ - WSE
+#
 ####################################################################################################################
 # Appendices:
 #
@@ -171,9 +173,11 @@ scripts = [
             (faction_set_slot, "fac_kingdom_5", slot_faction_culture, "fac_culture_5"),
             (faction_set_slot, "fac_kingdom_6", slot_faction_culture, "fac_culture_6"),
             (call_script, "script_set_player_culture", "fac_culture_1"),
+            
             (try_for_range, ":faction_no", kingdoms_begin, kingdoms_end),
 	            (faction_set_slot, ":faction_no", slot_faction_marshall, -1),
             (try_end),
+            
             (
                 faction_set_slot,
                 "fac_player_supporters_faction",
@@ -197,6 +201,7 @@ scripts = [
             # Towns:
             (call_script, "script_initialize_trade_routes"),
             (call_script, "script_initialize_town_arena_info"),
+            
             # Setting random feast time
             (try_for_range, ":faction_no", kingdoms_begin, kingdoms_end),
               (call_script, "script_rand", 0, 312), # 240 + 72
@@ -209,6 +214,7 @@ scripts = [
 	                ":last_feast_time",
 	            ),
             (try_end),
+            
             # start some tournaments
             (try_for_range, ":town_no", towns_begin, towns_end),
               (call_script, "script_rand", 0, 100),
@@ -217,268 +223,20 @@ scripts = [
 	            (store_random_in_range, ":random_days", 12, 15),
 	            (party_set_slot, ":town_no", slot_town_has_tournament, ":random_days"),
             (try_end),
-            # village products -- at some point we might make it so that the villages supply raw materials to towns, and the towns produce manufactured goods
-            # village products designate the raw materials produced in the vicinity
-            # right now, just doing a test for grain produced in the swadian heartland
             
-            
-            # Setting the random town sequence:
-            (store_sub, ":num_towns", towns_end, towns_begin),
-            (assign, ":num_iterations", ":num_towns"),
-            (try_for_range, ":cur_town_no", 0, ":num_towns"),
-	            (troop_set_slot, "trp_random_town_sequence", ":cur_town_no", -1),
-            (try_end),
-            (assign, ":cur_town_no", 0),
-            (try_for_range, ":unused", 0, ":num_iterations"),
-	            (store_random_in_range, ":random_no", 0, ":num_towns"),
-	            (assign, ":is_unique", 1),
-	            (try_for_range, ":cur_town_no_2", 0, ":num_towns"),
-		            (troop_slot_eq, "trp_random_town_sequence", ":cur_town_no_2", ":random_no"),
-		            (assign, ":is_unique", 0),
-	            (try_end),
-	            (try_begin),
-		            (eq, ":is_unique", 1),
-		            (troop_set_slot, "trp_random_town_sequence", ":cur_town_no", ":random_no"),
-		            (val_add, ":cur_town_no", 1),
-	            (else_try),
-		            (val_add, ":num_iterations", 1),
-	            (try_end),
-            (try_end),
-            # Cultures:
-            
-            (try_begin),
-	            (eq, "$cheat_mode", 1),
-	            (assign, reg3, "$cheat_mode"),
-	            (
-	                display_message,
-	                "@{!}DEBUG : Completed faction troop assignments, cheat mode: {reg3}",
-	            ),
-            (try_end),
-            # Factions:
-            (faction_set_slot, "fac_kingdom_1", slot_faction_culture, "fac_culture_1"),
-            (
-                faction_set_slot,
-                "fac_kingdom_1",
-                slot_faction_leader,
-                "trp_kingdom_1_lord",
-            ),
-            (troop_set_slot, "trp_kingdom_1_lord", slot_troop_renown, 1200),
-            (faction_set_slot, "fac_kingdom_2", slot_faction_culture, "fac_culture_2"),
-            (
-                faction_set_slot,
-                "fac_kingdom_2",
-                slot_faction_leader,
-                "trp_kingdom_2_lord",
-            ),
-            (troop_set_slot, "trp_kingdom_2_lord", slot_troop_renown, 1200),
-            (faction_set_slot, "fac_kingdom_3", slot_faction_culture, "fac_culture_3"),
-            (
-                faction_set_slot,
-                "fac_kingdom_3",
-                slot_faction_leader,
-                "trp_kingdom_3_lord",
-            ),
-            (troop_set_slot, "trp_kingdom_3_lord", slot_troop_renown, 1200),
-            (faction_set_slot, "fac_kingdom_4", slot_faction_culture, "fac_culture_4"),
-            (
-                faction_set_slot,
-                "fac_kingdom_4",
-                slot_faction_leader,
-                "trp_kingdom_4_lord",
-            ),
-            (troop_set_slot, "trp_kingdom_4_lord", slot_troop_renown, 1200),
-            (faction_set_slot, "fac_kingdom_5", slot_faction_culture, "fac_culture_5"),
-            (
-                faction_set_slot,
-                "fac_kingdom_5",
-                slot_faction_leader,
-                "trp_kingdom_5_lord",
-            ),
-            (troop_set_slot, "trp_kingdom_5_lord", slot_troop_renown, 1200),
-            (faction_set_slot, "fac_kingdom_6", slot_faction_culture, "fac_culture_6"),
-            (
-                faction_set_slot,
-                "fac_kingdom_6",
-                slot_faction_leader,
-                "trp_kingdom_6_lord",
-            ),
-            (troop_set_slot, "trp_kingdom_6_lord", slot_troop_renown, 1200),
-            (assign, ":player_faction_culture", "fac_culture_1"),
-            (
-                faction_set_slot,
-                "fac_player_supporters_faction",
-                slot_faction_culture,
-                ":player_faction_culture",
-            ),
-            (
-                faction_set_slot,
-                "fac_player_faction",
-                slot_faction_culture,
-                ":player_faction_culture",
-            ),
-            
+            (call_script, "script_initialize_center_data"),
 
             # Troops:
             # Assign banners and renown.
-            # We assume there are enough banners for all kingdom heroes.
-            # faction banners
+            (call_script, "script_initialize_troop_banners"),
+
+
             (
-                faction_set_slot,
-                "fac_kingdom_1",
-                slot_faction_banner,
-                "mesh_banner_kingdom_f",
+                try_for_range,
+                ":kingdom_hero",
+                original_kingdom_heroes_begin,
+                active_npcs_end,
             ),
-            (
-                faction_set_slot,
-                "fac_kingdom_2",
-                slot_faction_banner,
-                "mesh_banner_kingdom_b",
-            ),
-            (
-                faction_set_slot,
-                "fac_kingdom_3",
-                slot_faction_banner,
-                "mesh_banner_kingdom_c",
-            ),
-            (
-                faction_set_slot,
-                "fac_kingdom_4",
-                slot_faction_banner,
-                "mesh_banner_kingdom_a",
-            ),
-            (
-                faction_set_slot,
-                "fac_kingdom_5",
-                slot_faction_banner,
-                "mesh_banner_kingdom_d",
-            ),
-            (
-                faction_set_slot,
-                "fac_kingdom_6",
-                slot_faction_banner,
-                "mesh_banner_kingdom_e",
-            ),
-            (try_for_range, ":cur_faction", npc_kingdoms_begin, npc_kingdoms_end),
-	            (
-	                faction_get_slot,
-	                ":cur_faction_king",
-	                ":cur_faction",
-	                slot_faction_leader,
-	            ),
-	            (
-	                faction_get_slot,
-	                ":cur_faction_banner",
-	                ":cur_faction",
-	                slot_faction_banner,
-	            ),
-	            (val_sub, ":cur_faction_banner", banner_meshes_begin),
-	            (val_add, ":cur_faction_banner", banner_scene_props_begin),
-	            (
-	                troop_set_slot,
-	                ":cur_faction_king",
-	                slot_troop_banner_scene_prop,
-	                ":cur_faction_banner",
-	            ),
-            (try_end),
-            (assign, ":num_khergit_lords_assigned", 0),
-            (assign, ":num_sarranid_lords_assigned", 0),
-            (assign, ":num_other_lords_assigned", 0),
-            (try_for_range, ":kingdom_hero", active_npcs_begin, active_npcs_end),
-	            (
-	                this_or_next | troop_slot_eq,
-	                ":kingdom_hero",
-	                slot_troop_occupation,
-	                slto_kingdom_hero,
-	            ),
-	            (
-	                troop_slot_eq,
-	                ":kingdom_hero",
-	                slot_troop_occupation,
-	                slto_inactive_pretender,
-	            ),
-	            (store_troop_faction, ":kingdom_hero_faction", ":kingdom_hero"),
-	            (
-	                neg | faction_slot_eq,
-	                ":kingdom_hero_faction",
-	                slot_faction_leader,
-	                ":kingdom_hero",
-	            ),
-	            (try_begin),
-		            (eq, ":kingdom_hero_faction", "fac_kingdom_3"),  # Khergit Khanate
-		            (
-		                store_add,
-		                ":kingdom_3_banners_begin",
-		                banner_scene_props_begin,
-		                khergit_banners_begin_offset,
-		            ),
-		            (
-		                store_add,
-		                ":banner_id",
-		                ":kingdom_3_banners_begin",
-		                ":num_khergit_lords_assigned",
-		            ),
-		            (
-		                troop_set_slot,
-		                ":kingdom_hero",
-		                slot_troop_banner_scene_prop,
-		                ":banner_id",
-		            ),
-		            (val_add, ":num_khergit_lords_assigned", 1),
-	            (else_try),
-		            (eq, ":kingdom_hero_faction", "fac_kingdom_6"),  # Sarranid Sultanate
-		            (
-		                store_add,
-		                ":kingdom_6_banners_begin",
-		                banner_scene_props_begin,
-		                sarranid_banners_begin_offset,
-		            ),
-		            (
-		                store_add,
-		                ":banner_id",
-		                ":kingdom_6_banners_begin",
-		                ":num_sarranid_lords_assigned",
-		            ),
-		            (
-		                troop_set_slot,
-		                ":kingdom_hero",
-		                slot_troop_banner_scene_prop,
-		                ":banner_id",
-		            ),
-		            (val_add, ":num_sarranid_lords_assigned", 1),
-	            (else_try),
-		            (assign, ":hero_offset", ":num_other_lords_assigned"),
-		            (try_begin),
-			            (
-			                gt,
-			                ":hero_offset",
-			                khergit_banners_begin_offset,
-			            ),  # Do not add khergit banners to other lords
-			            (val_add, ":hero_offset", khergit_banners_end_offset),
-			            (val_sub, ":hero_offset", khergit_banners_begin_offset),
-		            (try_end),
-		            (try_begin),
-			            (
-			                gt,
-			                ":hero_offset",
-			                sarranid_banners_begin_offset,
-			            ),  # Do not add sarranid banners to other lords
-			            (val_add, ":hero_offset", sarranid_banners_end_offset),
-			            (val_sub, ":hero_offset", sarranid_banners_begin_offset),
-		            (try_end),
-		            (store_add, ":banner_id", banner_scene_props_begin, ":hero_offset"),
-		            (
-		                troop_set_slot,
-		                ":kingdom_hero",
-		                slot_troop_banner_scene_prop,
-		                ":banner_id",
-		            ),
-		            (val_add, ":num_other_lords_assigned", 1),
-	            (try_end),
-	            (try_begin),
-		            (this_or_next | lt, ":banner_id", banner_scene_props_begin),
-		            (gt, ":banner_id", banner_scene_props_end_minus_one),
-		            (display_message, "@{!}ERROR: Not enough banners for heroes!"),
-	            (try_end),
 	            (store_character_level, ":level", ":kingdom_hero"),
 	            (store_mul, ":renown", ":level", ":level"),
 	            (val_div, ":renown", 4),  # for top lord, is about 400
@@ -487,639 +245,43 @@ scripts = [
 	            (val_div, ":age_addition", 8),  # for top lord, is about 400
 	            (val_add, ":renown", ":age_addition"),
 	            (try_begin),
-		            (
-		                faction_slot_eq,
-		                ":kingdom_hero_faction",
-		                slot_faction_leader,
-		                ":kingdom_hero",
-		            ),
-		            (store_random_in_range, ":random_renown", 250, 400),
+		            (is_between, ":kingdom_hero", kings_begin, kings_end),
+                (call_script, "script_rand", 250, 400),
+                (assign, ":random_renown", reg0),  
 	            (else_try),
-		            (store_random_in_range, ":random_renown", 0, 100),
+                (call_script, "script_rand", 0, 100),
+                (assign, ":random_renown", reg0), 
 	            (try_end),
 	            (val_add, ":renown", ":random_renown"),
 	            (troop_set_slot, ":kingdom_hero", slot_troop_renown, ":renown"),
+              (
+                  troop_set_slot,
+                  ":kingdom_hero",
+                  slot_troop_fights_in_tournaments,
+                  1,
+              ),  # Nobles always do
             (try_end),
+            
             (try_for_range, ":troop_no", "trp_player", "trp_merchants_end"),
 	            (add_troop_note_tableau_mesh, ":troop_no", "tableau_troop_note_mesh"),
             (try_end),
+            
             (try_for_range, ":center_no", centers_begin, centers_end),
 	            (add_party_note_tableau_mesh, ":center_no", "tableau_center_note_mesh"),
             (try_end),
-            (try_for_range, ":faction_no", kingdoms_begin, kingdoms_end),
-	            (
-	                is_between,
-	                ":faction_no",
-	                "fac_kingdom_1",
-	                kingdoms_end,
-	            ),  # Excluding player kingdom
+            
+            (try_for_range, ":faction_no", npc_kingdoms_begin, npc_kingdoms_end),
 	            (add_faction_note_tableau_mesh, ":faction_no", "tableau_faction_note_mesh"),
-            (else_try),
-	            (
-	                add_faction_note_tableau_mesh,
-	                ":faction_no",
-	                "tableau_faction_note_mesh_banner",
-	            ),
             (try_end),
-            # Give centers to factions first, to ensure more equal distributions
             (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_1",
-                "fac_kingdom_4",
+                add_faction_note_tableau_mesh,
+                "fac_player_supporters_faction",
+                "tableau_faction_note_mesh_banner",
             ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_2",
-                "fac_kingdom_4",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_3",
-                "fac_kingdom_5",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_4",
-                "fac_kingdom_1",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_5",
-                "fac_kingdom_5",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_6",
-                "fac_kingdom_1",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_7",
-                "fac_kingdom_1",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_8",
-                "fac_kingdom_2",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_9",
-                "fac_kingdom_2",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_10",
-                "fac_kingdom_3",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_11",
-                "fac_kingdom_2",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_12",
-                "fac_kingdom_4",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_13",
-                "fac_kingdom_2",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_14",
-                "fac_kingdom_3",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_15",
-                "fac_kingdom_5",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_16",
-                "fac_kingdom_1",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_17",
-                "fac_kingdom_3",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_18",
-                "fac_kingdom_3",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_19",
-                "fac_kingdom_6",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_20",
-                "fac_kingdom_6",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_21",
-                "fac_kingdom_6",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_town_22",
-                "fac_kingdom_6",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_1",
-                "fac_kingdom_5",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_2",
-                "fac_kingdom_3",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_3",
-                "fac_kingdom_2",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_4",
-                "fac_kingdom_2",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_5",
-                "fac_kingdom_4",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_6",
-                "fac_kingdom_1",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_7",
-                "fac_kingdom_3",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_8",
-                "fac_kingdom_2",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_9",
-                "fac_kingdom_5",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_10",
-                "fac_kingdom_4",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_11",
-                "fac_kingdom_4",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_12",
-                "fac_kingdom_4",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_13",
-                "fac_kingdom_1",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_14",
-                "fac_kingdom_5",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_15",
-                "fac_kingdom_5",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_16",
-                "fac_kingdom_5",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_17",
-                "fac_kingdom_3",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_18",
-                "fac_kingdom_2",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_19",
-                "fac_kingdom_2",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_20",
-                "fac_kingdom_1",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_21",
-                "fac_kingdom_5",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_22",
-                "fac_kingdom_3",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_23",
-                "fac_kingdom_1",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_24",
-                "fac_kingdom_1",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_25",
-                "fac_kingdom_1",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_26",
-                "fac_kingdom_1",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_27",
-                "fac_kingdom_1",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_28",
-                "fac_kingdom_5",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_29",
-                "fac_kingdom_2",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_30",
-                "fac_kingdom_3",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_31",
-                "fac_kingdom_1",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_32",
-                "fac_kingdom_4",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_33",
-                "fac_kingdom_5",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_34",
-                "fac_kingdom_4",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_35",
-                "fac_kingdom_1",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_36",
-                "fac_kingdom_4",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_37",
-                "fac_kingdom_2",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_38",
-                "fac_kingdom_3",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_39",
-                "fac_kingdom_2",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_40",
-                "fac_kingdom_3",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_41",
-                "fac_kingdom_6",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_42",
-                "fac_kingdom_6",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_43",
-                "fac_kingdom_6",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_44",
-                "fac_kingdom_6",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_45",
-                "fac_kingdom_6",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_46",
-                "fac_kingdom_6",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_47",
-                "fac_kingdom_6",
-            ),
-            (
-                call_script,
-                "script_give_center_to_faction_aux",
-                "p_castle_48",
-                "fac_kingdom_6",
-            ),
-            # Now give towns to great lords
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_1",
-                "trp_kingdom_4_lord",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_2",
-                "trp_knight_4_1",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_3",
-                "trp_knight_5_1",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_4",
-                "trp_knight_1_1",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_5",
-                "trp_kingdom_5_lord",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_6",
-                "trp_kingdom_1_lord",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_7",
-                "trp_knight_1_2",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_8",
-                "trp_kingdom_2_lord",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_9",
-                "trp_knight_2_1",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_10",
-                "trp_kingdom_3_lord",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_11",
-                "trp_knight_2_2",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_12",
-                "trp_knight_4_2",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_13",
-                "trp_knight_2_3",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_14",
-                "trp_knight_3_1",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_15",
-                "trp_knight_5_2",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_16",
-                "trp_knight_1_4",
-                0,
-            ),  # changed from 1_3
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_17",
-                "trp_knight_3_2",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_18",
-                "trp_knight_3_3",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_19",
-                "trp_kingdom_6_lord",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_20",
-                "trp_knight_6_1",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_21",
-                "trp_knight_6_2",
-                0,
-            ),
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_town_22",
-                "trp_knight_6_3",
-                0,
-            ),
-            # Give family castles to certain nobles.
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_castle_29",
-                "trp_knight_2_10",
-                0,
-            ),  # Nelag_Castle
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_castle_30",
-                "trp_knight_3_4",
-                0,
-            ),  # Asugan_Castle
-            (
-                call_script,
-                "script_give_center_to_lord",
-                "p_castle_35",
-                "trp_knight_1_3",
-                0,
-            ),  # Haringoth_Castle
+            
+            (call_script, "script_assign_major_centers"),
             (call_script, "script_assign_lords_to_empty_centers"),
+            
             # set original factions
             (try_for_range, ":center_no", centers_begin, centers_end),
 	            (store_faction_of_party, ":original_faction", ":center_no"),
@@ -1133,6 +295,7 @@ scripts = [
 	            ),
 	            (party_set_slot, ":center_no", slot_center_ex_faction, ":original_faction"),
             (try_end),
+            
             # set territorial disputes/outstanding border issues
             (
                 party_set_slot,
@@ -1170,6 +333,7 @@ scripts = [
                 slot_center_ex_faction,
                 "fac_kingdom_3",
             ),  # Khergits claim vaegir-held curaw
+            
             # Swadians, being in the middle, will have additional claims on two of their neighhbors
             (
                 party_set_slot,
@@ -1183,7 +347,9 @@ scripts = [
                 slot_center_ex_faction,
                 "fac_kingdom_1",
             ),  # swadians claim khergit-held unuzdaq
+            
             (call_script, "script_update_village_market_towns"),
+            
             # this should come after assignment of territorial grievances
             (try_for_range, ":unused", 0, 70),
 	            (try_begin),
@@ -1192,6 +358,7 @@ scripts = [
 	            (try_end),
 	            (call_script, "script_randomly_start_war_peace_new", 0),
             (try_end),
+            
             # Initialize walkers
             (try_for_range, ":center_no", centers_begin, centers_end),
 	            (this_or_next | party_slot_eq, ":center_no", slot_party_type, spt_town),
@@ -1206,11 +373,14 @@ scripts = [
 		            ),
 	            (try_end),
             (try_end),
+            
             # This needs to be after market towns
             (call_script, "script_initialize_economic_information"),
+            
             (try_for_range, ":village_no", villages_begin, villages_end),
 	            (call_script, "script_refresh_village_merchant_inventory", ":village_no"),
             (try_end),
+            
             (
                 try_for_range,
                 ":troop_id",
@@ -1234,6 +404,7 @@ scripts = [
 	            (try_end),
 	            (troop_set_slot, ":troop_id", slot_troop_wealth, ":initial_wealth"),
             (try_end),
+            
             (
                 try_for_range,
                 ":center_no",
@@ -1258,25 +429,26 @@ scripts = [
 	            ## ADD some XP initially
 	            (store_div, ":xp_rounds", ":garrison_strength", 5),
 	            (val_add, ":xp_rounds", 2),
-	            (game_get_reduce_campaign_ai, ":reduce_campaign_ai"),
 	            (try_begin),  # hard
-		            (eq, ":reduce_campaign_ai", 0),
+		            (eq, ":difficulty_setting", 0),
 		            (assign, ":xp_addition_for_centers", 7500),
 	            (else_try),  # moderate
-		            (eq, ":reduce_campaign_ai", 1),
+		            (eq, ":difficulty_setting", 1),
 		            (assign, ":xp_addition_for_centers", 5000),
 	            (else_try),  # easy
-		            (eq, ":reduce_campaign_ai", 2),
+		            (eq, ":difficulty_setting", 2),
 		            (assign, ":xp_addition_for_centers", 2500),
 	            (try_end),
 	            (try_for_range, ":unused", 0, ":xp_rounds"),
 		            (party_upgrade_with_xp, ":center_no", ":xp_addition_for_centers", 0),
 	            (try_end),
+             
 	            # Fill town food stores upto half the limit
 	            (call_script, "script_center_get_food_store_limit", ":center_no"),
 	            (assign, ":food_store_limit", reg0),
 	            (val_div, ":food_store_limit", 2),
 	            (party_set_slot, ":center_no", slot_party_food_store, ":food_store_limit"),
+             
 	            # create lord parties
 	            (party_get_slot, ":center_lord", ":center_no", slot_town_lord),
 	            (ge, ":center_lord", 1),
@@ -1292,6 +464,7 @@ scripts = [
 	            (party_attach_to_party, ":lords_party", ":center_no"),
 	            (party_set_slot, ":center_no", slot_town_player_odds, 1000),
             (try_end),
+            
             # More pre-Warband family structures removed here
             # Warband changes begin - set companions relations
             (try_for_range, ":companion", companions_begin, companions_end),
@@ -1318,6 +491,7 @@ scripts = [
 		            ),  # companions have a starting relation of 14, unless they are rivals
 	            (try_end),
             (try_end),
+            
             # Warband changes continue -  sets relations in the same faction
             (try_for_range, ":lord", original_kingdom_heroes_begin, active_npcs_end),
 	            (troop_slot_eq, ":lord", slot_troop_occupation, slto_kingdom_hero),
@@ -1360,12 +534,8 @@ scripts = [
 		                ":other_hero",
 		                reg0,
 		            ),
-		            (
-		                store_random_in_range,
-		                ":random",
-		                0,
-		                11,
-		            ),  # this will be scored twice between two kingdom heroes, so starting relation will average 10. Between lords and pretenders it will average 7.5
+                (call_script, "script_rand", 0, 11),
+                (assign, ":random", reg0),  # this will be scored twice between two kingdom heroes, so starting relation will average 10. Between lords and pretenders it will average 7.5
 		            (
 		                call_script,
 		                "script_troop_change_relation_with_troop",
@@ -1375,6 +545,7 @@ scripts = [
 		            ),
 	            (try_end),
             (try_end),
+            
             # do about 5 years' worth of political history (assuming 3 random checks a day)
             (try_for_range, ":unused", 0, 5000),
 	            (call_script, "script_cf_random_political_event"),
@@ -1386,14 +557,7 @@ scripts = [
 	            (call_script, "script_evaluate_realm_stability", ":kingdom"),
             (try_end),
             # Warband changes end
-            (try_begin),
-	            (eq, "$cheat_mode", 1),
-	            (assign, reg3, "$cheat_mode"),
-	            (
-	                display_message,
-	                "@{!}DEBUG : Completed political events, cheat mode: {reg3}",
-	            ),
-            (try_end),
+
             # assign love interests to unmarried male lords
             (try_for_range, ":cur_troop", lords_begin, lords_end),
 	            (troop_slot_eq, ":cur_troop", slot_troop_spouse, -1),
@@ -1401,31 +565,22 @@ scripts = [
 	            (neg | is_between, ":cur_troop", pretenders_begin, pretenders_end),
 	            (call_script, "script_assign_troop_love_interests", ":cur_troop"),
             (try_end),
-            (store_random_in_range, "$romantic_attraction_seed", 0, 5),
-            (try_begin),
-	            (eq, "$cheat_mode", 1),
-	            (assign, reg3, "$romantic_attraction_seed"),
-	            (
-	                display_message,
-	                "@{!}DEBUG : Assigned love interests. Attraction seed: {reg3}",
-	            ),
-            (try_end),
-            # we need to spawn more bandits in warband, because map is bigger.
-            # (try_for_range, ":unused", 0, 7),
-	            #  (call_script, "script_spawn_bandits"),
-            # (try_end),
-            # (set_spawn_radius, 50),
-            # (try_for_range, ":unused", 0, 25),
-	            #  (spawn_around_party, "p_main_party", "pt_looters"),
-            # (try_end),
-            (try_for_range, ":unused", 0, 10),
+            (call_script, "script_rand", 0, 5),
+            (assign, "$romantic_attraction_seed", reg0),
+
+            # Spawn initial bandits, now based on difficulty
+            (store_sub, ":max_bandits", 4, ":difficulty_setting"),
+            (val_mul, ":max_bandits", 5),
+            (try_for_range, ":unused", 0, ":max_bandits"),  # was 10
 	            (call_script, "script_spawn_bandits"),
             (try_end),
+            (call_script, "script_spawn_bandit_lairs"),
+            
             # we are adding looter parties around each village with 1/5 probability.
             (set_spawn_radius, 5),
             (try_for_range, ":cur_village", villages_begin, villages_end),
-	            (store_random_in_range, ":random_value", 0, 5),
-	            (eq, ":random_value", 0),
+	            (call_script, "script_rand", 0, 5),
+	            (eq, reg0, 0),
 	            (spawn_around_party, ":cur_village", "pt_looters"),
             (try_end),
             (call_script, "script_update_mercenary_units_of_towns"),
@@ -1434,12 +589,15 @@ scripts = [
             (call_script, "script_update_tavern_travellers"),
             (call_script, "script_update_tavern_minstrels"),
             (call_script, "script_update_booksellers"),
+            (call_script, "script_refresh_center_inventories"),
             (try_for_range, ":village_no", villages_begin, villages_end),
 	            (call_script, "script_update_volunteer_troops_in_village", ":village_no"),
             (try_end),
+            
             (try_for_range, ":cur_kingdom", kingdoms_begin, kingdoms_end),
-	            (call_script, "script_update_faction_notes", ":cur_kingdom"),
-	            (store_random_in_range, ":random_no", -60, 0),
+	            (faction_set_note_available, ":faction_no", 1),
+              (call_script, "script_rand", -60, 0),
+              (assign, ":random_no", reg0),
 	            (
 	                faction_set_slot,
 	                ":faction_no",
@@ -1447,31 +605,17 @@ scripts = [
 	                ":random_no",
 	            ),
             (try_end),
-            (
-                try_for_range,
-                ":cur_troop",
-                original_kingdom_heroes_begin,
-                active_npcs_end,
-            ),
-	            (call_script, "script_update_troop_notes", ":cur_troop"),
-            (try_end),
-            (try_for_range, ":cur_center", centers_begin, centers_end),
-	            (call_script, "script_update_center_notes", ":cur_center"),
-            (try_end),
-            (call_script, "script_update_troop_notes", "trp_player"),
+               
             # Place kingdom ladies
             (try_for_range, ":troop_id", kingdom_ladies_begin, kingdom_ladies_end),
 	            (call_script, "script_get_kingdom_lady_social_determinants", ":troop_id"),
 	            (troop_set_slot, ":troop_id", slot_troop_cur_center, reg1),
             (try_end),
-            (try_begin),
-	            (eq, "$cheat_mode", 1),
-	            (assign, reg3, "$cheat_mode"),
-	            (display_message, "@{!}DEBUG : Located kingdom ladies, cheat mode: {reg3}"),
-            (try_end),
+            
             (try_for_range, ":faction_no", kingdoms_begin, kingdoms_end),
 	            (call_script, "script_faction_recalculate_strength", ":faction_no"),
             (try_end),
+            
             (
                 faction_set_slot,
                 "fac_kingdom_1",
@@ -1508,32 +652,19 @@ scripts = [
                 slot_faction_adjective,
                 "str_kingdom_6_adjective",
             ),
-            ##      (assign, "$players_kingdom", "fac_kingdom_1"),
-            ##      (call_script, "script_give_center_to_lord", "p_town_7", "trp_player", 0),
-            ##      (call_script, "script_give_center_to_lord", "p_town_16", "trp_player", 0),
-            ####      (call_script, "script_give_center_to_lord", "p_castle_10", "trp_player", 0),
-            ##      (assign, "$g_castle_requested_by_player", "p_castle_10"),
+            
             (call_script, "script_get_player_party_morale_values"),
             (party_set_morale, "p_main_party", reg0),
             (troop_set_note_available, "trp_player", 1),
-            (try_for_range, ":troop_no", kings_begin, kings_end),
+            (try_for_range, ":troop_no", original_kingdom_heroes_begin, heroes_end),
 	            (troop_set_note_available, ":troop_no", 1),
             (try_end),
-            (try_for_range, ":troop_no", lords_begin, lords_end),
-	            (troop_set_note_available, ":troop_no", 1),
-            (try_end),
-            (try_for_range, ":troop_no", kingdom_ladies_begin, kingdom_ladies_end),
-	            (troop_set_note_available, ":troop_no", 1),
-            (try_end),
-            (troop_set_note_available, "trp_knight_1_1_wife", 0),
-            (try_for_range, ":troop_no", pretenders_begin, pretenders_end),
-	            (troop_set_note_available, ":troop_no", 1),
-            (try_end),
+            
             # Lady and companion notes become available as you meet/recruit them
             (try_for_range, ":faction_no", npc_kingdoms_begin, npc_kingdoms_end),
 	            (faction_set_note_available, ":faction_no", 1),
             (try_end),
-            (faction_set_note_available, "fac_neutral", 0),
+            
             (try_for_range, ":party_no", centers_begin, centers_end),
 	            (party_set_note_available, ":party_no", 1),
             (try_end),
@@ -10941,8 +10072,615 @@ scripts = [
 	            (party_set_slot, ":center_no", slot_center_is_besieged_by, -1),
 	            (party_set_slot, ":center_no", slot_center_last_taken_by_troop, -1),
             (try_end),
-        ]
-    )
+        ],
+    ),
+    # script.assign_major_centers
+    # Input: none
+    # Output: none
+    # Now ONLY called from the start
+    (
+        "assign_major_centers",
+        [
+          # Give centers to factions first, to ensure more equal distributions
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_1",
+                "fac_kingdom_4",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_2",
+                "fac_kingdom_4",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_3",
+                "fac_kingdom_5",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_4",
+                "fac_kingdom_1",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_5",
+                "fac_kingdom_5",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_6",
+                "fac_kingdom_1",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_7",
+                "fac_kingdom_1",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_8",
+                "fac_kingdom_2",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_9",
+                "fac_kingdom_2",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_10",
+                "fac_kingdom_3",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_11",
+                "fac_kingdom_2",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_12",
+                "fac_kingdom_4",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_13",
+                "fac_kingdom_2",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_14",
+                "fac_kingdom_3",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_15",
+                "fac_kingdom_5",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_16",
+                "fac_kingdom_1",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_17",
+                "fac_kingdom_3",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_18",
+                "fac_kingdom_3",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_19",
+                "fac_kingdom_6",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_20",
+                "fac_kingdom_6",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_21",
+                "fac_kingdom_6",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_town_22",
+                "fac_kingdom_6",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_1",
+                "fac_kingdom_5",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_2",
+                "fac_kingdom_3",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_3",
+                "fac_kingdom_2",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_4",
+                "fac_kingdom_2",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_5",
+                "fac_kingdom_4",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_6",
+                "fac_kingdom_1",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_7",
+                "fac_kingdom_3",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_8",
+                "fac_kingdom_2",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_9",
+                "fac_kingdom_5",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_10",
+                "fac_kingdom_4",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_11",
+                "fac_kingdom_4",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_12",
+                "fac_kingdom_4",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_13",
+                "fac_kingdom_1",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_14",
+                "fac_kingdom_5",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_15",
+                "fac_kingdom_5",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_16",
+                "fac_kingdom_5",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_17",
+                "fac_kingdom_3",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_18",
+                "fac_kingdom_2",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_19",
+                "fac_kingdom_2",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_20",
+                "fac_kingdom_1",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_21",
+                "fac_kingdom_5",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_22",
+                "fac_kingdom_3",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_23",
+                "fac_kingdom_1",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_24",
+                "fac_kingdom_1",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_25",
+                "fac_kingdom_1",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_26",
+                "fac_kingdom_1",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_27",
+                "fac_kingdom_1",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_28",
+                "fac_kingdom_5",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_29",
+                "fac_kingdom_2",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_30",
+                "fac_kingdom_3",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_31",
+                "fac_kingdom_1",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_32",
+                "fac_kingdom_4",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_33",
+                "fac_kingdom_5",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_34",
+                "fac_kingdom_4",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_35",
+                "fac_kingdom_1",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_36",
+                "fac_kingdom_4",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_37",
+                "fac_kingdom_2",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_38",
+                "fac_kingdom_3",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_39",
+                "fac_kingdom_2",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_40",
+                "fac_kingdom_3",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_41",
+                "fac_kingdom_6",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_42",
+                "fac_kingdom_6",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_43",
+                "fac_kingdom_6",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_44",
+                "fac_kingdom_6",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_45",
+                "fac_kingdom_6",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_46",
+                "fac_kingdom_6",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_47",
+                "fac_kingdom_6",
+            ),
+            (
+                call_script,
+                "script_give_center_to_faction_aux",
+                "p_castle_48",
+                "fac_kingdom_6",
+            ),
+            # Now give towns to great lords
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_1",
+                "trp_kingdom_4_lord",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_2",
+                "trp_knight_4_1",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_3",
+                "trp_knight_5_1",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_4",
+                "trp_knight_1_1",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_5",
+                "trp_kingdom_5_lord",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_6",
+                "trp_kingdom_1_lord",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_7",
+                "trp_knight_1_2",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_8",
+                "trp_kingdom_2_lord",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_9",
+                "trp_knight_2_1",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_10",
+                "trp_kingdom_3_lord",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_11",
+                "trp_knight_2_2",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_12",
+                "trp_knight_4_2",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_13",
+                "trp_knight_2_3",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_14",
+                "trp_knight_3_1",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_15",
+                "trp_knight_5_2",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_16",
+                "trp_knight_1_4",
+                0,
+            ),  # changed from 1_3
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_17",
+                "trp_knight_3_2",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_18",
+                "trp_knight_3_3",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_19",
+                "trp_kingdom_6_lord",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_20",
+                "trp_knight_6_1",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_21",
+                "trp_knight_6_2",
+                0,
+            ),
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_town_22",
+                "trp_knight_6_3",
+                0,
+            ),
+            # Give family castles to certain nobles.
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_castle_29",
+                "trp_knight_2_10",
+                0,
+            ),  # Nelag_Castle
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_castle_30",
+                "trp_knight_3_4",
+                0,
+            ),  # Asugan_Castle
+            (
+                call_script,
+                "script_give_center_to_lord",
+                "p_castle_35",
+                "trp_knight_1_3",
+                0,
+            ),  # Haringoth_Castle
+        ],   
+    ),
     # script.assign_lords_to_empty_centers
     # Input: none
     # Output: none
@@ -46020,6 +45758,170 @@ scripts = [
             (troop_set_slot, "trp_banner_background_color_array", 132, 0xFF394608),
         ],
     ),
+    (
+        "initialize_troop_banners",
+        [
+          # faction banners
+            (
+                faction_set_slot,
+                "fac_kingdom_1",
+                slot_faction_banner,
+                "mesh_banner_kingdom_f",
+            ),
+            (
+                faction_set_slot,
+                "fac_kingdom_2",
+                slot_faction_banner,
+                "mesh_banner_kingdom_b",
+            ),
+            (
+                faction_set_slot,
+                "fac_kingdom_3",
+                slot_faction_banner,
+                "mesh_banner_kingdom_c",
+            ),
+            (
+                faction_set_slot,
+                "fac_kingdom_4",
+                slot_faction_banner,
+                "mesh_banner_kingdom_a",
+            ),
+            (
+                faction_set_slot,
+                "fac_kingdom_5",
+                slot_faction_banner,
+                "mesh_banner_kingdom_d",
+            ),
+            (
+                faction_set_slot,
+                "fac_kingdom_6",
+                slot_faction_banner,
+                "mesh_banner_kingdom_e",
+            ),
+            (try_for_range, ":cur_faction", npc_kingdoms_begin, npc_kingdoms_end),
+	            (
+	                faction_get_slot,
+	                ":cur_faction_king",
+	                ":cur_faction",
+	                slot_faction_leader,
+	            ),
+	            (
+	                faction_get_slot,
+	                ":cur_faction_banner",
+	                ":cur_faction",
+	                slot_faction_banner,
+	            ),
+	            (val_sub, ":cur_faction_banner", banner_meshes_begin),
+	            (val_add, ":cur_faction_banner", banner_scene_props_begin),
+	            (
+	                troop_set_slot,
+	                ":cur_faction_king",
+	                slot_troop_banner_scene_prop,
+	                ":cur_faction_banner",
+	            ),
+            (try_end),
+            (assign, ":num_khergit_lords_assigned", 0),
+            (assign, ":num_sarranid_lords_assigned", 0),
+            (assign, ":num_other_lords_assigned", 0),
+            (try_for_range, ":kingdom_hero", active_npcs_begin, active_npcs_end),
+	            (
+	                this_or_next | troop_slot_eq,
+	                ":kingdom_hero",
+	                slot_troop_occupation,
+	                slto_kingdom_hero,
+	            ),
+	            (
+	                troop_slot_eq,
+	                ":kingdom_hero",
+	                slot_troop_occupation,
+	                slto_inactive_pretender,
+	            ),
+	            (store_troop_faction, ":kingdom_hero_faction", ":kingdom_hero"),
+	            (
+	                neg | faction_slot_eq,
+	                ":kingdom_hero_faction",
+	                slot_faction_leader,
+	                ":kingdom_hero",
+	            ),
+	            (try_begin),
+		            (eq, ":kingdom_hero_faction", "fac_kingdom_3"),  # Khergit Khanate
+		            (
+		                store_add,
+		                ":kingdom_3_banners_begin",
+		                banner_scene_props_begin,
+		                khergit_banners_begin_offset,
+		            ),
+		            (
+		                store_add,
+		                ":banner_id",
+		                ":kingdom_3_banners_begin",
+		                ":num_khergit_lords_assigned",
+		            ),
+		            (
+		                troop_set_slot,
+		                ":kingdom_hero",
+		                slot_troop_banner_scene_prop,
+		                ":banner_id",
+		            ),
+		            (val_add, ":num_khergit_lords_assigned", 1),
+	            (else_try),
+		            (eq, ":kingdom_hero_faction", "fac_kingdom_6"),  # Sarranid Sultanate
+		            (
+		                store_add,
+		                ":kingdom_6_banners_begin",
+		                banner_scene_props_begin,
+		                sarranid_banners_begin_offset,
+		            ),
+		            (
+		                store_add,
+		                ":banner_id",
+		                ":kingdom_6_banners_begin",
+		                ":num_sarranid_lords_assigned",
+		            ),
+		            (
+		                troop_set_slot,
+		                ":kingdom_hero",
+		                slot_troop_banner_scene_prop,
+		                ":banner_id",
+		            ),
+		            (val_add, ":num_sarranid_lords_assigned", 1),
+	            (else_try),
+		            (assign, ":hero_offset", ":num_other_lords_assigned"),
+		            (try_begin),
+			            (
+			                gt,
+			                ":hero_offset",
+			                khergit_banners_begin_offset,
+			            ),  # Do not add khergit banners to other lords
+			            (val_add, ":hero_offset", khergit_banners_end_offset),
+			            (val_sub, ":hero_offset", khergit_banners_begin_offset),
+		            (try_end),
+		            (try_begin),
+			            (
+			                gt,
+			                ":hero_offset",
+			                sarranid_banners_begin_offset,
+			            ),  # Do not add sarranid banners to other lords
+			            (val_add, ":hero_offset", sarranid_banners_end_offset),
+			            (val_sub, ":hero_offset", sarranid_banners_begin_offset),
+		            (try_end),
+		            (store_add, ":banner_id", banner_scene_props_begin, ":hero_offset"),
+		            (
+		                troop_set_slot,
+		                ":kingdom_hero",
+		                slot_troop_banner_scene_prop,
+		                ":banner_id",
+		            ),
+		            (val_add, ":num_other_lords_assigned", 1),
+	            (try_end),
+	            (try_begin),
+		            (this_or_next | lt, ":banner_id", banner_scene_props_begin),
+		            (gt, ":banner_id", banner_scene_props_end_minus_one),
+		            (display_message, "@{!}ERROR: Not enough banners for heroes!"),
+	            (try_end),
+            (try_end),
+        ],
+    ),
     # script.agent_troop_get_banner_mesh
     # INPUT: agent_no, troop_no
     # OUTPUT: banner_mesh
@@ -49063,44 +48965,7 @@ scripts = [
                 "fac_kingdom_6",
                 slot_faction_quick_battle_tier_2_cavalry,
                 "trp_sarranid_mamluke",
-            ),
-            # faction banners
-            (
-                faction_set_slot,
-                "fac_kingdom_1",
-                slot_faction_banner,
-                "mesh_banner_kingdom_f",
-            ),
-            (
-                faction_set_slot,
-                "fac_kingdom_2",
-                slot_faction_banner,
-                "mesh_banner_kingdom_b",
-            ),
-            (
-                faction_set_slot,
-                "fac_kingdom_3",
-                slot_faction_banner,
-                "mesh_banner_kingdom_c",
-            ),
-            (
-                faction_set_slot,
-                "fac_kingdom_4",
-                slot_faction_banner,
-                "mesh_banner_kingdom_a",
-            ),
-            (
-                faction_set_slot,
-                "fac_kingdom_5",
-                slot_faction_banner,
-                "mesh_banner_kingdom_d",
-            ),
-            (
-                faction_set_slot,
-                "fac_kingdom_6",
-                slot_faction_banner,
-                "mesh_banner_kingdom_e",
-            ),
+            ),    
         ],
     ),   
     # script.get_army_size_from_slider_value
@@ -49372,6 +49237,150 @@ scripts = [
     ),
     
     
+    ####################################################################################################################
+    # _ZP_ - WSE
+    ####################################################################################################################
+    
+    #script_wse_multiplayer_message_received
+    # Called each time a composite multiplayer message is received
+    # INPUT
+    # script param 1 = sender player no
+    # script param 2 = event no
+    (
+        "wse_multiplayer_message_received", 
+        [
+            (store_script_param, ":player_no", 1),
+            (store_script_param, ":event_no", 2),
+        ]
+    ),
+
+    #script_wse_game_saved
+    # Called each time after game is saved successfully
+    (
+        "wse_game_saved", 
+        [
+            (store_script_param, ":savegame_no", 1),
+        ]
+    ),
+
+    #script_wse_savegame_loaded
+    # Called each time after savegame is loaded successfully
+    (
+        "wse_savegame_loaded", 
+        [
+            (store_script_param, ":savegame_no", 1),
+        ]
+    ),
+
+    #script_wse_chat_message_received
+    # Called each time a chat message is received (both for servers and clients)
+    # INPUT
+    # script param 1 = sender player no
+    # script param 2 = chat type (0 = global, 1 = team)
+    # s0 = message
+    # OUTPUT
+    # trigger result = anything non-zero suppresses default chat behavior. Server will not even broadcast messages to clients.
+    # result string = changes message text for default chat behavior (if not suppressed).
+    (
+        "wse_chat_message_received", 
+        [
+            (store_script_param, ":player_no", 1),
+            (store_script_param, ":chat_type", 2),
+        ]
+    ),
+
+    #script_wse_console_command_received
+    # Called each time a command is typed on the dedicated server console or received with RCON (after parsing standard commands)
+    # INPUT
+    # script param 1 = command type (0 - local, 1 - remote)
+    # script param 2 = num parts if bAutoSplitModuleConsoleCommands enabled
+    # s0 = text
+    # OUTPUT
+    # trigger result = anything non-zero if the command succeeded
+    # result string = message to display on success (if empty, default message will be used)
+    (
+        "wse_console_command_received", 
+        [
+            (store_script_param, ":command_type", 1),
+            (store_script_param, ":num_parts", 2),
+        ]
+    ),
+
+    #script_wse_get_agent_scale
+    # Called each time an agent is created
+    # INPUT
+    # script param 1 = troop no
+    # script param 2 = horse item no
+    # script param 3 = horse item modifier
+    # script param 4 = player no
+    # OUTPUT
+    # trigger result = agent scale (fixed point)
+    (
+        "wse_get_agent_scale", 
+        [
+            (store_script_param, ":troop_no", 1),
+            (store_script_param, ":horse_item_no", 2),
+            (store_script_param, ":horse_item_modifier", 3),
+            (store_script_param, ":player_no", 4),
+        ]
+    ),
+
+    #script_wse_window_opened
+    # Called each time a window (party/inventory/character) is opened
+    # INPUT
+    # script param 1 = window no
+    # script param 2 = window param 1
+    # script param 3 = window param 2
+    # OUTPUT
+    # trigger result = presentation that replaces the window (if not set or negative, window will open normally)
+    (
+        "wse_window_opened", 
+        [
+            (store_script_param, ":window_no", 1),
+            (store_script_param, ":window_param_1", 2),
+            (store_script_param, ":window_param_2", 3),
+        ]
+    ),
+
+    #script_game_missile_dives_into_water
+    # Called each time a missile dives into water
+    # INPUT
+    # script param 1 = missile item no
+    # script param 2 = launcher item no
+    # script param 3 = shooter agent no
+    # script param 4 = missile item modifier
+    # script param 5 = launcher item modifier
+    # script param 6 = missile no
+    # pos1 = water impact position and rotation
+    (
+        "game_missile_dives_into_water", 
+        [
+            (store_script_param, ":missile_item_no", 1),
+            (store_script_param, ":launcher_item_no", 2),
+            (store_script_param, ":shooter_agent_no", 3),
+            (store_script_param, ":missile_item_modifier", 4),
+            (store_script_param, ":launcher_item_modifier", 5),
+            (store_script_param, ":missile_no", 6),
+        ]
+    ),
+
+    #script_wse_get_server_info
+    # Called each time a http request for server info received (http://server_ip:server_port/)
+    # OUTPUT
+    # trigger result = anything non-zero replace message text for response info 
+    # result string =  message text for response info 
+    (
+        "wse_get_server_info", 
+        []
+    ),
+
+    #script_wse_initial_window_start
+    # Called each time after initial window started with bMainMenuScene=true (requires WSE2)
+    (
+        "wse_initial_window_start", 
+        []    
+    ),
+
     
     ####################################################################################################################
     # _ZY_ - Helper Scripts

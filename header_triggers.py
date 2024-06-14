@@ -280,6 +280,13 @@ ti_on_scene_prop_is_deforming = -108.0 #can only be used in module_scene_props t
 # Trigger Param 1: prop instance no
 # Trigger Param 2: remaining deform time (1/1000th of second)
 
+ti_on_agent_fill_collision_capsule = -109.0 #can only be used in module_mission_templates triggers
+# Trigger Param 1: agent no
+# Trigger Param 2: capsule radius (fixed point)
+# Position Register 0: point A position (global)
+# Position Register 1: point B position (global)
+# Trigger Result: If result >= 0, replace capsule radius with this value (fixed point), point A with pos0 and point B with pos1.
+
 ## WSE addon ends
 #  ##########################
 
