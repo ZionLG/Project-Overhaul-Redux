@@ -3,7 +3,7 @@ from compiler import *  # should be after all imports
 ####################################################################################################################
 #  Each party template record contains the following fields:
 #  1) Party-template id: used for referencing party-templates in other files.
-#     The prefix pt_ is automatically added before each party-template id.
+#     The prefix pt_ / pt. is automatically added before each party-template id.
 #  2) Party-template name.
 #  3) Party flags. See header_parties.py for a list of available flags
 #  4) Menu. ID of the menu to use when this party is met. The value 0 uses the default party encounter system.
@@ -42,16 +42,6 @@ party_templates = [
     ####################################################################################################################
     # Party templates before this point are hard-wired into the game and should not be changed.
     ####################################################################################################################
-    ##  ("old_garrison","Old Garrison",icon.vaegir_knight,0,fac.neutral,merchant_personality,[]),
-    (
-        "village_defenders",
-        "Village Defenders",
-        icon.peasant,
-        0,
-        fac.commoners,
-        merchant_personality,
-        [(trp.farmer, 10, 20), (trp.peasant_woman, 0, 4)],
-    ),
     (
         "cattle_herd",
         "Cattle Herd",
@@ -61,9 +51,7 @@ party_templates = [
         merchant_personality,
         [(trp.cattle, 80, 120)],
     ),
-    ##  ("vaegir_nobleman","Vaegir Nobleman",icon.vaegir_knight|carries_goods(10)|pf_quest_party,0,fac.commoners,merchant_personality,[(trp.nobleman,1,1),(trp.vaegir_knight,2,6),(trp.vaegir_horseman,4,12)]),
-    ##  ("swadian_nobleman","Swadian Nobleman",icon.gray_knight|carries_goods(10)|pf_quest_party,0,fac.commoners,merchant_personality,[(trp.nobleman,1,1),(trp.swadian_knight,2,6),(trp.swadian_man_at_arms,4,12)]),
-    # Ryan BEGIN
+    # Unaligned Parties
     (
         "looters",
         "Looters",
@@ -73,7 +61,6 @@ party_templates = [
         bandit_personality,
         [(trp.looter, 3, 45)],
     ),
-    # Ryan END
     (
         "manhunters",
         "Manhunters",
@@ -83,8 +70,28 @@ party_templates = [
         soldier_personality,
         [(trp.manhunter, 9, 40)],
     ),
-    ##  ("peasant","Peasant",icon.peasant,0,fac.commoners,merchant_personality,[(trp.farmer,1,6),(trp.peasant_woman,0,7)]),
-    #  ("black_khergit_raiders","Black Khergit Raiders",icon.khergit_horseman_b|carries_goods(2),0,fac.black_khergits,bandit_personality,[(trp.black_khergit_guard,1,10),(trp.black_khergit_horseman,5,5)]),
+    (
+        "sword_sisters",
+        "Sword Sisters",
+        icon.gray_knight,
+        0,
+        fac.manhunters,
+        soldier_personality,
+        [(trp.sword_sister, 5, 20)],
+    ),
+    (
+        "slavers",
+        "Slave Hunters",
+        icon.vaegir_knight,
+        0,
+        fac.slavers,
+        soldier_personality,
+        [
+            (trp.slave_hunter, 2, 10),
+            (trp.slave_driver, 3, 10),
+            (trp.slave_keeper, 4, 20),
+        ],
+    ),
     (
         "steppe_bandits",
         "Steppe Bandits",
@@ -102,15 +109,6 @@ party_templates = [
         fac.outlaws,
         bandit_personality,
         [(trp.taiga_bandit, 4, 58)],
-    ),
-    (
-        "desert_bandits",
-        "Desert Bandits",
-        icon.vaegir_knight | carries_goods(2),
-        0,
-        fac.outlaws,
-        bandit_personality,
-        [(trp.desert_bandit, 4, 58)],
     ),
     (
         "forest_bandits",
@@ -140,6 +138,15 @@ party_templates = [
         [(trp.sea_raider, 5, 50)],
     ),
     (
+        "desert_bandits",
+        "Desert Bandits",
+        icon.vaegir_knight | carries_goods(2),
+        0,
+        fac.outlaws,
+        bandit_personality,
+        [(trp.desert_bandit, 4, 58)],
+    ),
+    (
         "deserters",
         "Deserters",
         icon.vaegir_knight | carries_goods(3),
@@ -148,6 +155,35 @@ party_templates = [
         bandit_personality,
         [],
     ),
+    # Caravans
+    (
+        "village_farmers",
+        "Village Farmers",
+        icon.peasant | pf_civilian,
+        0,
+        fac.commoners,
+        merchant_personality,
+        [(trp.farmer, 5, 10), (trp.peasant_woman, 3, 8)],
+    ),
+    (
+        "kingdom_caravan_party",
+        "Caravan",
+        icon.mule | carries_goods(25) | pf_show_faction,
+        0,
+        fac.commoners,
+        merchant_personality,
+        [(trp.caravan_master, 1, 1), (trp.caravan_guard, 12, 40)],
+    ),
+    (
+        "routed_warriors",
+        "Routed Enemies",
+        icon.vaegir_knight,
+        0,
+        fac.commoners,
+        soldier_personality,
+        [],
+    ),
+    # Quests
     (
         "merchant_caravan",
         "Merchant Caravan",
@@ -185,24 +221,6 @@ party_templates = [
         [(trp.kidnapped_girl, 1, 1)],
     ),
     (
-        "village_farmers",
-        "Village Farmers",
-        icon.peasant | pf_civilian,
-        0,
-        fac.commoners,
-        merchant_personality,
-        [(trp.farmer, 5, 10), (trp.peasant_woman, 3, 8)],
-    ),
-    (
-        "spy_partners",
-        "Unremarkable Travellers",
-        icon.gray_knight | carries_goods(10) | pf_default_behavior | pf_quest_party,
-        0,
-        fac.neutral,
-        merchant_personality,
-        [(trp.spy_partner, 1, 1), (trp.caravan_guard, 5, 11)],
-    ),
-    (
         "runaway_serfs",
         "Runaway Serfs",
         icon.peasant | carries_goods(8) | pf_default_behavior | pf_quest_party,
@@ -221,6 +239,15 @@ party_templates = [
         [(trp.spy, 1, 1)],
     ),
     (
+        "spy_partners",
+        "Unremarkable Travellers",
+        icon.gray_knight | carries_goods(10) | pf_default_behavior | pf_quest_party,
+        0,
+        fac.neutral,
+        merchant_personality,
+        [(trp.spy_partner, 1, 1), (trp.caravan_guard, 5, 11)],
+    ),
+    (
         "sacrificed_messenger",
         "Sacrificed Messenger",
         icon.gray_knight | carries_goods(3) | pf_default_behavior | pf_quest_party,
@@ -229,110 +256,7 @@ party_templates = [
         merchant_personality,
         [],
     ),
-    ##  ("conspirator", "Conspirators", icon.gray_knight|carries_goods(8)|pf_default_behavior|pf_quest_party,0,fac.neutral,merchant_personality,[(trp.conspirator,3,4)]),
-    ##  ("conspirator_leader", "Conspirator Leader", icon.gray_knight|carries_goods(8)|pf_default_behavior|pf_quest_party,0,fac.neutral,merchant_personality,[(trp.conspirator_leader,1,1)]),
-
-    (
-        "forager_party",
-        "Foraging Party",
-        icon.gray_knight | carries_goods(5) | pf_show_faction,
-        0,
-        fac.commoners,
-        merchant_personality,
-        [],
-    ),
-    (
-        "scout_party",
-        "Scouts",
-        icon.gray_knight | carries_goods(1) | pf_show_faction,
-        0,
-        fac.commoners,
-        bandit_personality,
-        [],
-    ),
-    (
-        "patrol_party",
-        "Patrol",
-        icon.gray_knight | carries_goods(2) | pf_show_faction,
-        0,
-        fac.commoners,
-        soldier_personality,
-        [],
-    ),
-    #  ("war_party", "War Party",icon.gray_knight|carries_goods(3),0,fac.commoners,soldier_personality,[]),
-    (
-        "messenger_party",
-        "Messenger",
-        icon.gray_knight | pf_show_faction,
-        0,
-        fac.commoners,
-        merchant_personality,
-        [],
-    ),
-    (
-        "raider_party",
-        "Raiders",
-        icon.gray_knight | carries_goods(16) | pf_quest_party,
-        0,
-        fac.commoners,
-        bandit_personality,
-        [],
-    ),
-    (
-        "raider_captives",
-        "Raider Captives",
-        0,
-        0,
-        fac.commoners,
-        0,
-        [(trp.peasant_woman, 6, 30, pmf_is_prisoner)],
-    ),
-    (
-        "kingdom_caravan_party",
-        "Caravan",
-        icon.mule | carries_goods(25) | pf_show_faction,
-        0,
-        fac.commoners,
-        merchant_personality,
-        [(trp.caravan_master, 1, 1), (trp.caravan_guard, 12, 40)],
-    ),
-    (
-        "prisoner_train_party",
-        "Prisoner Train",
-        icon.gray_knight | carries_goods(5) | pf_show_faction,
-        0,
-        fac.commoners,
-        merchant_personality,
-        [],
-    ),
-    (
-        "default_prisoners",
-        "Default Prisoners",
-        0,
-        0,
-        fac.commoners,
-        0,
-        [(trp.bandit, 5, 10, pmf_is_prisoner)],
-    ),
-    (
-        "routed_warriors",
-        "Routed Enemies",
-        icon.vaegir_knight,
-        0,
-        fac.commoners,
-        soldier_personality,
-        [],
-    ),
-    # Caravans
-    (
-        "center_reinforcements",
-        "Reinforcements",
-        icon.axeman | carries_goods(16),
-        0,
-        fac.commoners,
-        soldier_personality,
-        [(trp.townsman, 5, 30), (trp.watchman, 4, 20)],
-    ),
+    # Kingdom Parties
     (
         "kingdom_hero_party",
         "War Party",
@@ -347,6 +271,42 @@ party_templates = [
     # less-modernised templates are generally includes 7-14 troops in total,
     # med-modernised templates are generally includes 5-10 troops in total,
     # high-modernised templates are generally includes 3-5 troops in total
+    (
+        "village_defenders",
+        "Village Defenders",
+        icon.peasant,
+        0,
+        fac.commoners,
+        merchant_personality,
+        [(trp.farmer, 10, 20), (trp.peasant_woman, 0, 4)],
+    ),
+    (
+        "mercenary_reinforcements_a",
+        "{!}mercenary_reinforcements_a",
+        0,
+        0,
+        fac.commoners,
+        0,
+        [(trp.farmer, 5, 10), (trp.watchman, 2, 4)],
+    ),
+    (
+        "mercenary_reinforcements_b",
+        "{!}mercenary_reinforcements_b",
+        0,
+        0,
+        fac.commoners,
+        0,
+        [(trp.mercenary_footman, 3, 6), (trp.caravan_guard, 2, 4)],
+    ),
+    (
+        "mercenary_reinforcements_c",
+        "{!}mercenary_reinforcements_c",
+        0,
+        0,
+        fac.commoners,
+        0,
+        [(trp.mercenary_horseman, 2, 3), (trp.mercenary_crossbowman, 1, 2)],
+    ),
     (
         "kingdom_1_reinforcements_a",
         "{!}kingdom_1_reinforcements_a",
@@ -373,7 +333,7 @@ party_templates = [
         fac.commoners,
         0,
         [(trp.swadian_man_at_arms, 2, 4), (trp.swadian_crossbowman, 1, 2)],
-    ),  # Swadians are a bit less-powered thats why they have a bit more troops in their modernised party template (3-6, others 3-5)
+    ),
     (
         "kingdom_2_reinforcements_a",
         "{!}kingdom_2_reinforcements_a",
@@ -413,7 +373,7 @@ party_templates = [
         fac.commoners,
         0,
         [(trp.khergit_tribesman, 3, 5), (trp.khergit_skirmisher, 4, 9)],
-    ),  # Khergits are a bit less-powered thats why they have a bit more 2nd upgraded(trp.khergit_skirmisher) than non-upgraded one(trp.khergit_tribesman).
+    ),
     (
         "kingdom_3_reinforcements_b",
         "{!}kingdom_3_reinforcements_b",
@@ -435,7 +395,7 @@ party_templates = [
         fac.commoners,
         0,
         [(trp.khergit_horseman, 2, 4), (trp.khergit_veteran_horse_archer, 2, 3)],
-    ),  # Khergits are a bit less-powered thats why they have a bit more troops in their modernised party template (4-7, others 3-5)
+    ),
     (
         "kingdom_4_reinforcements_a",
         "{!}kingdom_4_reinforcements_a",
@@ -521,25 +481,7 @@ party_templates = [
         0,
         [(trp.sarranid_horseman, 3, 5)],
     ),
-    ##  ("kingdom_1_reinforcements_a", "kingdom_1_reinforcements_a", 0, 0, fac.commoners, 0, [(trp.swadian_footman,3,7),(trp.swadian_skirmisher,5,10),(trp.swadian_militia,11,26)]),
-    ##  ("kingdom_1_reinforcements_b", "kingdom_1_reinforcements_b", 0, 0, fac.commoners, 0, [(trp.swadian_man_at_arms,5,10),(trp.swadian_infantry,5,10),(trp.swadian_crossbowman,3,8)]),
-    ##  ("kingdom_1_reinforcements_c", "kingdom_1_reinforcements_c", 0, 0, fac.commoners, 0, [(trp.swadian_knight,2,6),(trp.swadian_sergeant,2,5),(trp.swadian_sharpshooter,2,5)]),
-    ##
-    ##  ("kingdom_2_reinforcements_a", "kingdom_2_reinforcements_a", 0, 0, fac.commoners, 0, [(trp.vaegir_veteran,3,7),(trp.vaegir_skirmisher,5,10),(trp.vaegir_footman,11,26)]),
-    ##  ("kingdom_2_reinforcements_b", "kingdom_2_reinforcements_b", 0, 0, fac.commoners, 0, [(trp.vaegir_horseman,4,9),(trp.vaegir_infantry,5,10),(trp.vaegir_archer,3,8)]),
-    ##  ("kingdom_2_reinforcements_c", "kingdom_2_reinforcements_c", 0, 0, fac.commoners, 0, [(trp.vaegir_knight,3,7),(trp.vaegir_guard,2,5),(trp.vaegir_marksman,2,5)]),
-    ##
-    ##  ("kingdom_3_reinforcements_a", "kingdom_3_reinforcements_a", 0, 0, fac.commoners, 0, [(trp.khergit_horseman,3,7),(trp.khergit_skirmisher,5,10),(trp.khergit_tribesman,11,26)]),
-    ##  ("kingdom_3_reinforcements_b", "kingdom_3_reinforcements_b", 0, 0, fac.commoners, 0, [(trp.khergit_veteran_horse_archer,4,9),(trp.khergit_horse_archer,5,10),(trp.khergit_horseman,3,8)]),
-    ##  ("kingdom_3_reinforcements_c", "kingdom_3_reinforcements_c", 0, 0, fac.commoners, 0, [(trp.khergit_lancer,3,7),(trp.khergit_veteran_horse_archer,2,5),(trp.khergit_horse_archer,2,5)]),
-    ##
-    ##  ("kingdom_4_reinforcements_a", "kingdom_4_reinforcements_a", 0, 0, fac.commoners, 0, [(trp.nord_trained_footman,3,7),(trp.nord_footman,5,10),(trp.nord_recruit,11,26)]),
-    ##  ("kingdom_4_reinforcements_b", "kingdom_4_reinforcements_b", 0, 0, fac.commoners, 0, [(trp.nord_veteran,4,9),(trp.nord_warrior,5,10),(trp.nord_footman,3,8)]),
-    ##  ("kingdom_4_reinforcements_c", "kingdom_4_reinforcements_c", 0, 0, fac.commoners, 0, [(trp.nord_champion,1,3),(trp.nord_veteran,2,5),(trp.nord_warrior,2,5)]),
-    ##
-    ##  ("kingdom_5_reinforcements_a", "kingdom_5_reinforcements_a", 0, 0, fac.commoners, 0, [(trp.rhodok_spearman,3,7),(trp.rhodok_crossbowman,5,10),(trp.rhodok_tribesman,11,26)]),
-    ##  ("kingdom_5_reinforcements_b", "kingdom_5_reinforcements_b", 0, 0, fac.commoners, 0, [(trp.rhodok_trained_spearman,4,9),(trp.rhodok_spearman,5,10),(trp.rhodok_crossbowman,3,8)]),
-    ##  ("kingdom_5_reinforcements_c", "kingdom_5_reinforcements_c", 0, 0, fac.commoners, 0, [(trp.rhodok_sergeant,3,7),(trp.rhodok_veteran_spearman,2,5),(trp.rhodok_veteran_crossbowman,2,5)]),
+    # Bandit Lairs
     (
         "steppe_bandit_lair",
         "Steppe Bandit Lair",
@@ -557,15 +499,6 @@ party_templates = [
         fac.neutral,
         bandit_personality,
         [(trp.taiga_bandit, 15, 58)],
-    ),
-    (
-        "desert_bandit_lair",
-        "Desert Bandit Lair",
-        icon.bandit_lair | carries_goods(2) | pf_is_static | pf_hide_defenders,
-        0,
-        fac.neutral,
-        bandit_personality,
-        [(trp.desert_bandit, 15, 58)],
     ),
     (
         "forest_bandit_lair",
@@ -593,6 +526,15 @@ party_templates = [
         fac.neutral,
         bandit_personality,
         [(trp.sea_raider, 15, 50)],
+    ),
+    (
+        "desert_bandit_lair",
+        "Desert Bandit Lair",
+        icon.bandit_lair | carries_goods(2) | pf_is_static | pf_hide_defenders,
+        0,
+        fac.neutral,
+        bandit_personality,
+        [(trp.desert_bandit, 15, 58)],
     ),
     (
         "looter_lair",

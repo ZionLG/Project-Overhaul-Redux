@@ -7316,6 +7316,24 @@ items = [
     # [ ZK15 ] - Two-Handed Swords
     ####################################################################################################################
     [
+        "broadsword",
+        "Executioner's Sword",
+        [("broadsword", 0), ("scab_broadsword", ixmesh_carry)],
+        itp_type_two_handed_wpn | itp_two_handed | itp_primary,
+        itc_nodachi | itcf_carry_sword_left_hip | itcf_show_holster_when_drawn,
+        322,
+        weight(2.5)
+        | abundance(0)
+        | difficulty(8)
+        | spd_rtng(91)
+        | weapon_length(101)
+        | swing_damage(38, cut)
+        | thrust_damage(0, pierce),
+        imodbits_sword,
+        [],
+        [fac.no_faction],
+    ],
+    [
         "great_sword",
         "Great Sword",
         [("b_bastard_sword", 0), ("scab_bastardsw_b", ixmesh_carry)],
@@ -7485,6 +7503,30 @@ items = [
         | swing_damage(35, cut)
         | thrust_damage(0, pierce),
         imodbits_axe,
+    ],
+    [
+        "double_axe",
+        "Headsman's Axe",
+        [("dblhead_ax", 0)],
+        itp_type_two_handed_wpn
+        | itp_crush_through
+        | itp_unbalanced
+        | itp_two_handed
+        | itp_primary
+        | itp_bonus_against_shield
+        | itp_wooden_parry,
+        itc_nodachi | itcf_carry_axe_back,
+        359,
+        weight(6.5)
+        | abundance(0)
+        | difficulty(12)
+        | spd_rtng(85)
+        | weapon_length(95)
+        | swing_damage(50, cut)
+        | thrust_damage(0, pierce),
+        imodbits_axe,
+        [],
+        [fac.no_faction],
     ],
     [
         "battle_axe",

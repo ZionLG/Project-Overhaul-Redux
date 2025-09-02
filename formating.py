@@ -9,6 +9,12 @@ def indent_blocks(input_file, output_file):
     with open(input_file, 'r') as in_file, open(output_file, 'w') as out_file:
         for line in in_file:
             stripped = line.lstrip()
+            if any(bs in stripped for bs in block_start + block_end + block_else):
+                index = min(stripped.index(bs) for bs in block_start + block_end + block_else if bs in stripped)
+                if index > 0 and stripped[index - 1] == ':':
+                    # This is a variable assignment, ignore it
+                    out_file.write(line)
+                    continue
             if block_start_open:
                 out_file.write("\t" * indent_level + line)
                 if ")" in stripped:
@@ -32,4 +38,4 @@ def indent_blocks(input_file, output_file):
                 out_file.write("\t" * indent_level + line)
 
 # Usage: (make sure the file is already FORMATTED, this will only fix indentation!, Black python formatter is used.) NOTE: After you indent, make sure to not use Black formatter again, as it will mess up the indentation.
-indent_blocks('module_mission_templates copy.py', 'module_mission_templates copy_f.py')
+indent_blocks('module_presentations.py', 'module_presentations_f.py')

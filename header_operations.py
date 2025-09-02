@@ -89,7 +89,7 @@
 
 neg          = 0x80000000  # (neg|<operation_name>, ...),
                            # Used in combination with conditional operations to invert their results.
-negate = neg			   # Avoid using <neg> as it is similar to <neq> operator and causes misleadings
+negate = neg			         # Avoid using <neg> as it is similar to <neq> operator and causes misleadings
 this_or_next = 0x40000000  # (this_or_next|<operation_name>, ...),
                            # Used in combination with conditional operations to group them into OR blocks.
 
@@ -3369,6 +3369,7 @@ auto_set_meta_mission_at_end_commited 		 = 1305  # (auto_set_meta_mission_at_end
 
 break_loop                   = 8 #(break_loop), #Break out of a loop, no matter how deeply nested in try_begin blocks
 continue_loop                = 9 #(continue_loop), #Continue to the next iteration of a loop, no matter how deeply nested in try_begin blocks
+try_for_agents               = 12 #(try_for_agents, <cur_agent_no>, [<position_no>], [<radius_fixed_point>], [<use_mission_grid>]), #Loops through agents in the scene. If [<position_no>] and [<radius_fixed_point>] are defined, it will only loop through agents in the chosen area. If [<use_mission_grid>] is non-zero, it will use mission grid iterator instead of searching through all agents. This is better in performance, but does not take into account the height of positions
 try_for_dict_keys            = 18 #(try_for_dict_keys, <cur_key_string_register>, <dict>), #Loops through keys of <2>
 key_is_down                  = 70 #(key_is_down, <key>, [<bypass_console_check>]), #Fails if <key> is not currently down
 key_clicked                  = 71 #(key_clicked, <key>, [<bypass_console_check>]), #Fails if <key> is not clicked on the specific frame
@@ -3407,6 +3408,8 @@ player_set_banner_id          = 2902 #(player_set_banner_id, <player_no>, <banne
 player_set_username           = 2903 #(player_set_username, <player_no>, <string_no>), #Sets <player_no>'s username to <string_no>
 player_temp_ban               = 2904 #(player_temp_ban, <player_no>, <ban_time>), #Bans <player_no> temporarily for <ban_time> seconds
 player_get_wse2_version       = 2905 #(player_get_wse2_version, <destination>, <player_no>), #Stores <player_no>'s WSE2 version into <destination>. Works only on servers. 0 - vanilla Warband engine (requires WSE2)
+player_get_party_id           = 2906 #(player_get_party_id, <destination>, <player_no>), #Stores <player_no>'s party reference into <destination>. For multiplayer campaign mode (requires WSE2)
+player_set_party_id           = 2907 #(player_set_party_id, <player_no>, <party_no>), #Sets <player_no>'s party to <party_no>. For multiplayer campaign mode (requires WSE2)
 
 register_get                      = 3000 #(register_get, <destination>, <index>), #Stores the value of register <index> into <destination>
 register_set                      = 3001 #(register_set, <index>, <value>), #Sets the value of register <index> to <value>
@@ -3456,6 +3459,7 @@ profiler_is_recording             = 3042 #(profiler_is_recording),
                                          #Fails if profiler isn't recording
 profiler_mark                     = 3043 #(profiler_mark, <string_1>),  
                                          #Add a marker at this point in time with name <string_1>. Good for analyzing individual parts of a script.
+conversation_screen_auto_update_choice = 3044 #(conversation_screen_auto_update_choice), #Auto update single conversation choice without mouse click. Useful if you need to get text from external scripts. (requires WSE2)
 
 game_key_get_key  = 3100 #(game_key_get_key, <destination>, <game_key_no>), #Stores the key mapped to <game_key_no> into <destination>
 key_released      = 3101 #(key_released, <key>, [<bypass_console_check>]), #Fails if <key> wasn't released in the current frame
@@ -3528,6 +3532,10 @@ agent_set_missile_items_prune_time               = 3339 #(agent_set_missile_item
 agent_set_action_speed_modifier                  = 3340 #(agent_set_action_speed_modifier, <agent_no>, <value>), #Sets <agent_no>'s action speed modifier to <value> (requires WSE2)
 agent_get_action_speed_modifier                  = 3341 #(agent_get_action_speed_modifier, <destination>, <agent_no>), #Stores <agent_no>'s action speed modifier into <destination> (requires WSE2)
 agent_set_left_hand_weapon_collision             = 3342 #(agent_set_left_hand_weapon_collision, <agent_no>, <value>), #Enables or disables <agent_no>'s left hand weapon collision (requires WSE2)
+agent_ai_set_can_weapon_switch                   = 3343 #(agent_ai_set_can_weapon_switch, <agent_no>, <value>), #Enables or disables <agent_no>'s weapon switching for ai (requires WSE2)
+agent_ai_set_can_fight                           = 3344 #(agent_ai_set_can_fight, <agent_no>, <value>), #Enables or disables <agent_no>'s engaging enemy for ai (requires WSE2)
+agent_fade_out_advanced                          = 3345 #(agent_fade_out_advanced, <agent_no>, <value_fixed_point>), #Makes the <agent_no> disappear within specified time <value_fixed_point>. The agent is not deleted, but made invisible. (requires WSE2)
+agent_fade_in_advanced                           = 3346 #(agent_fade_in_advanced, <agent_no>, <value_fixed_point>), #Makes the <agent_no> reappear within specified time <value_fixed_point>. (requires WSE2)
 
 multiplayer_send_chat_message_to_player      = 3400 #(multiplayer_send_chat_message_to_player, <player_no>, <sender_player_no>, <text>, [<type>]), #Sends <text> to <player_no> as a (native compatible) chat message by <sender_player_no>. Works only on servers. [<type>]: 0 = chat, 1 = team chat
 multiplayer_send_composite_message_to_player = 3401 #(multiplayer_send_composite_message_to_player, <player_no>, <message_type>, <message_register>), #Sends <message_register> with <message_type> to <player_no> (requires, for WSE: network_compatible = 0 in wse_settings.ini, for WSE2: bBreakWarbandCompatibility=true in rgl_config.ini)
@@ -3581,7 +3589,7 @@ missile_remove_on_hit                = 3611 #(missile_remove_on_hit), #Causes a 
 missile_is_valid                     = 3612 #(missile_is_valid, <missile_no>), #Fails if <missile_no> is not valid
 missile_get_cur_position             = 3613 #(missile_get_cur_position, <position_register>, <missile_no>), #Stores <missile_no>'s current position into <position_register>
 set_prop_collision_threshold         = 3614 #(set_prop_collision_threshold, <attack_direction>, <low_boundary>, <high_boundary>), #Changes the animation progress boundaries (in percents) that determine if swing attacks on props will collide (default: 40% <= x <= 80% (75% for overheads))
-get_camera_position                  = 3615 #(get_camera_position, <position_register_no>), #Stores camera position and rotation into <position_register_no>
+get_camera_position                  = 3615 #(get_camera_position, <position_register>), #Stores camera position and rotation into <position_register>
 prop_instance_remove_particle_system = 3616 #(prop_instance_remove_particle_system, <prop_instance_no>, [<particle_system_no>]), #Removes [<particle_system_no>] (all particle systems if not set or -1) from <prop_instance_no>
 prop_instance_remove_light           = 3617 #(prop_instance_remove_light, <prop_instance_no>), #Removes light from <prop_instance_no>
 prop_instance_get_sound_progress     = 3618 #(prop_instance_get_sound_progress, <destination>, <scene_prop_id>), #Stores <scene_prop_id>'s sound_progress into <destination>. Returned value can be between 0-100, or -1 if nothing is being played. (requires WSE2)
@@ -3631,6 +3639,8 @@ party_stack_upgrade             = 3905 #(party_stack_upgrade, <party_no>, <party
 party_stack_set_num_upgradeable = 3906 #(party_stack_set_num_upgradeable, <party_no>, <party_stack_no>, <value>), #Sets <party_no>'s <party_stack_no>'s amount of upgradeable troops to <value>
 party_get_banner_icon           = 3907 #(party_get_banner_icon, <destination>, <party_no>), #Stores <party_no>'s banner icon into <destination>
 party_get_extra_icon            = 3908 #(party_get_extra_icon, <destination>, <party_no>), #Stores <party_no>'s extra icon into <destination>
+party_get_player_id             = 3909 #(party_get_player_id, <destination>, <party_no>), #Stores <party_no>'s player reference into <destination>. For multiplayer campaign mode (requires WSE2)
+party_is_non_player             = 3910 #(party_is_non_player, <party_no>), #Fails if <party_no> is player. For multiplayer campaign mode (requires WSE2)
 
 position_get_vector_to_position = 4100 #(position_get_vector_to_position, <destination_fixed_point>, <dest_position_register>, <position_register_1>, <position_register_2>), #Stores the vector from <position_register_1> to <position_register_2> into <dest_position_register> and its length into <destination_fixed_point>
 position_align_to_ground        = 4101 #(position_align_to_ground, <position_register>, [<point_up>], [<set_z_to_ground_level>]), #Aligns <position_register> to the ground (or to the ground normal if [<point_up>] is set)
@@ -3771,7 +3781,7 @@ menu_clear_generated = 4803 #(menu_clear_generated), #Removes all dynamic menus
 
 overlay_get_val         = 4900 #(overlay_get_val, <destination>, <overlay_no>), #Stores <overlay_no>'s value into <destination>
 presentation_activate   = 4901 #(presentation_activate, <presentation_no>), #Activates <presentation_no>. Fails if <presentation_no> is not running
-overlay_button_set_type = 4902 #(overlay_button_set_type, <overlay_no>, <toggled_or_not>, <selectable_or_not>), #Sets <overlay_no>'s <toggled_or_not> and <selectable_or_not>.
+overlay_button_set_type = 4902 #(overlay_button_set_type, <overlay_no>, <toggle_or_not>, <deselectable_or_not>), #Sets <overlay_no>'s <toggle_or_not> and <deselectable_or_not>
 overlay_get_scroll_pos  = 4903 #(overlay_get_scroll_pos, <destination_fixed_point>, <overlay_no>, [<horizontal>]), #Stores <overlay_no>'s scroll pos into <destination_fixed_point>
 overlay_set_scroll_pos  = 4904 #(overlay_set_scroll_pos, <overlay_no>, <value_fixed_point>, [<horizontal>]), #Sets <overlay_no>'s scroll pos <value_fixed_point>
 overlay_enable          = 4905 #(overlay_enable, <overlay_no>, <enable_or_disable>), #Sets <overlay_no>'s <enable_or_disable>
@@ -3814,7 +3824,9 @@ lua_push_str        = 5109 #(lua_push_str, <string_1>), #Pushes <string_1> onto 
 lua_push_pos        = 5110 #(lua_push_pos, <pos_register>), #Pushes the position in <pos_register> onto the lua stack.
 lua_get_type        = 5111 #(lua_get_type, <destination>, <index>), #Stores the type of the value at <index> in the stack into <destination>. Return types can be found in header_common(_addon).py (LUA_T*)
 lua_call            = 5112 #(lua_call, <func_name>, <num_args>), #Calls the lua function with name <func_name>, using the lua stack to pass <num_args> arguments and to return values. The first argument is pushed first. All arguments get removed from the stack automatically. The last return value will be at the top of the stack.
+#You can use underscores and 't1.t2.func()'-syntax in func_name. #Warning: leaves a traceback function on the stack. This won't be fixed in order to not break existing code.
 lua_triggerCallback = 5113 #(lua_triggerCallback, <reference>, <triggerPart>, [<context>]), #Calls the lua trigger callback with <reference>. This operation is utilized internally and should not be used, unless you know what you are doing.
+lua_test            = 5114 #(lua_test, <index>), #Checks if the lua stack at <index> evaluates to true (any value different from false and nil). If you want to test only actual boolean values, check the type too.
 
 skin_set_blood_color                 = 5200 #(skin_set_blood_color, <skin_no>, <color>), #Sets <skin_no>'s blood <color> (requires WSE2)
 skeleton_model_set_bone_body_section = 5201 #(skeleton_model_set_bone_body_section, <skeleton_model_name>, <bone_no>, <body_section>), #Sets <skeleton_model_name>'s <bone_no> <body_section>. 0 - none, 1 - lowerbody, 2 - rightside (included lowerbody), 3 - all (included lowerbody and rightside). Check acf_enforce animations flags (requires WSE2)
@@ -3822,31 +3834,23 @@ skeleton_model_clean_body_sections   = 5202 #(skeleton_model_clean_body_sections
 
 #WSE2
 
-game_key_get_mapped_key_name    =   65  # (game_key_get_mapped_key_name, <string_register>, <game_key>, [<alternative>]),
-                                        # Version 1.161+. Stores human-readable key name that's currently assigned to the provided game key. 
-options_get_damage_to_player          =  260  # (options_get_damage_to_player, <destination>, [<percentage>]),
-                                              # If set percentage, uses 0-100% range instead default (0 = 1/4, 1 = 1/2, 2 = 1/1)
-options_set_damage_to_player          =  261  # (options_set_damage_to_player, <value>, [<percentage>]),
-                                              # If set percentage, uses 0-100% range instead default (0 = 1/4, 1 = 1/2, 2 = 1/1)
-options_get_damage_to_friends         =  262  # (options_get_damage_to_friends, <destination>, [<percentage>]),
-                                              # If set percentage, uses 0-100% range instead default (0 = 1/2, 1 = 3/4, 2 = 1/1)
-options_set_damage_to_friends         =  263  # (options_set_damage_to_friends, <value>, [<percentage>]),
-                                              # If set percentage, uses 0-100% range instead default (0 = 1/2, 1 = 3/4, 2 = 1/1)
-
-agent_get_attached_scene_prop            = 1756  # (agent_get_attached_scene_prop, <destination>, <agent_id>, [<no>])
-                                                 # Retrieves the reference to scene prop instance which is attached to the agent, or -1 if there isn't any. (no 0-3)
-agent_set_attached_scene_prop            = 1757  # (agent_set_attached_scene_prop, <agent_id>, <scene_prop_id>, [<no>], [<bone_no>], [<use_bone_rotation>])
-                                                 # Attaches the specified prop instances to the agent. (0-3)
-agent_set_attached_scene_prop_x          = 1758  # (agent_set_attached_scene_prop_x, <agent_id>, <value>, [<no>])
-                                                 # Offsets the position of the attached scene prop in relation to agent, in centimeters, along the X axis (left/right). (no 0-3)
-agent_set_attached_scene_prop_y          = 1809  # (agent_set_attached_scene_prop_y, <agent_id>, <value>, [<no>])
-                                                 # Offsets the position of the attached scene prop in relation to agent, in centimeters, along the Y axis (backwards/forward). (no 0-3)
-agent_set_attached_scene_prop_z          = 1759  # (agent_set_attached_scene_prop_z, <agent_id>, <value>, [<no>])
-                                                 # Offsets the position of the attached scene prop in relation to agent, in centimeters, along the Z axis (down/up). (no 0-3)
+game_key_get_mapped_key_name                = 65 #(game_key_get_mapped_key_name, <string_register>, <game_key_no>, [<alternative>]), #Stores human-readable key name that's currently assigned to the provided <game_key_no> into <string_register> (requires WSE2)
+options_get_damage_to_player                = 260 #(options_get_damage_to_player, <destination>, [<percentage>]), #Stores damage to player for singleplayer into <destination>. If set [<percentage>], uses 0-100% range instead default values (0 = 1/4, 1 = 1/2, 2 = 1/1) (requires WSE2)
+options_set_damage_to_player                = 261 #(options_set_damage_to_player, <value>, [<percentage>]), #Sets damage to player for singleplayer. If set [<percentage>], uses 0-100% range instead default values (0 = 1/4, 1 = 1/2, 2 = 1/1) (requires WSE2)
+options_get_damage_to_friends               = 262 #(options_get_damage_to_friends, <destination>, [<percentage>]), #Stores damage to friends for singleplayer into <destination>. If set [<percentage>], uses 0-100% range instead default values (0 = 1/2, 1 = 3/4, 2 = 1/1) (requires WSE2)
+options_set_damage_to_friends               = 263 #(options_set_damage_to_friends, <value>, [<percentage>]), #Sets damage to friends for singleplayer. If set [<percentage>], uses 0-100% range instead default values (0 = 1/2, 1 = 3/4, 2 = 1/1) (requires WSE2)
+set_camera_follow_party                     = 1021 #(set_camera_follow_party, <party_no>, [<instant>]), #Global map camera follows <party_no>. If [<instant>] sets, camera position sets to party position instatly (requires WSE2)
+start_map_conversation                      = 1025 #(start_map_conversation, <troop_id>, [<troop_dna>], [<set_dialog_state>], [<dialog_state>], [<from_presentation>]), #Starts a conversation with the selected <troop_id>. Can be called directly from global map or game menus. [<troop_dna>] parameter allows you to randomize non-hero troop appearances. If [<set_dialog_state>] sets, then [<dialog_state>] used instead dlg_event_triggered. If [<from_presentation>] sets, then conversation called directly from the presentation. (requires WSE2)
+start_encounter                             = 1300 #(start_encounter, <encountered_party_no>, [<party_no>]), #Forces the [<party_no>] to initiate encounter with the <encountered_party_no>. If [<party_no>] not specified, main party used. (requires WSE2)
+party_get_battle_opponent                   = 1680 #(party_get_battle_opponent, <destination>, <party_no>), #When a <party_no> is engaged in battle with another party, stores its opponent party into <destination>. If the <party_no> is not in the encounter stores -1. For multiplayer campaign mode - stores -2, if <party_no> is observer player. (requires WSE2)
+agent_get_attached_scene_prop               = 1756 #(agent_get_attached_scene_prop, <destination>, <agent_no>, [<attached_prop_index>]), #Stores scene prop instance which is attached to the <agent_no>, or -1 if there isn't any into <destination>. ([<attached_prop_index>]: 0-3) (requires WSE2)
+agent_set_attached_scene_prop               = 1757 #(agent_set_attached_scene_prop, <agent_no>, <prop_instance_no>, [<attached_prop_index>], [<bone_no>], [<use_bone_rotation>]), #Attaches the specified <prop_instance_no> to the <agent_no>. ([<attached_prop_index>]: 0-3) (requires WSE2)
+agent_set_attached_scene_prop_x             = 1758 #(agent_set_attached_scene_prop_x, <agent_no>, <value>, [<attached_prop_index>]), #Offsets the position of the attached scene prop in relation to <agent_no>, in centimeters, along the X axis (left/right). ([<attached_prop_index>]: 0-3) (requires WSE2)
+agent_set_attached_scene_prop_z             = 1759 #(agent_set_attached_scene_prop_z, <agent_no>, <value>, [<attached_prop_index>]), #Offsets the position of the attached scene prop in relation to <agent_no>, in centimeters, along the Z axis (down/up). ([<attached_prop_index>]: 0-3) (requires WSE2)
 entry_point_get_position                    = 1780 #(entry_point_get_position, <position_register>, <entry_no>, [<shifted>]), #Stores <entry_no>'s position into <position_register>. If [<shifted>] is non-zero stores shifted position (requires WSE2)
 agent_set_attached_scene_prop_y             = 1809 #(agent_set_attached_scene_prop_y, <agent_no>, <value>, [<attached_prop_index>]), #Offsets the position of the attached scene prop in relation to <agent_no>, in centimeters, along the Y axis (backwards/forward). ([<attached_prop_index>]: 0-3) (requires WSE2)
-prop_instance_intersects_with_prop_instance = 1880 #(prop_instance_intersects_with_prop_instance, <checked_scene_prop_no>, <prop_instance_no>, [<check_polygon_to_polygon>]), 
-                                                   #Checks if two scene props are intersecting (i.e. collided). Useful when animating scene props movement. Pass -1 for <prop_instance_no> to check the prop against all other props on the scene. Scene props must have active collision meshes. If [<check_polygon_to_polygon>] is non-zero also checks polygon-to-polygon physics models, this is may reduce performance. (requires WSE2)
+prop_instance_intersects_with_prop_instance = 1880 #(prop_instance_intersects_with_prop_instance, <checked_scene_prop_no>, <prop_instance_no>, [<check_polygon_to_polygon>]), #Checks if two scene props are intersecting (i.e. collided). Useful when animating scene props movement. Pass -1 for <prop_instance_no> to check the prop against all other props on the scene. Scene props must have active collision meshes. If [<check_polygon_to_polygon>] is non-zero also checks polygon-to-polygon physics models, this is may reduce performance. (requires WSE2)
+str_store_player_username                   = 2350 #(str_store_player_username, <string_register>, <player_no>, [<force_real>]), #Stores <player_no>'s multiplayer username into <string_register>. [<force_real>] uses for real name instead anonymous pseudonym (requires WSE2)
 
 game_key_get_key = 3100 #(game_key_get_key, <destination>, <game_key_no>, [<alternative>], [<modifier>]), #Stores the key mapped to <game_key_no> into <destination> (requires WSE2)
 
@@ -4036,6 +4040,7 @@ depth_operations = [try_begin, try_for_range, try_for_range_backwards, try_for_p
 
 #WSE
 lhs_operations += [
+  try_for_agents,
   agent_get_ammo_for_slot,
   agent_get_item_cur_ammo,
   agent_get_damage_modifier,
@@ -4058,6 +4063,7 @@ lhs_operations += [
   val_not,
   store_not,
   player_get_wse2_version,
+  player_get_party_id,
   register_get,
   store_wse_version,
   store_current_trigger,
@@ -4113,6 +4119,7 @@ lhs_operations += [
   party_stack_get_num_upgradeable,
   party_get_banner_icon,
 	party_get_extra_icon,
+  party_get_player_id,
   position_get_vector_to_position,
   position_get_length,
   get_dot_product_of_positions,
@@ -4148,6 +4155,10 @@ lhs_operations += [
 ]
 
 can_fail_operations += [
+  key_is_down,
+  key_clicked,
+  game_key_is_down,
+  game_key_clicked,
   is_vanilla_warband,
   item_slot_gt,
   party_template_slot_gt,
@@ -4172,6 +4183,7 @@ can_fail_operations += [
   cast_ray_agents,
   troop_has_flag,
   party_has_flag,
+  party_is_non_player,
   str_equals,
   str_contains,
   str_starts_with,
@@ -4197,4 +4209,5 @@ can_fail_operations += [
   array_le,
   lua_call,
   lua_triggerCallback,
+  lua_test,  
 ]

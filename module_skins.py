@@ -83,7 +83,6 @@ woman_face_keys = [
     (190, 0, -0.4, 0.8, "Face Width"),
     (280, 0, 0.0, 1.0, "Post-Edit"),
 ]
-undead_face_keys = []
 
 
 chin_size = 0
@@ -147,7 +146,9 @@ skins = [
             "man_hair_y",
             "man_hair_y2",
             "man_hair_y4",
-        ],  # man_hair_meshes ,"man_hair_y5","man_hair_y8",
+            "man_hair_y5",
+        ],  # man_hair_meshes
+        # ["man_hair_a","man_hair_b","man_hair_c","man_hair_d","man_hair_e","man_hair_g","man_hair_h","man_hair_k","man_hair_y8"], # poorly aligned textures
         [
             "beard_e",
             "beard_d",
@@ -172,20 +173,13 @@ skins = [
             "beard_a",
             "beard_h",
             "beard_g",
-        ],  # beard meshes ,"beard_q"
+            "beard_q",
+        ],  # beard meshes
         [
             "hair_blonde",
-            "hair_red",
-            "hair_brunette",
-            "hair_black",
-            "hair_white",
         ],  # hair textures
         [
             "beard_blonde",
-            "beard_red",
-            "beard_brunette",
-            "beard_black",
-            "beard_white",
         ],  # beard_materials
         [
             (
@@ -206,7 +200,6 @@ skins = [
                 ["hair_blonde"],
                 [0xFF83301A, 0xFF502A19, 0xFF19100C, 0xFF0C0D19],
             ),
-            #     ("manface_old",0xffd0d0d0,["hair_white","hair_brunette","hair_red","hair_blonde"],[0xffffcded, 0xffbbcded, 0xff99eebb]),
             (
                 "manface_young_3",
                 0xFFDCEDED,
@@ -221,9 +214,7 @@ skins = [
                 [0xFF502A19, 0xFF19100C, 0xFF0C0D19],
             ),
             ("manface_rugged", 0xFFB0AAB5, ["hair_blonde"], [0xFF171313, 0xFF007080C]),
-            #     ("manface_young_4",0xffe0e8e8,["hair_blonde"],[0xff2f180e, 0xff171313, 0xff007080c]),
             ("manface_african", 0xFF807C8A, ["hair_blonde"], [0xFF120808, 0xFF007080C]),
-            #     ("manface_old_2",0xffd5d5c5,["hair_white"],[0xffffcded, 0xffbbcded, 0xff99eebb]),
         ],  # man_face_textures,
         [
             (voice_die, "snd_man_die"),
@@ -278,14 +269,10 @@ skins = [
             "woman_hair_t",
             "woman_hair_s",
         ],  # woman_hair_meshes
-        #    ["woman_hair_a","woman_hair_b","woman_hair_c","woman_hair_d","woman_hair_e","woman_hair_f","woman_hair_g"], #woman_hair_meshes
+        # ["woman_hair_a","woman_hair_b","woman_hair_c","woman_hair_d","woman_hair_e","woman_hair_f","woman_hair_g"], # poorly aligned textures
         [],
         [
             "hair_blonde",
-            "hair_red",
-            "hair_brunette",
-            "hair_black",
-            "hair_white",
         ],  # hair textures
         [],
         [
@@ -319,7 +306,6 @@ skins = [
                 ["hair_blonde"],
                 [0xFF120808, 0xFF007080C],
             ),
-            #     ("womanface_midage",0xffe5eaf0,["hair_black","hair_brunette","hair_red","hair_white"],[0xffffcded, 0xffbbcded, 0xff99eebb]),
         ],  # woman_face_textures
         [
             (voice_die, "snd_woman_die"),
@@ -331,18 +317,4 @@ skins = [
         psys.game_blood,
         psys.game_blood_2,
     ),
-    ##  (
-    ##    "undead", 0,
-    ##    "undead_body", "undead_calf_l", "undead_handL",
-    ##    "undead_head", undead_face_keys,
-    ##    [],
-    ##    [],
-    ##    [],
-    ##    [],
-    ##    [("undeadface_a",0xffffffff,[]),
-    ##     ("undeadface_b",0xffcaffc0,[]),
-    ##     ], #undead_face_textures
-    ##    [], #voice sounds
-    ##    "skel_human", 1.0,
-    ##  ),
 ]

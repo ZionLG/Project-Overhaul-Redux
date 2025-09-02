@@ -4825,7 +4825,6 @@ strings = (
             "People say that it is good to be in the service of {s6}. He is good to his followers, and rewards them if they work well.",
         ),
         ("latest_rumor", "The latest rumor you heard about {s6} was:"),
-        # steve lord recruitment changes begin
         ("changed_my_mind_default", "{!}[liege]"),
         (
             "changed_my_mind_martial",
@@ -4855,8 +4854,7 @@ strings = (
             "changed_my_mind_upstanding",
             "However, you make an eloquent case. I am still listening.",
         ),
-        # steve lord recruitment changes end
-        # steve post 0912 changes begin
+        # pretenders
         (
             "swadian_rebellion_pretender_intro",
             "I am Isolla, rightful Queen of the Swadians.",
@@ -5001,7 +4999,6 @@ strings = (
             "sarranid_rebellion_monarch_response_2",
             "You should know, however, that Arwa was not chosen as Baybak's partner because of her wisdom or love of justice. No, she was chosen because she was a witch, who could transform men like Ayzar and Baybak into stammering fools. No matter -- I was true to my oath, and respected her usurpation, until the very hour that it was invalidated by the death of her puppet. Now she must respect mine.",
         ),
-        # steve post 0912 changes end
         # courtship
         ("courtship_comment_conventional_generic", "is a very well-bred sort"),
         ("courtship_comment_adventurous_generic", "seems decent enough"),
@@ -8777,8 +8774,15 @@ We apologize sincerely if you contributed your suggestions and feedback but were
         ("quick_battle_scene_1", "Farmhouse"),
         ("quick_battle_scene_2", "Oasis"),
         ("quick_battle_scene_3", "Tulbuk's Pass"),
-        ("quick_battle_scene_4", "Haima Castle"),
-        ("quick_battle_scene_5", "Ulbas Castle"),
+        ("quick_battle_scene_4", "Granary Hills"),
+        ("quick_battle_scene_5", "Frostbite Peak"),
+        ("quick_battle_scene_6", "Elysium Fields"),
+        ("quick_siege_scene_1", "Haima Castle"),
+        ("quick_siege_scene_2", "Ulbas Castle"),
+        ("quick_siege_scene_3", "Kerrak Castle (Belfry)"),
+        ("quick_siege_scene_3b", "Kerrak Castle (Ladders)"),
+        ("quick_siege_scene_4", "Falcis Castle"),
+        ("quick_siege_scene_5", "Malsby Castle"),
         (
             "quick_battle_troop_1",
             "There is a reason no one goes about the cities without armed guards once the sun sets, and that reason is Rodrigo de Braganca. Once a bright eyed merchant who arrived at Tihr with a small fortune in rubies and a dream to corner the velvet market, he was soon reduced to a pauper, having lost everything to cutthroat competition with the colluding Rhodok merchant guilds. But he soon turned measuring scales into swords, and applied his considerable business smarts into building up the deadliest criminal enterprise in Veluca, with hideouts and operations in every major town. He has attained his goal, for the price on his head is greater than the riches he once pursued. Now he takes great pleasure in relieving his former competitors of their worldly goods -— and worries.",
@@ -9411,5 +9415,8 @@ We apologize sincerely if you contributed your suggestions and feedback but were
         ("ranged_weapons_are_disallowed", "Ranged weapons are disallowed."),
         ("ranged_weapons_are_allowed", "Ranged weapons are allowed."),
         ("duel_starts_in_reg0_seconds", "Duel starts in {reg0} seconds..."),
+        ("ui_crouch", "Crouch"),
+        ("s1_routed", "{s1} has routed!"),
+        ("s1_rallied", "{s1} has rallied!"),
     ]
 )

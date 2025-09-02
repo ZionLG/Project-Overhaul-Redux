@@ -241,10 +241,10 @@ ti_on_init_missile = -101.0 #can only be used in module_items triggers
 # Trigger Param 5: missile item modifier
 # Trigger Param 6: missile no
 
-ti_on_agent_turn = -102.0 #can only be used in module_mission_templates triggers (for multiplayer player's agents)
+ti_on_agent_turn = -102.0 #can only be used in module_mission_templates triggers (for multiplayer player's agents; for WSE2 works always, if bTurnAgentAsMultiplayer=true)
 # Trigger Param 1: agent no
 # Trigger Param 2: max rotation speed (fixed point)
-# trigger result = replace max rotation speed (fixed point)
+# Trigger Result: replace max rotation speed (fixed point)
 
 ti_on_agent_blocked = -103.0 #can only be used in module_mission_templates triggers
 # Trigger Param 1: receiver agent no
@@ -276,6 +276,8 @@ ti_on_shield_penetrated = -107.0 #can only be used in module_mission_templates t
 # Trigger Param 6: missile item kind no
 # Trigger Param 7: missile item modifier
 
+# Trigger Result: if set, rewrite penetrate shield result
+
 ti_on_scene_prop_is_deforming = -108.0 #can only be used in module_scene_props triggers
 # Trigger Param 1: prop instance no
 # Trigger Param 2: remaining deform time (1/1000th of second)
@@ -286,6 +288,22 @@ ti_on_agent_fill_collision_capsule = -109.0 #can only be used in module_mission_
 # Position Register 0: point A position (global)
 # Position Register 1: point B position (global)
 # Trigger Result: If result >= 0, replace capsule radius with this value (fixed point), point A with pos0 and point B with pos1.
+
+ti_on_agent_fill_movement_capsule = -110.0 #can only be used in module_mission_templates triggers
+# Trigger Param 1: agent no
+# Trigger Param 2: capsule radius (fixed point)
+# Position Register 0: point A position (global)
+# Position Register 1: point B position (global)
+# Trigger Result: If result >= 0, replace capsule radius with this value (fixed point), point A with pos0 and point B with pos1.
+
+ti_on_agent_block_crushed  = -111.0 #can only be used in module_mission_templates triggers
+# Trigger Param 1: receiver agent no
+# Trigger Param 2: dealer agent no
+# Trigger Param 3: inflicted damage
+# Trigger Param 4: item kind no
+# Trigger Param 5: item modifier
+
+# Trigger Result: if set, rewrite crush block result
 
 ## WSE addon ends
 #  ##########################

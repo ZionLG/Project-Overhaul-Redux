@@ -3,7 +3,7 @@ from compiler import *  # should be after all imports
 ####################################################################################################################
 #  Each party record contains the following fields:
 #  1) Party id: used for referencing parties in other files.
-#     The prefix p_ is automatically added before each party id.
+#     The prefix p_ / p. is automatically added before each party id.
 #  2) Party name.
 #  3) Party flags. See header_parties.py for a list of available flags
 #  4) Menu. ID of the menu to use when this party is met. The value 0 uses the default party encounter system.
@@ -19,23 +19,44 @@ from compiler import *  # should be after all imports
 #   11.3) Member flags. Use pmf_is_prisoner to note that this member is a prisoner.
 # 12) Party direction in degrees [optional]
 ####################################################################################################################
+# Table of Contents:
+#
+#   _ZA_ - Hardcoded Game Parties
+#
+#   _ZB_ - Used in Scripts
+# [ ZB01 ] - Temp Parties
+# [ ZB02 ] - Casualties Calculations
+#
+#   _ZC_ - Centers
+# [ ZC01 ] - Towns
+# [ ZC02 ] - Castles
+# [ ZC03 ] - Villages
+#
+#   _ZD_ - Locations
+# [ ZD01 ] - Training Grounds   
+# [ ZD02 ] - Ports
+# [ ZD03 ] - Bridges
+#
+#   _ZE_ - Bandit Spawn Points
+#
+#   _ZF_ - WARP Helpers
+#
+#   _ZG_ - Reserved Partie
+#
 
 no_menu = 0
-# pf_town = pf_is_static|pf_always_visible|pf_hide_defenders|pf_show_faction
 pf_town = pf_is_static | pf_always_visible | pf_show_faction | pf_label_large
 pf_castle = pf_is_static | pf_always_visible | pf_show_faction | pf_label_medium
 pf_village = pf_is_static | pf_always_visible | pf_hide_defenders | pf_label_small
-
-# sample_party = [(trp.swadian_knight,1,0), (trp.swadian_peasant,10,0), (trp.swadian_crossbowman,1,0), (trp.swadian_man_at_arms, 1, 0), (trp.swadian_footman, 1, 0), (trp.swadian_militia,1,0)]
-
-# NEW TOWNS:
-# NORMANDY: Rouen, Caen, Bayeux, Coutances, Evreux, Avranches
-# Brittany: Rennes, Nantes,
-# Maine: Le Mans
-# Anjou: Angers
-
+pf_landmark = pf_is_static | pf_always_visible | pf_no_label
+pf_location = pf_is_static | pf_always_visible | pf_hide_defenders | pf_label_medium
 
 parties = [
+    ####################################################################################################################
+    # _ZA_ - Hardcoded Game Parties
+    # Called directly from the game engine, removing them will crash the game when they are called
+    ####################################################################################################################
+    
     (
         "main_party",
         "Main Party",
@@ -76,6 +97,17 @@ parties = [
         [(trp.temp_troop, 3, 0)],
     ),
     # parties before this point are hardwired. Their order should not be changed.
+    
+    ####################################################################################################################
+    # _ZB_ - Used in Scripts
+    # These parties are used in game scripts and can be safely removed if the scripts are not used.
+    ####################################################################################################################
+    
+    ####################################################################################################################
+    # [ ZB01 ] - Temp Parties
+    # Used in battle simulation.
+    ####################################################################################################################
+    
     (
         "temp_party_2",
         "{!}temp_party_2",
@@ -89,7 +121,11 @@ parties = [
         (0, 0),
         [],
     ),
-    # Used for calculating casulties.
+    
+    ####################################################################################################################
+    # [ ZB02 ] - Casualties Calculations
+    ####################################################################################################################
+    
     (
         "temp_casualties",
         "{!}casualties",
@@ -181,7 +217,6 @@ parties = [
         (1, 1),
         [],
     ),
-    #  ("ally_party_backup","_",  pf_disabled, no_menu, pt.none, fac.neutral,0,ai_bhvr_hold,0,(1,1),[]),
     (
         "collective_friends_backup",
         "{!}_",
@@ -247,7 +282,6 @@ parties = [
         (1, 1),
         [],
     ),
-    # TODO: remove this and move all to collective ally
     (
         "collective_ally",
         "{!}collective_ally",
@@ -286,7 +320,7 @@ parties = [
         0,
         (1, 1),
         [],
-    ),  # ganimet hesaplari icin #new:
+    ),
     (
         "routed_enemies",
         "{!}routed_enemies",
@@ -299,22 +333,17 @@ parties = [
         0,
         (1, 1),
         [],
-    ),  # new:
-    #  ("village_reinforcements","village_reinforcements",pf_is_static|pf_disabled, no_menu, pt.none, fac.neutral,0,ai_bhvr_hold,0,(1,1),[]),
-    ###############################################################
-    (
-        "zendar",
-        "Zendar",
-        pf_disabled | icon.town | pf_is_static | pf_always_visible | pf_hide_defenders,
-        no_menu,
-        pt.none,
-        fac.neutral,
-        0,
-        ai_bhvr_hold,
-        0,
-        (18, 60),
-        [],
     ),
+    
+    ####################################################################################################################
+    # _ZC_ - Centers
+    # Towns, Castles, Villages, etc.
+    ####################################################################################################################
+    
+    ####################################################################################################################
+    # [ ZC01 ] - Towns
+    ####################################################################################################################
+    
     (
         "town_1",
         "Sargoth",
@@ -623,8 +652,11 @@ parties = [
         [],
         225,
     ),
-    #   Aztaq_Castle
-    #  Malabadi_Castle
+    
+    ####################################################################################################################
+    # [ ZC02 ] - Castles
+    ####################################################################################################################
+    
     (
         "castle_1",
         "Culmarr_Castle",
@@ -1297,9 +1329,11 @@ parties = [
         [],
         260,
     ),
-    #     Rinimad
-    #              Rietal Derchios Gerdus
-    # Tuavus   Pamir   vezona
+    
+    ####################################################################################################################
+    # [ ZC03 ] - Villages
+    ####################################################################################################################
+    
     (
         "village_1",
         "Yaragar",
@@ -2840,118 +2874,20 @@ parties = [
         [],
         40,
     ),
-    (
-        "salt_mine",
-        "Salt_Mine",
-        icon.village_a
-        | pf_disabled
-        | pf_is_static
-        | pf_always_visible
-        | pf_hide_defenders,
-        no_menu,
-        pt.none,
-        fac.neutral,
-        0,
-        ai_bhvr_hold,
-        0,
-        (14.2, -31),
-        [],
-    ),
-    (
-        "four_ways_inn",
-        "Four_Ways_Inn",
-        icon.village_a
-        | pf_disabled
-        | pf_is_static
-        | pf_always_visible
-        | pf_hide_defenders,
-        no_menu,
-        pt.none,
-        fac.neutral,
-        0,
-        ai_bhvr_hold,
-        0,
-        (4.8, -39.6),
-        [],
-    ),
-    (
-        "test_scene",
-        "test_scene",
-        icon.village_a
-        | pf_disabled
-        | pf_is_static
-        | pf_always_visible
-        | pf_hide_defenders,
-        no_menu,
-        pt.none,
-        fac.neutral,
-        0,
-        ai_bhvr_hold,
-        0,
-        (10.8, -19.6),
-        [],
-    ),
-    # ("test_scene","test_scene",icon.village_a|pf_is_static|pf_always_visible|pf_hide_defenders, no_menu, pt.none, fac.neutral,0,ai_bhvr_hold,0,(10.8, -19.6),[]),
-    (
-        "battlefields",
-        "battlefields",
-        pf_disabled
-        | icon.village_a
-        | pf_is_static
-        | pf_always_visible
-        | pf_hide_defenders,
-        no_menu,
-        pt.none,
-        fac.neutral,
-        0,
-        ai_bhvr_hold,
-        0,
-        (10.8, -16.6),
-        [],
-    ),
-    (
-        "dhorak_keep",
-        "Dhorak_Keep",
-        icon.town
-        | pf_disabled
-        | pf_is_static
-        | pf_always_visible
-        | pf_no_label
-        | pf_hide_defenders,
-        no_menu,
-        pt.none,
-        fac.neutral,
-        0,
-        ai_bhvr_hold,
-        0,
-        (-50, -58),
-        [],
-    ),
-    (
-        "training_ground",
-        "Training Ground",
-        pf_disabled
-        | icon.training_ground
-        | pf_hide_defenders
-        | pf_is_static
-        | pf_always_visible,
-        no_menu,
-        pt.none,
-        fac.neutral,
-        0,
-        ai_bhvr_hold,
-        0,
-        (3, -7),
-        [],
-    ),
+    
+    ####################################################################################################################
+    # _ZD_ - Locations
+    ####################################################################################################################
+    
+    ####################################################################################################################
+    # [ ZD01 ] - Training Grounds
+    # Enabling the last one allows you to replay the tutorial from the world map
+    ####################################################################################################################
+    
     (
         "training_ground_1",
         "Training Field",
-        icon.training_ground
-        | pf_hide_defenders
-        | pf_is_static
-        | pf_always_visible
-        | pf_label_medium,
+        icon.training_ground | pf_location,
         no_menu,
         pt.none,
         fac.neutral,
@@ -2965,11 +2901,7 @@ parties = [
     (
         "training_ground_2",
         "Training Field",
-        icon.training_ground
-        | pf_hide_defenders
-        | pf_is_static
-        | pf_always_visible
-        | pf_label_medium,
+        icon.training_ground | pf_location,
         no_menu,
         pt.none,
         fac.neutral,
@@ -2983,11 +2915,7 @@ parties = [
     (
         "training_ground_3",
         "Training Field",
-        icon.training_ground
-        | pf_hide_defenders
-        | pf_is_static
-        | pf_always_visible
-        | pf_label_medium,
+        icon.training_ground | pf_location,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3001,11 +2929,7 @@ parties = [
     (
         "training_ground_4",
         "Training Field",
-        icon.training_ground
-        | pf_hide_defenders
-        | pf_is_static
-        | pf_always_visible
-        | pf_label_medium,
+        icon.training_ground | pf_location,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3019,11 +2943,7 @@ parties = [
     (
         "training_ground_5",
         "Training Field",
-        icon.training_ground
-        | pf_hide_defenders
-        | pf_is_static
-        | pf_always_visible
-        | pf_label_medium,
+        icon.training_ground | pf_location,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3034,11 +2954,159 @@ parties = [
         [],
         100,
     ),
-    #  bridge_a
+    (
+        "tutorial_ground",
+        "Training Ground",
+        icon.training_ground | pf_disabled | pf_location,
+        no_menu,
+        pt.none,
+        fac.neutral,
+        0,
+        ai_bhvr_hold,
+        0,
+        (3, -7),
+        [],
+    ),
+    
+    ####################################################################################################################
+    # [ ZD02 ] - Ports
+    ####################################################################################################################
+    
+    (
+        "port_1",
+        "_",
+        icon.bridge_b | pf_village,
+        no_menu,
+        pt.none,
+        fac.neutral,
+        0,
+        ai_bhvr_hold,
+        0,
+        (-16.9, 83.8),
+        [],
+        -30,
+    ),
+    (
+        "port_2",
+        "_",
+        icon.bridge_b | pf_village,
+        no_menu,
+        pt.none,
+        fac.neutral,
+        0,
+        ai_bhvr_hold,
+        0,
+        (-54.1, 80.1),
+        [],
+        -20,
+    ),
+    (
+        "port_5",
+        "_",
+        icon.bridge_b | pf_village,
+        no_menu,
+        pt.none,
+        fac.neutral,
+        0,
+        ai_bhvr_hold,
+        0,
+        (-95.5, -79.5),
+        [],
+        80,
+    ),
+    (
+        "port_6",
+        "_",
+        icon.bridge_b | pf_village,
+        no_menu,
+        pt.none,
+        fac.neutral,
+        0,
+        ai_bhvr_hold,
+        0,
+        (-96.7, 29.0),
+        [],
+        15,
+    ),
+    (
+        "port_12",
+        "_",
+        icon.bridge_b | pf_village,
+        no_menu,
+        pt.none,
+        fac.neutral,
+        0,
+        ai_bhvr_hold,
+        0,
+        (-0.4, 106.4),
+        [],
+        10,
+    ),
+    (
+        "port_13",
+        "_",
+        icon.bridge_b | pf_village,
+        no_menu,
+        pt.none,
+        fac.neutral,
+        0,
+        ai_bhvr_hold,
+        0,
+        (65.5, 118.2),
+        [],
+        -10,
+    ),
+    (
+        "port_15",
+        "_",
+        icon.bridge_b | pf_village,
+        no_menu,
+        pt.none,
+        fac.neutral,
+        0,
+        ai_bhvr_hold,
+        0,
+        (-133.7, -53.0),
+        [],
+        90,
+    ),
+    (
+        "port_19",
+        "_",
+        icon.bridge_b | pf_village,
+        no_menu,
+        pt.none,
+        fac.neutral,
+        0,
+        ai_bhvr_hold,
+        0,
+        (7.7, -107.8),
+        [],
+        105,
+    ),
+    (
+        "landed_ship",
+        "Landed Ship",
+        icon.ship_on_land | pf_village | pf_disabled,
+        no_menu,
+        pt.none,
+        fac.neutral,
+        0,
+        ai_bhvr_hold,
+        0,
+        (0, 0),
+        [],
+        0,
+    ),
+    
+    ####################################################################################################################
+    # [ ZD03 ] - Bridges
+    ####################################################################################################################
+    
     (
         "bridge_1",
         "{!}1",
-        icon.bridge_snow_a | pf_is_static | pf_always_visible | pf_no_label,
+        icon.bridge_snow_a | pf_landmark,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3052,7 +3120,7 @@ parties = [
     (
         "bridge_2",
         "{!}2",
-        icon.bridge_snow_a | pf_is_static | pf_always_visible | pf_no_label,
+        icon.bridge_snow_a | pf_landmark,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3066,7 +3134,7 @@ parties = [
     (
         "bridge_3",
         "{!}3",
-        icon.bridge_snow_a | pf_is_static | pf_always_visible | pf_no_label,
+        icon.bridge_snow_a | pf_landmark,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3080,7 +3148,7 @@ parties = [
     (
         "bridge_4",
         "{!}4",
-        icon.bridge_snow_a | pf_is_static | pf_always_visible | pf_no_label,
+        icon.bridge_snow_a | pf_landmark,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3094,7 +3162,7 @@ parties = [
     (
         "bridge_5",
         "{!}5",
-        icon.bridge_snow_a | pf_is_static | pf_always_visible | pf_no_label,
+        icon.bridge_snow_a | pf_landmark,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3108,7 +3176,7 @@ parties = [
     (
         "bridge_6",
         "{!}6",
-        icon.bridge_b | pf_is_static | pf_always_visible | pf_no_label,
+        icon.bridge_b | pf_landmark,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3122,7 +3190,7 @@ parties = [
     (
         "bridge_7",
         "{!}7",
-        icon.bridge_b | pf_is_static | pf_always_visible | pf_no_label,
+        icon.bridge_b | pf_landmark,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3136,7 +3204,7 @@ parties = [
     (
         "bridge_8",
         "{!}8",
-        icon.bridge_b | pf_is_static | pf_always_visible | pf_no_label,
+        icon.bridge_b | pf_landmark,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3150,7 +3218,7 @@ parties = [
     (
         "bridge_9",
         "{!}9",
-        icon.bridge_b | pf_is_static | pf_always_visible | pf_no_label,
+        icon.bridge_b | pf_landmark,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3164,7 +3232,7 @@ parties = [
     (
         "bridge_10",
         "{!}10",
-        icon.bridge_b | pf_is_static | pf_always_visible | pf_no_label,
+        icon.bridge_b | pf_landmark,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3178,7 +3246,7 @@ parties = [
     (
         "bridge_11",
         "{!}11",
-        icon.bridge_a | pf_is_static | pf_always_visible | pf_no_label,
+        icon.bridge_a | pf_landmark,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3192,7 +3260,7 @@ parties = [
     (
         "bridge_12",
         "{!}12",
-        icon.bridge_a | pf_is_static | pf_always_visible | pf_no_label,
+        icon.bridge_a | pf_landmark,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3206,7 +3274,7 @@ parties = [
     (
         "bridge_13",
         "{!}13",
-        icon.bridge_a | pf_is_static | pf_always_visible | pf_no_label,
+        icon.bridge_a | pf_landmark,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3220,7 +3288,7 @@ parties = [
     (
         "bridge_14",
         "{!}14",
-        icon.bridge_a | pf_is_static | pf_always_visible | pf_no_label,
+        icon.bridge_a | pf_landmark,
         no_menu,
         pt.none,
         fac.neutral,
@@ -3231,21 +3299,13 @@ parties = [
         [],
         66.6,
     ),
+    
+    ####################################################################################################################
+    # _ZE_ - Bandit Spawn Points
+    ####################################################################################################################
+    
     (
-        "looter_spawn_point",
-        "{!}looter_sp",
-        pf_disabled | pf_is_static,
-        no_menu,
-        pt.none,
-        fac.outlaws,
-        0,
-        ai_bhvr_hold,
-        0,
-        (26, 77),
-        [(trp.looter, 15, 0)],
-    ),
-    (
-        "steppe_bandit_spawn_point",
+        "steppe_bandit_spawn_point_1",
         "the steppes",
         pf_disabled | pf_is_static,
         no_menu,
@@ -3254,11 +3314,24 @@ parties = [
         0,
         ai_bhvr_hold,
         0,
-        (125, 9),
+        (109, -15),
         [(trp.looter, 15, 0)],
     ),
     (
-        "taiga_bandit_spawn_point",
+        "steppe_bandit_spawn_point_2",
+        "the steppes",
+        pf_disabled | pf_is_static,
+        no_menu,
+        pt.none,
+        fac.outlaws,
+        0,
+        ai_bhvr_hold,
+        0,
+        (152.5, 10.1),
+        [(trp.looter, 15, 0)],
+    ),
+    (
+        "taiga_bandit_spawn_point_1",
         "the tundra",
         pf_disabled | pf_is_static,
         no_menu,
@@ -3267,12 +3340,24 @@ parties = [
         0,
         ai_bhvr_hold,
         0,
-        (78, 84),
+        (84.3, 44.5),
         [(trp.looter, 15, 0)],
     ),
-    ##  ("black_khergit_spawn_point"  ,"black_khergit_sp",pf_disabled|pf_is_static, no_menu, pt.none, fac.outlaws,0,ai_bhvr_hold,0,(47.1, -73.3),[(trp.looter,15,0)]),
     (
-        "forest_bandit_spawn_point",
+        "taiga_bandit_spawn_point_2",
+        "the tundra",
+        pf_disabled | pf_is_static,
+        no_menu,
+        pt.none,
+        fac.outlaws,
+        0,
+        ai_bhvr_hold,
+        0,
+        (87.5, 85.4),
+        [(trp.looter, 15, 0)],
+    ),
+    (
+        "forest_bandit_spawn_point_1",
         "the forests",
         pf_disabled | pf_is_static,
         no_menu,
@@ -3285,7 +3370,20 @@ parties = [
         [(trp.looter, 15, 0)],
     ),
     (
-        "mountain_bandit_spawn_point",
+        "forest_bandit_spawn_point_2",
+        "the forests",
+        pf_disabled | pf_is_static,
+        no_menu,
+        pt.none,
+        fac.outlaws,
+        0,
+        ai_bhvr_hold,
+        0,
+        (-121.6, 20.4),
+        [(trp.looter, 15, 0)],
+    ),
+    (
+        "mountain_bandit_spawn_point_1",
         "the highlands",
         pf_disabled | pf_is_static,
         no_menu,
@@ -3295,6 +3393,19 @@ parties = [
         ai_bhvr_hold,
         0,
         (-90, -26.8),
+        [(trp.looter, 15, 0)],
+    ),
+    (
+        "mountain_bandit_spawn_point_2",
+        "the highlands",
+        pf_disabled | pf_is_static,
+        no_menu,
+        pt.none,
+        fac.outlaws,
+        0,
+        ai_bhvr_hold,
+        0,
+        (-54, -89),
         [(trp.looter, 15, 0)],
     ),
     (
@@ -3324,7 +3435,7 @@ parties = [
         [(trp.looter, 15, 0)],
     ),
     (
-        "desert_bandit_spawn_point",
+        "desert_bandit_spawn_point_1",
         "the deserts",
         pf_disabled | pf_is_static,
         no_menu,
@@ -3333,10 +3444,22 @@ parties = [
         0,
         ai_bhvr_hold,
         0,
-        (110, -100),
+        (125, -105),
         [(trp.looter, 15, 0)],
     ),
-    # add extra towns before this point
+    (
+        "desert_bandit_spawn_point_2",
+        "the deserts",
+        pf_disabled | pf_is_static,
+        no_menu,
+        pt.none,
+        fac.outlaws,
+        0,
+        ai_bhvr_hold,
+        0,
+        (66, -116),
+        [(trp.looter, 15, 0)],
+    ),
     (
         "spawn_points_end",
         "{!}last_spawn_point",
@@ -3350,7 +3473,12 @@ parties = [
         (0.0, 0),
         [(trp.looter, 15, 0)],
     ),
-    # Used by Warband ARray Processing
+    
+    ####################################################################################################################
+    # _ZF_ - WARP Helpers
+    # Used by Warband ARray Processing.
+    ####################################################################################################################
+    
     (
         "warp_output",
         "{!}WARP_output_array",
@@ -3377,10 +3505,15 @@ parties = [
         (0.0, 0),
         [],
     ),
+    
+    ####################################################################################################################
+    # _ZG_ - Reserved Parties
     # The reserved slots may be useful for maintaining savegame compatibility, since dynamic parties get IDs starting at the end of this file
+    ####################################################################################################################
+    
     (
         "reserved_1",
-        "{!}last_spawn_point",
+        "{!}reserved",
         pf_disabled | pf_is_static,
         no_menu,
         pt.none,
@@ -3393,7 +3526,7 @@ parties = [
     ),
     (
         "reserved_2",
-        "{!}last_spawn_point",
+        "{!}reserved",
         pf_disabled | pf_is_static,
         no_menu,
         pt.none,
@@ -3406,7 +3539,7 @@ parties = [
     ),
     (
         "reserved_3",
-        "{!}last_spawn_point",
+        "{!}reserved",
         pf_disabled | pf_is_static,
         no_menu,
         pt.none,
@@ -3419,7 +3552,7 @@ parties = [
     ),
     (
         "reserved_4",
-        "{!}last_spawn_point",
+        "{!}reserved",
         pf_disabled | pf_is_static,
         no_menu,
         pt.none,
@@ -3432,7 +3565,7 @@ parties = [
     ),
     (
         "reserved_5",
-        "{!}last_spawn_point",
+        "{!}reserved",
         pf_disabled | pf_is_static,
         no_menu,
         pt.none,

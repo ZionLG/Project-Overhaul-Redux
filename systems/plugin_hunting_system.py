@@ -472,16 +472,6 @@ injection = {
     "wild_animals_food_bonus": [
         (item_set_slot, itm.deer_meat, slot_item_food_bonus, 10),
     ],
-    "spawn_wild_animals": [
-        (try_begin),
-          (store_num_parties_of_template, l.num_parties, pt.deer_herd),
-          (lt, l.num_parties, 6),
-          (store_random, l.spawn_point, num_mountain_bandit_spawn_points),
-          (val_add, l.spawn_point, p.forest_bandit_spawn_point),
-          (set_spawn_radius, 25),
-          (spawn_around_party, l.spawn_point, pt.deer_herd),
-        (try_end),
-    ],
     "wild_animal_food": [
         (neq, l.cur_goods, itm.deer_meat),
     ],
@@ -489,3 +479,8 @@ injection = {
         (this_or_next | eq, ":item_id", "itm_deer_meat"),
     ],
 }
+
+# Future Plans
+# 1. Implement a mapping system for animal presence, instead of parties, have an "animal map" that shows the locations of different animal species, some areas can be marked as "animal hotspots"
+# 2. to start hunting, players need to go to the camp menu and select the "Hunt" option
+# 3. the party will start to search for animals in the selected area while in camp mode, the time to find animals will depend on the area and the player's tracking skill

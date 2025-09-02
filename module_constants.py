@@ -40,7 +40,7 @@ slot_item_primary_raw_material    		= 50
 slot_item_is_raw_material_only_for      = 51
 slot_item_input_number                  = 52 #ie, how many items of inputs consumed per run
 slot_item_base_price                    = 53 #taken from module_items
-#slot_item_production_site			    = 54 #a string replaced with function - Armagan
+
 slot_item_output_per_run                = 55 #number of items produced per run
 slot_item_overhead_per_run              = 56 #labor and overhead per run
 slot_item_secondary_raw_material        = 57 #in this case, the amount used is only one
@@ -64,11 +64,8 @@ slot_agent_spawn_entry_point      = 8
 slot_agent_target_prop_instance   = 9
 slot_agent_map_overlay_id         = 10
 slot_agent_target_entry_point     = 11
-slot_agent_initial_ally_power     = 12
-slot_agent_initial_enemy_power    = 13
-slot_agent_enemy_threat           = 14
-slot_agent_is_running_away        = 15
-slot_agent_courage_score          = 16
+slot_agent_is_running_away        = 12
+
 slot_agent_is_respawn_as_bot      = 17
 slot_agent_cur_animation          = 18
 slot_agent_next_action_time       = 19
@@ -84,10 +81,9 @@ slot_agent_bought_horse           = 26 # Equipment cost fix
 ########################################################
 slot_faction_ai_state                   = 4
 slot_faction_ai_object                  = 5
-slot_faction_ai_rationale               = 6 #Currently unused, can be linked to strings generated from decision checklists
-
 
 slot_faction_marshall                   = 8
+slot_faction_marshal = slot_faction_marshall
 slot_faction_ai_offensive_max_followers = 9
 
 slot_faction_culture                    = 10
@@ -95,7 +91,6 @@ slot_faction_leader                     = 11
 
 slot_faction_temp_slot                  = 12
 
-##slot_faction_vassal_of            = 11
 slot_faction_banner                     = 15
 
 slot_faction_number_of_parties    = 20
@@ -121,7 +116,7 @@ slot_faction_tier_3_troop         = 43
 slot_faction_tier_4_troop         = 44
 slot_faction_tier_5_troop         = 45
 
-#slot_faction_deserter_troop       = 48
+slot_faction_bandit_troop         = 48
 slot_faction_guard_troop          = 49
 slot_faction_messenger_troop      = 50
 slot_faction_prison_guard_troop   = 51
@@ -135,22 +130,10 @@ slot_faction_town_spy_male_troop         = 57
 slot_faction_town_spy_female_troop       = 58
 
 slot_faction_has_rebellion_chance = 60
-
 slot_faction_instability          = 61 #last time measured
 
 slot_faction_political_issue 							 = 64 #Center or marshal appointment
 slot_faction_political_issue_time 						 = 65 #Now is used
-
-
-#Rebellion changes
-#slot_faction_rebellion_target                     = 65
-#slot_faction_inactive_leader_location         = 66
-#slot_faction_support_base                     = 67
-#Rebellion changes
-
-
-
-#slot_faction_deserter_party_template       = 62
 
 slot_faction_reinforcements_a        = 77
 slot_faction_reinforcements_b        = 78
@@ -214,9 +197,8 @@ slot_party_retreat_flag        = 2
 slot_party_ignore_player_until = 3
 slot_party_ai_state            = 4
 slot_party_ai_object           = 5
-slot_party_ai_rationale        = 6 #Currently unused, but can be used to save a string explaining the lord's thinking
 
-#slot_town_belongs_to_kingdom   = 6
+slot_ship_captain              = 7
 slot_town_lord                 = 7
 slot_party_ai_substate         = 8
 slot_town_claimed_by_player    = 9
@@ -233,16 +215,26 @@ slot_town_alley         = 17
 slot_town_walls         = 18
 slot_center_culture     = 19
 
+slot_castle_exterior    = slot_town_center
+slot_castle_interior    = slot_town_castle
+slot_castle_prison      = slot_town_prison
+
+slot_village_center     = slot_town_center
+
 slot_town_tavernkeeper  = 20
 slot_town_weaponsmith   = 21
 slot_town_armorer       = 22
 slot_town_merchant      = 23
 slot_town_horse_merchant= 24
-slot_town_elder         = 25
+slot_town_mayor         = 25
+
+slot_village_elder      = slot_town_mayor
+
 slot_center_player_relation = 26
 
 slot_center_siege_with_belfry = 27
 slot_center_last_taken_by_troop = 28
+slot_center_chest_troop = 29
 
 # party will follow this party if set:
 slot_party_commander_party = 30 #default -1   #Deprecate
@@ -269,7 +261,6 @@ slot_center_accumulated_tariffs    = 48 #collected automatically by NPC lords
 slot_town_wealth        = 49 #total amount of accumulated wealth in the center, pays for the garrison
 slot_town_prosperity    = 50 #affects the amount of wealth generated
 
-
 slot_party_last_toll_paid_hours = 52
 slot_party_food_store           = 53 #used for sieges
 slot_center_is_besieged_by      = 54 #used for sieges
@@ -280,7 +271,6 @@ slot_party_nearby_friend_strength = 57
 slot_party_nearby_enemy_strength  = 58
 slot_party_follower_strength      = 59
 
-slot_town_reinforcement_party_template = 60
 slot_center_original_faction           = 61
 slot_center_ex_faction                 = 62
 
@@ -296,28 +286,12 @@ slot_party_last_in_home_center         = 69 #used for AI
 slot_party_leader_last_courted         = 70 #used for AI
 slot_party_last_in_any_center          = 71 #used for AI
 
-
-
-slot_castle_exterior    = slot_town_center
-
-#slot_town_rebellion_contact   = 76
-#trs_not_yet_approached  = 0
-#trs_approached_before   = 1
-#trs_approached_recently = 2
-
 argument_none         = 0
-argument_claim        = 1 #deprecate for legal
 argument_legal        = 1
-
-argument_ruler        = 2 #deprecate for commons
 argument_commons      = 2
-
-argument_benefit      = 3 #deprecate for reward
 argument_reward       = 3 
-
 argument_victory      = 4
 argument_lords        = 5
-argument_rivalries    = 6 #new - needs to be added
 
 slot_town_village_product = 76
 
@@ -348,7 +322,6 @@ slot_center_mercenary_troop_amount= 91
 slot_center_volunteer_troop_type  = 92
 slot_center_volunteer_troop_amount= 93
 
-#slot_center_companion_candidate   = 94
 slot_center_ransom_broker         = 95
 slot_center_tavern_traveler       = 96
 slot_center_traveler_info_faction = 97
@@ -368,6 +341,7 @@ slot_party_looted_item_3_modifier = 117
 slot_party_looted_item_4_modifier = 118
 slot_party_looted_item_5_modifier = 119
 
+slot_port_bound_center            = 120
 slot_village_bound_center         = 120
 slot_village_market_town          = 121
 slot_village_farmer_party         = 122
@@ -395,16 +369,10 @@ walled_center_improvements_end               = 136
 
 slot_center_player_enterprise     				  = 137 #noted with the item produced
 slot_center_player_enterprise_production_order    = 138
-slot_center_player_enterprise_consumption_order   = 139 #not used
-slot_center_player_enterprise_days_until_complete = 139 #Used instead
-
-slot_center_player_enterprise_balance             = 140 #not used
-slot_center_player_enterprise_input_price         = 141 #not used
-slot_center_player_enterprise_output_price        = 142 #not used
+slot_center_player_enterprise_days_until_complete = 139
 
 
-
-slot_center_has_bandits                        = 155
+slot_center_has_bandits                        = 158
 slot_center_faction_when_oath_renounced        = 159
 
 slot_center_walker_0_troop                   = 160
@@ -460,17 +428,15 @@ slot_town_trade_routes_end = slot_town_trade_route_15 + 1
 
 
 num_trade_goods = itm.siege_supply - itm.spice
-slot_town_trade_good_productions_begin       = 500 #a harmless number, until it can be deprecated
 
 #These affect production but in some cases also demand, so it is perhaps easier to itemize them than to have separate 
-
 slot_village_number_of_cattle   = 205
 slot_center_head_cattle         = 205 #dried meat, cheese, hides, butter
 slot_center_head_sheep			= 206 #sausages, wool
 slot_center_head_horses		 	= 207 #horses can be a trade item used in tracking but which are never offered for sale
 
 slot_center_acres_pasture       = 208 #pasture area for grazing of cattles and sheeps, if this value is high then number of cattles and sheeps increase faster
-slot_production_sources_begin = 209
+slot_production_sources_begin   = 209
 slot_center_acres_grain			= 209 #grain
 slot_center_acres_olives        = 210 #olives
 slot_center_acres_vineyard		= 211 #fruit
@@ -499,21 +465,18 @@ slot_center_wool_looms          = 227 #wool cloth
 slot_center_pottery_kilns		= 228 #pottery
 slot_center_smithies			= 229 #tools
 slot_center_tanneries			= 230 #leatherwork
-slot_center_shipyards			= 231 #naval stores - uses timber, pitch, and linen
+slot_center_spice_farms			= 231 #spice
 
 slot_center_household_gardens   = 232 #cabbages
-slot_production_sources_end = 233
+slot_production_sources_end     = 233
 
 #all spice comes overland to Tulga
 #all dyes come by sea to Jelkala
 
 #chicken and pork are perishable and non-tradeable, and based on grain production
-#timber and pitch if we ever have a shipbuilding industry
-#limestone and timber for mortar, if we allow building
 
 slot_town_last_nearby_fire_time                         = 240
 
-#slot_town_trade_good_prices_begin            = slot_town_trade_good_productions_begin + num_trade_goods + 1
 slot_party_following_orders_of_troop        = 244
 slot_party_orders_type				        = 245
 slot_party_orders_object				    = 246
@@ -524,35 +487,22 @@ slot_party_under_player_suggestion			= 249 #move this up a bit
 slot_town_trade_good_prices_begin 			= 250
 
 slot_center_last_reconnoitered_by_faction_time 				= 350
-#slot_center_last_reconnoitered_by_faction_cached_strength 	= 360
-#slot_center_last_reconnoitered_by_faction_friend_strength 	= 370
-
-
 
 
 #slot_party_type values
-##spt_caravan            = 1
 spt_castle             = 2
 spt_town               = 3
 spt_village            = 4
-##spt_forager            = 5
-##spt_war_party          = 6
-##spt_patrol             = 7
-##spt_messenger          = 8
-##spt_raider             = 9
-##spt_scout              = 10
-spt_kingdom_caravan    = 11
-##spt_prisoner_train     = 12
-spt_kingdom_hero_party = 13
-##spt_merchant_caravan   = 14
-spt_village_farmer     = 15
-spt_ship               = 16
-spt_cattle_herd        = 17
-spt_bandit_lair       = 18
-#spt_deserter           = 20
+spt_bandit_lair        = 9
 
-kingdom_party_types_begin = spt_kingdom_caravan
-kingdom_party_types_end = spt_kingdom_hero_party + 1
+spt_kingdom_hero_party = 10
+spt_kingdom_caravan    = 11
+spt_village_farmer     = 12
+spt_cattle_herd        = 13
+
+spt_ship_land		   = 20
+spt_port               = 21
+
 
 #slot_faction_state values
 sfs_active                     = 0
@@ -573,26 +523,21 @@ sfai_feast             		 		 = 6 #can be feast, wedding, or major tournament
 #Social events are a generic aristocratic gathering. Tournaments take place if they are in a town, and hunts take place if they are at a castle.
 #Weddings will take place at social events between betrothed couples if they have been engaged for at least a month, if the lady's guardian is the town lord, and if both bride and groom are present
 
-
-#Rebellion system changes begin
-sfai_nascent_rebellion          = 7
-#Rebellion system changes end
-
 #slot_party_ai_state values
 spai_undefined                  = -1
 spai_besieging_center           = 1
 spai_patrolling_around_center   = 4
 spai_raiding_around_center      = 5
-##spai_raiding_village            = 6
+
 spai_holding_center             = 7
-##spai_helping_town_against_siege = 9
+
 spai_engaging_army              = 10
 spai_accompanying_army          = 11
 spai_screening_army             = 12
 spai_trading_with_town          = 13
 spai_retreating_to_center       = 14
-##spai_trading_within_kingdom     = 15
-spai_visiting_village           = 16 #same thing, I think. Recruiting differs from holding because NPC parties don't actually enter villages
+
+spai_visiting_village           = 16
 
 #slot_village_state values
 svs_normal                      = 0
@@ -617,67 +562,38 @@ slot_scene_belfry_props_begin    = 10
 
 
 ########################################################
-##  TROOP SLOTS            #############################
+##  HERO TROOP SLOTS            #############################
 ########################################################
-#slot_troop_role         = 0  # 10=Kingdom Lord
 
-slot_troop_occupation          = 2  # 0 = free, 1 = merchant
-#slot_troop_duty               = 3  # Kingdom duty, 0 = free
-#slot_troop_homage_type         = 45
-#homage_mercenary =             = 1 #Player is on a temporary contract
-#homage_official =              = 2 #Player has a royal appointment
-#homage_feudal   =              = 3 #
-
-
+slot_troop_occupation          = 2 # 0 = free, 1 = merchant
 slot_troop_state               = 3  
 slot_troop_last_talk_time      = 4
-slot_troop_met                 = 5 #i also use this for the courtship state -- may become cumbersome
-slot_troop_courtship_state     = 5 #2 professed admiration, 3 agreed to seek a marriage, 4 ended relationship
-
+slot_troop_met                 = 5 # 0 = not met, 1 = met
+slot_troop_courtship_state     = 5 # 2 = professed admiration, 3 = agreed to seek a marriage, 4 = ended relationship
 slot_troop_party_template      = 6
-#slot_troop_kingdom_rank        = 7
-
 slot_troop_renown              = 7
-
-##slot_troop_is_prisoner         = 8  # important for heroes only
 slot_troop_prisoner_of_party   = 8  # important for heroes only
-#slot_troop_is_player_companion = 9  # important for heroes only:::USE  slot_troop_occupation = slto_player_companion
-
 slot_troop_present_at_event    = 9
-
 slot_troop_leaded_party         = 10 # important for kingdom heroes only
 slot_troop_wealth               = 11 # important for kingdom heroes only
 slot_troop_cur_center           = 12 # important for royal family members only (non-kingdom heroes)
-
 slot_troop_banner_scene_prop    = 13 # important for kingdom heroes and player only
-
 slot_troop_original_faction     = 14 # for pretenders
-#slot_troop_loyalty              = 15 #deprecated - this is now derived from other figures
-slot_troop_player_order_state   = 16 #Deprecated
-slot_troop_player_order_object  = 17 #Deprecated
+slot_troop_home_port            = 14 # for boat captains
 
-#troop_player order state are all deprecated in favor of party_order_state. This has two reasons -- 1) to reset AI if the party is eliminated, and 2) to allow the player at a later date to give orders to leaderless parties, if we want that
-
-
-#Post 0907 changes begin
 slot_troop_age                 =  18
 slot_troop_age_appearance      =  19
-
-#Post 0907 changes end
 
 slot_troop_does_not_give_quest = 20
 slot_troop_player_debt         = 21
 slot_troop_player_relation     = 22
-#slot_troop_player_favor        = 23
+
 slot_troop_last_quest          = 24
 slot_troop_last_quest_betrayed = 25
 slot_troop_last_persuasion_time= 26
 slot_troop_last_comment_time   = 27
 slot_troop_spawned_before      = 28
-
-#Post 0907 changes begin
 slot_troop_last_comment_slot   = 29
-#Post 0907 changes end
 
 slot_troop_spouse              = 30
 slot_troop_father              = 31
@@ -685,9 +601,6 @@ slot_troop_mother              = 32
 slot_troop_guardian            = 33 #Usually siblings are identified by a common parent.This is used for brothers if the father is not an active npc. At some point we might introduce geneologies
 slot_troop_betrothed           = 34 #Obviously superseded once slot_troop_spouse is filled
 #other relations are derived from one's parents 
-#slot_troop_daughter            = 33
-#slot_troop_son                 = 34
-#slot_troop_sibling             = 35
 slot_troop_love_interest_1     = 35 #each unmarried lord has three love interests
 slot_troop_love_interest_2     = 36
 slot_troop_love_interest_3     = 37
@@ -697,8 +610,8 @@ slot_troop_love_interests_end  = 38
 slot_lady_no_messages          				= 37
 slot_lady_last_suitor          				= 38
 slot_lord_granted_courtship_permission      = 38
-
 slot_troop_betrothal_time                   = 39 #used in scheduling the wedding
+slot_lady_used_tournament					= 40
 
 slot_troop_trainer_met                       = 30
 slot_troop_trainer_waiting_for_result        = 31
@@ -709,38 +622,25 @@ slot_troop_trainer_opponent_troop            = 35
 slot_troop_trainer_training_difficulty       = 36
 slot_troop_trainer_training_fight_won        = 37
 
-
-slot_lady_used_tournament					= 40
-
+slot_troop_merchant_repairs_item             = 30
+slot_troop_merchant_repairs_done             = 31
 
 slot_troop_current_rumor       = 45
 slot_troop_temp_slot           = 46
 slot_troop_promised_fief       = 47
 
-slot_troop_set_decision_seed       = 48 #Does not change
 slot_troop_temp_decision_seed      = 49 #Resets at recalculate_ai
 slot_troop_recruitment_random      = 50 #used in a number of different places in the intrigue procedures to overcome intermediate hurdles, although not for the final calculation, might be replaced at some point by the global decision seed
 #Decision seeds can be used so that some randomness can be added to NPC decisions, without allowing the player to spam the NPC with suggestions
 #The temp decision seed is reset 24 to 48 hours after the NPC last spoke to the player, while the set seed only changes in special occasions
 #The single seed is used with varying modula to give high/low outcomes on different issues, without using a separate slot for each issue
-
-slot_troop_intrigue_impatience = 51
-#recruitment changes end
-
-#slot_troop_honorable          = 50
-#slot_troop_merciful          = 51
+slot_troop_intrigue_impatience        = 51
 slot_lord_reputation_type     		  = 52
 slot_lord_recruitment_argument        = 53 #the last argument proposed by the player to the lord
 slot_lord_recruitment_candidate       = 54 #the last candidate proposed by the player to the lord
-
 slot_troop_change_to_faction          = 55
 
-#slot_troop_readiness_to_join_army     = 57 #possibly deprecate
-#slot_troop_readiness_to_follow_orders = 58 #possibly deprecate
-
-# NPC-related constants
-
-#NPC companion changes begin
+# Companion-related constants
 slot_troop_first_encountered          = 59
 slot_troop_home                       = 60
 
@@ -763,29 +663,25 @@ slot_troop_2ary_morality_state = 65
 slot_troop_2ary_morality_value = 66
 
 slot_troop_town_with_contacts  = 67
-slot_troop_town_contact_type   = 68 #1 are nobles, 2 are commons
+slot_troop_town_contact_type   = 68 # 1 are nobles, 2 are commons
+slot_troop_morality_penalties =  69 # accumulated grievances from morality conflicts
 
-slot_troop_morality_penalties =  69 ### accumulated grievances from morality conflicts
-
-
-slot_troop_personalityclash_object     = 71
-#(0 - they have no problem, 1 - they have a problem)
-slot_troop_personalityclash_state    = 72 #1 = pclash_penalty_to_self, 2 = pclash_penalty_to_other, 3 = pclash_penalty_to_other,
+slot_troop_personalityclash_object   = 71 # 0 = they have no problem, 1 = they have a problem
+slot_troop_personalityclash_state    = 72 # 1 = pclash_penalty_to_self, 2 = pclash_penalty_to_other, 3 = pclash_penalty_to_other,
 pclash_penalty_to_self  = 1
 pclash_penalty_to_other = 2
 pclash_penalty_to_both  = 3
-#(a string)
+
 slot_troop_personalityclash2_object   = 73
 slot_troop_personalityclash2_state    = 74
 
-slot_troop_personalitymatch_object   =  75
-slot_troop_personalitymatch_state   =  76
-
-slot_troop_personalityclash_penalties = 77 ### accumulated grievances from personality clash
+slot_troop_personalitymatch_object    = 75
+slot_troop_personalitymatch_state     = 76
 slot_troop_personalityclash_penalties = 77 ### accumulated grievances from personality clash
 
 slot_troop_home_speech_delivered = 78 #only for companions
 slot_troop_discussed_rebellion   = 78 #only for pretenders
+
 slot_troop_fights_in_tournaments = 79 #only in player party
 
 #courtship slots
@@ -794,8 +690,6 @@ slot_lady_courtship_allegoric_recited 	= 75
 slot_lady_courtship_comic_recited 		= 76
 slot_lady_courtship_mystic_recited 		= 77
 slot_lady_courtship_tragic_recited 		= 78
-
-
 
 #NPC history slots
 slot_troop_met_previously        = 80
@@ -809,22 +703,6 @@ pp_history_indeterminate     = 4
 
 slot_troop_playerparty_history_string   = 83
 slot_troop_return_renown        = 84
-
-slot_troop_custom_banner_bg_color_1      = 85
-slot_troop_custom_banner_bg_color_2      = 86
-slot_troop_custom_banner_charge_color_1  = 87
-slot_troop_custom_banner_charge_color_2  = 88
-slot_troop_custom_banner_charge_color_3  = 89
-slot_troop_custom_banner_charge_color_4  = 90
-slot_troop_custom_banner_bg_type         = 91
-slot_troop_custom_banner_charge_type_1   = 92
-slot_troop_custom_banner_charge_type_2   = 93
-slot_troop_custom_banner_charge_type_3   = 94
-slot_troop_custom_banner_charge_type_4   = 95
-slot_troop_custom_banner_flag_type       = 96
-slot_troop_custom_banner_num_charges     = 97
-slot_troop_custom_banner_positioning     = 98
-slot_troop_custom_banner_map_flag_type   = 99
 
 #conversation strings -- must be in this order!
 slot_troop_intro 						= 101
@@ -840,8 +718,8 @@ slot_troop_signup   					= 110
 slot_troop_signup_2 					= 111
 slot_troop_signup_response_1 			= 112
 slot_troop_signup_response_2 			= 113
-slot_troop_mentions_payment 			= 114 #Not actually used
-slot_troop_payment_response 			= 115 #Not actually used
+slot_troop_mentions_payment 			= 114 # Not used
+slot_troop_payment_response 			= 115 # Not used
 slot_troop_morality_speech   			= 116
 slot_troop_2ary_morality_speech 		= 117
 slot_troop_personalityclash_speech 		= 118
@@ -871,9 +749,6 @@ slot_troop_turn_against_string	        = 140
 slot_troop_strings_end 					= 141
 
 slot_troop_payment_request 				= 141
-
-#141, support base removed, slot now available
-
 slot_troop_kingsupport_state			= 142
 slot_troop_kingsupport_argument			= 143
 slot_troop_kingsupport_opponent			= 144
@@ -925,13 +800,22 @@ tro_failed_to_support_colleague            = 2
 
 slot_troop_will_join_prison_break      = 161
 
-
 troop_slots_reserved_for_relations_start        = 165 #this is based on id_troops, and might change
 
-slot_troop_relations_begin				= 0 #this creates an array for relations between troops
+slot_troop_relations_begin				= 0 #this creates an array for relations between troops; use this to specify an offset
 											#Right now, lords start at 165 and run to around 290, including pretenders
-											
-											
+### Troop occupations slot_troop_occupation
+slto_inactive           = 0 #for companions at the beginning of the game
+
+slto_kingdom_hero       = 2
+slto_inactive_pretender = 3
+slto_retirement         = 4
+slto_player_companion   = 5 #This is specifically for companions in the employ of the player -- ie, in the party, or on a mission
+slto_kingdom_lady       = 6 #Usually inactive (Calradia is a traditional place). However, can be made potentially active if active_npcs are expanded to include ladies
+
+stl_unassigned          = -1
+stl_reserved_for_player = -2
+stl_rejected_by_player  = -3
 											
 ########################################################
 ##  PLAYER SLOTS           #############################
@@ -977,10 +861,17 @@ cb2_apprentice = 1
 cb2_urchin  = 2
 cb2_steppe_child = 3
 cb2_merchants_helper = 4
+cb2_mummer = 5
+cb2_courtier = 6
+cb2_noble = 7
+cb2_acolyte = 8
 
+cb3_bravo = 1
+cb3_merc = 2
 cb3_poacher = 3
 cb3_craftsman = 4
 cb3_peddler = 5
+cb3_preacher = 6
 cb3_troubadour = 7
 cb3_squire = 8
 cb3_lady_in_waiting = 9
@@ -989,37 +880,21 @@ cb3_student = 10
 cb4_revenge = 1
 cb4_loss    = 2
 cb4_wanderlust =  3
+cb4_fervor =  4
 cb4_disown  = 5
 cb4_greed  = 6
 
-#NPC system changes end
-#Encounter types
-enctype_fighting_against_village_raid = 1
-enctype_catched_during_village_raid   = 2
+########################################################
+##  TEAM SLOTS             #############################
+########################################################
 
 
-### Troop occupations slot_troop_occupation
-##slto_merchant           = 1
-slto_inactive           = 0 #for companions at the beginning of the game
-
-slto_kingdom_hero       = 2
-
-slto_player_companion   = 5 #This is specifically for companions in the employ of the player -- ie, in the party, or on a mission
-slto_kingdom_lady       = 6 #Usually inactive (Calradia is a traditional place). However, can be made potentially active if active_npcs are expanded to include ladies
-slto_kingdom_seneschal  = 7
-slto_robber_knight      = 8
-slto_inactive_pretender = 9
-
-
-stl_unassigned          = -1
-stl_reserved_for_player = -2
-stl_rejected_by_player  = -3
-
-#NPC changes begin
-slto_retirement      = 11
-#slto_retirement_medium    = 12
-#slto_retirement_short     = 13
-#NPC changes end
+# Singleplayer
+# For the simplifed morale system:
+slot_team_relation_to_player			= 0
+slot_team_fighting_strength				= 1
+slot_team_routing_strength				= 2
+slot_team_defeated_strength				= 3
 
 ########################################################
 ##  QUEST SLOTS            #############################
@@ -1029,7 +904,7 @@ slot_quest_target_center            = 1
 slot_quest_target_troop             = 2
 slot_quest_target_faction           = 3
 slot_quest_object_troop             = 4
-##slot_quest_target_troop_is_prisoner = 5
+
 slot_quest_giver_troop              = 6
 slot_quest_object_center            = 7
 slot_quest_target_party             = 8
@@ -1059,15 +934,12 @@ slot_quest_temp_slot      			= 27
 ##  PARTY TEMPLATE SLOTS   #############################
 ########################################################
 
-# Ryan BEGIN
-slot_party_template_num_killed   = 1
+slot_party_template_num_killed             = 1
 
-slot_party_template_lair_type    	 	= 3
-slot_party_template_lair_party    		= 4
-slot_party_template_lair_spawnpoint     = 5
-
-
-# Ryan END
+slot_party_template_lair_type    	 	       = 3
+slot_party_template_lair_party    		     = 4
+slot_party_template_lair_spawnpoint_begin  = 5
+slot_party_template_lair_spawnpoint_end    = 6
 
 
 ########################################################
@@ -1082,10 +954,15 @@ scene_prop_belfry_platform_moved    = 5 #for belfries only
 scene_prop_slots_end                = 6
 
 ########################################################
+
+# Team Relations
 rel_enemy   = 0
 rel_neutral = 1
 rel_ally    = 2
 
+#Encounter types
+enctype_fighting_against_village_raid = 1
+enctype_catched_during_village_raid   = 2
 
 #Talk contexts
 tc_town_talk                  = 0
@@ -1112,17 +989,12 @@ tc_escape               	  = 19
 tc_give_center_to_fief        = 20
 tc_merchants_house            = 21
 
-
-#Troop Commentaries begin
 #Log entry types
-#civilian
 logent_village_raided            = 1
 logent_village_extorted          = 2
 logent_caravan_accosted          = 3 #in caravan accosted, center and troop object are -1, and the defender's faction is the object
 logent_traveller_attacked        = 3 #in traveller attacked, origin and destination are center and troop object, and the attacker's faction is the object
-
 logent_helped_peasants           = 4 
-
 logent_party_traded              = 5
 
 logent_castle_captured_by_player              = 10
@@ -1136,42 +1008,28 @@ logent_lord_helped_by_player                  = 17
 logent_player_participated_in_siege           = 18
 logent_player_participated_in_major_battle    = 19
 logent_castle_given_to_lord_by_player         = 20
-
-logent_pledged_allegiance          = 21
-logent_liege_grants_fief_to_vassal = 22
-
-
-logent_renounced_allegiance      = 23 
-
-logent_player_claims_throne_1    		               = 24
-logent_player_claims_throne_2    		               = 25
-
-
+logent_pledged_allegiance                     = 21
+logent_liege_grants_fief_to_vassal            = 22
+logent_renounced_allegiance                   = 23
+logent_player_claims_throne_1    		      = 24
+logent_player_claims_throne_2    		      = 25
 logent_troop_feels_cheated_by_troop_over_land		   = 26
 logent_ruler_intervenes_in_quarrel                     = 27
 logent_lords_quarrel_over_land                         = 28
 logent_lords_quarrel_over_insult                       = 29
 logent_marshal_vs_lord_quarrel                  	   = 30
 logent_lords_quarrel_over_woman                        = 31
-
 logent_lord_protests_marshall_appointment			   = 32
 logent_lord_blames_defeat						   	   = 33
-
 logent_player_suggestion_succeeded					   = 35
 logent_player_suggestion_failed					       = 36
-
 logent_liege_promises_fief_to_vassal				   = 37
-
 logent_lord_insults_lord_for_cowardice                 = 38
 logent_lord_insults_lord_for_rashness                  = 39
 logent_lord_insults_lord_for_abandonment               = 40
 logent_lord_insults_lord_for_indecision                = 41
 logent_lord_insults_lord_for_cruelty                   = 42
 logent_lord_insults_lord_for_dishonor                  = 43
-
-
-
-
 logent_game_start                           = 45 
 logent_poem_composed                        = 46 ##Not added
 logent_tournament_distinguished             = 47 ##Not added
@@ -1187,10 +1045,8 @@ logent_lady_marries_lord                    = 56
 logent_lady_elopes_with_lord                = 57
 logent_lady_rejected_by_suitor              = 58
 logent_lady_betrothed_to_suitor_by_pressure = 59 #mostly for gossip
-
 logent_lady_and_suitor_break_engagement		= 60
 logent_lady_marries_suitor				    = 61
-
 logent_lord_holds_lady_hostages             = 62
 logent_challenger_defeats_lord_in_duel      = 63
 logent_challenger_loses_to_lord_in_duel     = 64
@@ -1198,7 +1054,6 @@ logent_challenger_loses_to_lord_in_duel     = 64
 logent_player_stole_cattles_from_village    = 66
 
 logent_party_spots_wanted_bandits           = 70
-
 
 logent_border_incident_cattle_stolen          = 72 #possibly add this to rumors for non-player faction
 logent_border_incident_bride_abducted         = 73 #possibly add this to rumors for non-player faction
@@ -1208,8 +1063,7 @@ logent_border_incident_subjects_mistreated    = 75 #possibly add this to rumors 
 #These supplement caravans accosted and villages burnt, in that they create a provocation. So far, they only refer to the player
 logent_border_incident_troop_attacks_neutral  = 76
 logent_border_incident_troop_breaks_truce     = 77
-logent_border_incident_troop_suborns_lord   = 78
-
+logent_border_incident_troop_suborns_lord     = 78
 
 logent_policy_ruler_attacks_without_provocation 			= 80
 logent_policy_ruler_ignores_provocation         			= 81 #possibly add this to rumors for non-player factions
@@ -1226,10 +1080,6 @@ logent_faction_declares_war_to_curb_power					= 93
 logent_faction_declares_war_to_respond_to_provocation	    = 94
 logent_war_declaration_types_end							= 95
 
-
-#logent_lady_breaks_betrothal_with_lord      = 58
-#logent_lady_betrothal_broken_by_lord        = 59
-
 #lord reputation type, for commentaries
 #"Martial" will be twice as common as the other types
 lrep_none           = 0 
@@ -1241,9 +1091,10 @@ lrep_debauched      = 5 #spiteful, amoral, sadistic - eg Caligula, Tuchman's Cha
 lrep_goodnatured    = 6 #chivalrous, benevolent, perhaps a little too decent to be a good warlord - eg Hussein ibn Ali. Few well-known historical examples maybe. because many lack the drive to rise to faction leadership. Ranjit Singh has aspects
 lrep_upstanding     = 7 #moralizing, benevolent, pragmatic, - eg Bernard Cornwell's Alfred, Charlemagne, Salah al-Din, Sher Shah Suri
 
-lrep_roguish        = 8 #used for commons, specifically ex-companions. Tries to live life as a lord to the full
-lrep_benefactor     = 9 #used for commons, specifically ex-companions. Tries to improve lot of folks on land
-lrep_custodian      = 10 #used for commons, specifically ex-companions. Tries to maximize fief's earning potential
+#commoner reputation type, for some (ex-)companions
+lrep_roguish        = 8   # Tries to live life as a lord to the full
+lrep_benefactor     = 9   # Tries to improve lot of folks on land
+lrep_custodian      = 10  # Tries to maximize fief's earning potential
 
 #lreps specific to dependent noblewomen
 lrep_conventional    = 21 #Charlotte York in SATC seasons 1-2, probably most medieval aristocrats
@@ -1269,15 +1120,6 @@ courtship_poem_comic       = 3 #Emphasis on witty repartee -- Contrasto (Sicilia
 courtship_poem_mystic      = 4 #Sufi poetry. Song of Songs
 courtship_poem_allegoric   = 5 #Idealizes woman as a civilizing force -- the Romance of the Rose, Siege of the Castle of Love
 
-#courtship gifts currently deprecated
-
-
-
-
-
-
-
-#Troop Commentaries end
 
 tutorial_fighters_begin = "trp_tutorial_fighter_1"
 tutorial_fighters_end   = "trp_tutorial_archer_1"
@@ -1290,24 +1132,23 @@ walkert_spy                = 3
 num_town_walkers = 8
 town_walker_entries_start = 32
 
-reinforcement_cost_easy = 600
+reinforcement_cost_easy     = 600
 reinforcement_cost_moderate = 450
-reinforcement_cost_hard = 300
-
+reinforcement_cost_hard     = 300
 
 max_bandit_parties_easy     = 16 # Was 14 at mount&blade, 18 in warband, 16 last decision
 max_bandit_parties_moderate = 24 # Bandits are more spread out now, so we might need a few more
 max_bandit_parties_hard     = 32 # If you play on hard, I assume you like a challenge...
 max_looter_parties = 42 # Was 33 at mount&blade, 50 in warband, 42 last decision; does not scale with difficulty, looters are basically XP on legs
 
-
-merchant_toll_duration        = 72 #Tolls are valid for 72 hours
-
+bandit_spawn_radius = 25
+deserter_spawn_radius = 4
+merchant_toll_duration = 72 # Tolls are valid for 72 hours
 hero_escape_after_defeat_chance = 70
-
-
 raid_distance = 4
+fire_duration = 4 #fires takes 4 hours
 num_tournament_rounds = 6 # -> 64 participants
+ship_charter_cost = 100 # per day
 
 surnames_begin = "str_surname_1"
 surnames_end = "str_surnames_end"
@@ -1328,13 +1169,12 @@ npc_kingdoms_begin = "fac_kingdom_1"
 npc_kingdoms_end = kingdoms_end
 
 bandits_begin = "trp_bandit"
-bandits_end = "trp_black_khergit_horseman"
+bandits_end = "trp_manhunter"
 
-kingdom_ladies_begin = "trp_knight_1_1_wife"
+kingdom_ladies_begin = "trp_kingdom_1_lady_1"
 kingdom_ladies_end = "trp_heroes_end"
 
 #active NPCs in order: companions, kings, lords, pretenders
-
 pretenders_begin = "trp_kingdom_1_pretender"
 pretenders_end = kingdom_ladies_begin
 
@@ -1349,8 +1189,8 @@ companions_end = kings_begin
 
 active_npcs_begin = "trp_npc1"
 active_npcs_end = kingdom_ladies_begin
-#"active_npcs_begin replaces kingdom_heroes_begin to allow for companions to become lords. Includes anyone who may at some point lead their own party: the original kingdom heroes, companions who may become kingdom heroes, and pretenders. (slto_kingdom_hero as an occupation means that you lead a party on the map. Pretenders have the occupation "slto_inactive_pretender", even if they are part of a player's party, until they have their own independent party)
-#If you're a modder and you don't want to go through and switch every kingdom_heroes to active_npcs, simply define a constant: kingdom_heroes_begin = active_npcs_begin., and kingdom_heroes_end = active_npcs_end. I haven't tested for that, but I think it should work.
+# "active_npcs_begin replaces kingdom_heroes_begin to allow for companions to become lords. Includes anyone who may at some point lead their own party: the original kingdom heroes, companions who may become kingdom heroes, and pretenders. (slto_kingdom_hero as an occupation means that you lead a party on the map. Pretenders have the occupation "slto_inactive_pretender", even if they are part of a player's party, until they have their own independent party)
+# If you're a modder and you don't want to go through and switch every kingdom_heroes to active_npcs, simply define a constant: kingdom_heroes_begin = active_npcs_begin., and kingdom_heroes_end = active_npcs_end. I haven't tested for that, but I think it should work.
 # TODO: It does not work. Fix, maybe?
 
 active_npcs_including_player_begin = "trp_kingdom_heroes_including_player_begin"
@@ -1362,14 +1202,8 @@ heroes_end = kingdom_ladies_end
 soldiers_begin = "trp_farmer"
 soldiers_end = "trp_kidnapped_girl"
 
-#Rebellion changes
-
-##rebel_factions_begin = "fac_kingdom_1_rebels"
-##rebel_factions_end =   "fac_kingdoms_end"
-
 pretenders_begin = "trp_kingdom_1_pretender"
 pretenders_end = active_npcs_end
-#Rebellion changes
 
 tavern_minstrels_begin = "trp_tavern_minstrel_1"
 tavern_minstrels_end   = "trp_kingdom_heroes_including_player_begin"
@@ -1377,8 +1211,11 @@ tavern_minstrels_end   = "trp_kingdom_heroes_including_player_begin"
 tavern_booksellers_begin = "trp_tavern_bookseller_1"
 tavern_booksellers_end   = tavern_minstrels_begin
 
+tavern_captains_begin = "trp_tavern_captain_1"
+tavern_captains_end   = tavern_booksellers_begin
+
 tavern_travelers_begin = "trp_tavern_traveler_1"
-tavern_travelers_end   = tavern_booksellers_begin
+tavern_travelers_end   = tavern_captains_begin
 
 ransom_brokers_begin = "trp_ransom_broker_1"
 ransom_brokers_end   = tavern_travelers_begin
@@ -1386,12 +1223,14 @@ ransom_brokers_end   = tavern_travelers_begin
 mercenary_troops_begin = "trp_watchman"
 mercenary_troops_end = "trp_mercenaries_end"
 
+outlaws_begin = "trp_looter"
+outlaws_end = "trp_manhunter"
+
 arena_champions_begin = "trp_xerina"
-arena_champions_end = "trp_tutorial_trainer"
+arena_champions_end = "trp_town_1_arena_master"
 
 arena_fighters_begin = "trp_arena_training_fighter_1"
 arena_fighters_end = "trp_cattle"
-
 
 quick_battle_troops_begin = "trp_quick_battle_troop_1"
 quick_battle_troops_end = "trp_quick_battle_troops_end"
@@ -1405,7 +1244,7 @@ quick_battle_scenes_end = "scn_quick_battle_maps_end"
 quick_battle_scene_images_begin = "mesh_cb_ui_maps_scene_01"
 
 quick_battle_battle_scenes_begin = quick_battle_scenes_begin
-quick_battle_battle_scenes_end = "scn_quick_battle_scene_4"
+quick_battle_battle_scenes_end = "scn_quick_siege_scene_1"
 
 quick_battle_siege_scenes_begin = quick_battle_battle_scenes_end
 quick_battle_siege_scenes_end = quick_battle_scenes_end
@@ -1457,13 +1296,16 @@ all_items_end = "itm_items_end"
 all_quests_begin = 0
 all_quests_end = "qst_quests_end"
 
+training_grounds_begin   = "p_training_ground_1"
+training_grounds_end     = "p_tutorial_ground"
+
 towns_begin = "p_town_1"
 castles_begin = "p_castle_1"
 villages_begin = "p_village_1"
 
 towns_end = castles_begin
 castles_end = villages_begin
-villages_end   = "p_salt_mine"
+villages_end   = "p_training_ground_1"
 
 walled_centers_begin = towns_begin
 walled_centers_end   = castles_end
@@ -1471,23 +1313,14 @@ walled_centers_end   = castles_end
 centers_begin = towns_begin
 centers_end   = villages_end
 
-training_grounds_begin   = "p_training_ground_1"
-training_grounds_end     = "p_Bridge_1"
+ports_begin   = "p_port_1"
+ports_end     = "p_landed_ship"
 
 scenes_begin = "scn_town_1_center"
 scenes_end = "scn_castle_1_exterior"
 
-spawn_points_begin = "p_zendar"
-spawn_points_end = "p_spawn_points_end"
-
 regular_troops_begin       = "trp_novice_fighter"
 regular_troops_end         = "trp_tournament_master"
-
-swadian_merc_parties_begin = "p_town_1_mercs"
-swadian_merc_parties_end   = "p_town_8_mercs"
-
-vaegir_merc_parties_begin  = "p_town_8_mercs"
-vaegir_merc_parties_end    = "p_zendar"
 
 arena_masters_begin    = "trp_town_1_arena_master"
 arena_masters_end      = "trp_town_1_armorer"
@@ -1495,13 +1328,13 @@ arena_masters_end      = "trp_town_1_armorer"
 training_gound_trainers_begin    = "trp_trainer_1"
 training_gound_trainers_end      = "trp_ransom_broker_1"
 
-town_walkers_begin = "trp_town_walker_1"
-town_walkers_end = "trp_village_walker_1"
+town_walkers_begin = "trp_town_walker_m"
+town_walkers_end = "trp_village_walker_m"
 
-village_walkers_begin = "trp_village_walker_1"
-village_walkers_end   = "trp_spy_walker_1"
+village_walkers_begin = "trp_village_walker_m"
+village_walkers_end   = "trp_spy_walker_m"
 
-spy_walkers_begin = "trp_spy_walker_1"
+spy_walkers_begin = "trp_spy_walker_m"
 spy_walkers_end = "trp_tournament_master"
 
 walkers_begin = town_walkers_begin
@@ -1529,9 +1362,8 @@ village_elders_begin   = "trp_village_1_elder"
 village_elders_end     = "trp_merchants_end"
 
 startup_merchants_begin = "trp_swadian_merchant"
-startup_merchants_end = "trp_startup_merchants_end"
-
-num_max_items = 10000 #used for multiplayer mode
+startup_merchants_default = "trp_default_merchant"
+startup_merchants_end = "trp_relative_of_merchant"
 
 average_price_factor = 1000
 minimum_price_factor = 100
@@ -1552,17 +1384,20 @@ books_begin = readable_books_begin
 books_end = reference_books_end
 horses_begin = "itm_sumpter_horse"
 horses_end = "itm_arrows"
-weapons_begin = "itm_wooden_stick"
-weapons_end = "itm_wooden_shield"
-ranged_weapons_begin = "itm_darts"
-ranged_weapons_end = "itm_torch"
+ammo_begin = "itm_arrows"
+ammo_end = "itm_leather_gloves"
 armors_begin = "itm_leather_gloves"
 armors_end = "itm_wooden_stick"
+weapons_begin = "itm_wooden_stick"
+weapons_end = "itm_wooden_shield"
 shields_begin = "itm_wooden_shield"
-shields_end = ranged_weapons_begin
+shields_end = "itm_darts"
+ranged_weapons_begin = "itm_darts"
+ranged_weapons_end = "itm_torch"
+equipment_begin = horses_begin
+equipment_end = ranged_weapons_end
 
 # Banner constants
-
 banner_meshes_begin = "mesh_banner_a01"
 banner_meshes_end_minus_one = "mesh_banner_f21"
 
@@ -1570,7 +1405,7 @@ arms_meshes_begin = "mesh_arms_a01"
 arms_meshes_end_minus_one = "mesh_arms_f21"
 
 banner_map_icons_begin = "icon_banner_01"
-banner_map_icons_end_minus_one = "icon_banner_136"
+banner_map_icons_end_minus_one = "icon_banner_end"
 
 banner_scene_props_begin = "spr_banner_a"
 banner_scene_props_end_minus_one = "spr_banner_f21"
@@ -1581,41 +1416,13 @@ khergit_banners_end_offset = 84
 sarranid_banners_begin_offset = 105
 sarranid_banners_end_offset = 125
 
-banners_end_offset = 136
+banners_end_offset = 144 
+banner_pages       = 9 # 16 per page
+
 
 # Some constants for merchant invenotries
 merchant_inventory_space = 30
 num_merchandise_goods = 40
-
-num_max_river_pirates = 25
-num_max_zendar_peasants = 25
-num_max_zendar_manhunters = 10
-
-num_max_dp_bandits = 10
-num_max_refugees = 10
-num_max_deserters = 10
-
-num_max_militia_bands = 15
-num_max_armed_bands = 12
-
-num_max_vaegir_punishing_parties = 20
-num_max_rebel_peasants = 25
-
-num_max_frightened_farmers = 50
-num_max_undead_messengers  = 20
-
-num_forest_bandit_spawn_points = 1
-num_mountain_bandit_spawn_points = 1
-num_steppe_bandit_spawn_points = 1
-num_taiga_bandit_spawn_points = 1
-num_desert_bandit_spawn_points = 1
-num_black_khergit_spawn_points = 1
-num_sea_raider_spawn_points = 2
-
-peak_prisoner_trains = 4
-peak_kingdom_caravans = 12
-peak_kingdom_messengers = 3
-
 
 # Note positions
 note_troop_location = 3
@@ -1635,7 +1442,6 @@ tcm_default 		= 0
 tcm_disguised 		= 1
 tcm_prison_break 	= 2
 tcm_escape      	= 3
-
 
 # Arena battle modes
 #abm_fight = 0
@@ -1663,25 +1469,9 @@ arena_tier4_opponents_to_beat = 20
 arena_tier4_prize = 60
 arena_grand_prize = 250
 
-
-#Additions
-price_adjustment = 25 #the percent by which a trade at a center alters price
-
-fire_duration = 4 #fires takes 4 hours
-
-#Viking Conquest patch 1.167 parameters for try_for_prop_instances
-somt_object = 1
-somt_entry = 2
-somt_item = 3
-somt_baggage = 4
-somt_flora = 5
-somt_passage = 6
-somt_spawned_item = 7
-somt_spawned_single_ammo_item = 8
-somt_spawned_unsheathed_item = 9
-somt_shield = 10
-somt_temporary_object = 11
-
+color_msg_enemy_routed = 0x44CCAA # Should be same color as killed or wounded
+color_msg_ally_routed  = 0xCCCC33 # yellow = routed, orange = wounded, red = killed
+color_msg_ally_rallied = 0x33CC33 # green = rallied
 
 #NORMAL ACHIEVEMENTS
 ACHIEVEMENT_NONE_SHALL_PASS = 1,

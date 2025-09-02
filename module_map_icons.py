@@ -3,7 +3,7 @@ from compiler import *  # should be after all imports
 ####################################################################################################################
 #  Each map icon record contains the following fields:
 #  1) Map icon id: used for referencing map icons in other files.
-#     The prefix icon_ is automatically added before each map icon id.
+#     The prefix icon_ / icon. is automatically added before each map icon id.
 #  2) Map icon flags. See header_map icons.py for a list of available flags
 #  3) Mesh name.
 #  4) Scale.
@@ -69,7 +69,6 @@ map_icons = [
     ("bridge_a", mcn_no_shadow, "map_river_bridge_a", 1.27, 0),
     ("bridge_b", mcn_no_shadow, "map_river_bridge_b", 0.7, 0),
     ("bridge_snow_a", mcn_no_shadow, "map_river_bridge_snow_a", 1.27, 0),
-
     # Banners
     ("banner_01", 0, "map_flag_01", banner_scale, 0),
     ("banner_02", 0, "map_flag_02", banner_scale, 0),
@@ -196,22 +195,33 @@ map_icons = [
     ("banner_123", 0, "map_flag_f18", banner_scale, 0),
     ("banner_124", 0, "map_flag_f19", banner_scale, 0),
     ("banner_125", 0, "map_flag_f20", banner_scale, 0),
-    ("banner_126", 0, "map_flag_f01", banner_scale, 0),
-    ("banner_127", 0, "map_flag_f02", banner_scale, 0),
-    ("banner_128", 0, "map_flag_f03", banner_scale, 0),
-    ("banner_129", 0, "map_flag_f04", banner_scale, 0),
-    ("banner_130", 0, "map_flag_f05", banner_scale, 0),
-    ("banner_131", 0, "map_flag_f06", banner_scale, 0),
-    ("banner_132", 0, "map_flag_f07", banner_scale, 0),
-    ("banner_133", 0, "map_flag_f08", banner_scale, 0),
-    ("banner_134", 0, "map_flag_f09", banner_scale, 0),
-    ("banner_135", 0, "map_flag_f10", banner_scale, 0),
+    ("banner_126", 0, "map_flag_g01", banner_scale, 0),
+    ("banner_127", 0, "map_flag_g02", banner_scale, 0),
+    ("banner_128", 0, "map_flag_g03", banner_scale, 0),
+    ("banner_129", 0, "map_flag_g04", banner_scale, 0),
+    ("banner_130", 0, "map_flag_g05", banner_scale, 0),
+    ("banner_131", 0, "map_flag_g06", banner_scale, 0),
+    ("banner_132", 0, "map_flag_g07", banner_scale, 0),
+    ("banner_133", 0, "map_flag_g08", banner_scale, 0),
+    ("banner_134", 0, "map_flag_g09", banner_scale, 0),
+    ("banner_135", 0, "map_flag_g10", banner_scale, 0),
+    ("banner_136", 0, "map_flag_g11", banner_scale, 0),
+    ("banner_137", 0, "map_flag_g20", banner_scale, 0),
+    ("banner_138", 0, "map_flag_g13", banner_scale, 0),
+    ("banner_139", 0, "map_flag_g14", banner_scale, 0),
+    ("banner_140", 0, "map_flag_g15", banner_scale, 0),
+    ("banner_141", 0, "map_flag_g16", banner_scale, 0),
+    ("banner_142", 0, "map_flag_g17", banner_scale, 0),
+    ("banner_143", 0, "map_flag_15", banner_scale, 0),
+    ("banner_144", 0, "map_flag_g19", banner_scale, 0),
+    ("banner_145", 0, "map_flag_g12", banner_scale, 0),
     ("map_flag_kingdom_a", 0, "map_flag_kingdom_a", banner_scale, 0),
     ("map_flag_kingdom_b", 0, "map_flag_kingdom_b", banner_scale, 0),
     ("map_flag_kingdom_c", 0, "map_flag_kingdom_c", banner_scale, 0),
     ("map_flag_kingdom_d", 0, "map_flag_kingdom_d", banner_scale, 0),
     ("map_flag_kingdom_e", 0, "map_flag_kingdom_e", banner_scale, 0),
     ("map_flag_kingdom_f", 0, "map_flag_kingdom_f", banner_scale, 0),
-    ("banner_136", 0, "map_flag_15", banner_scale, 0),
+    ("map_flag_kingdom_g", 0, "map_flag_kingdom_g", banner_scale, 0),
+    ("banner_end", 0, "map_flag_g21", banner_scale, 0),
     ("bandit_lair", mcn_no_shadow, "map_bandit_lair", 0.45, 0),
 ]

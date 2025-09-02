@@ -9,6 +9,29 @@ from compiler import *  # should be after all imports
 #  5) Triggers: Simple triggers that are associated with the scene prop
 ####################################################################################################################
 
+
+check_ladder_animate_trigger = (
+    ti_on_scene_prop_is_animating,
+    [
+        (store_trigger_param_1, ":instance_id"),
+        (store_trigger_param_2, ":remaining_time"),
+        (
+            call_script,
+            "script_check_creating_ladder_dust_effect",
+            ":instance_id",
+            ":remaining_time",
+        ),
+    ],
+)
+
+check_ladder_animation_finish_trigger = (
+    ti_on_scene_prop_animation_finished,
+    [
+        (store_trigger_param_1, ":instance_id"),
+        (prop_instance_enable_physics, ":instance_id", 1),
+    ],
+)
+
 scene_props = [
     ("invalid_object", 0, "question_mark", "0", []),
     (
@@ -828,9 +851,7 @@ scene_props = [
         "bo_castle_f_battlement_corner_c",
         [],
     ),
-
     ("castle_f_doors_top_a", 0, "castle_f_doors_top_a", "bo_castle_f_doors_top_a", []),
-
     (
         "castle_f_stairs_a",
         sokf_type_ladder,
@@ -969,7 +990,6 @@ scene_props = [
     ("stone_house_e", 0, "stone_house_e", "bo_stone_house_e", []),
     ("stone_house_f", 0, "stone_house_f", "bo_stone_house_f", []),
     ("banner_pole", sokf_moveable, "banner_pole", "bo_banner_pole", []),
-
     ("banner_a", 0, "banner_a01", "0", []),
     ("banner_b", 0, "banner_a02", "0", []),
     ("banner_c", 0, "banner_a03", "0", []),
@@ -1485,7 +1505,6 @@ scene_props = [
         "bo_castle_e_battlement_a_destroyed",
         [],
     ),
-
     ("castle_e_corner", 0, "castle_e_corner", "bo_castle_e_corner", []),
     ("castle_e_corner_b", 0, "castle_e_corner_b", "bo_castle_e_corner_b", []),
     ("castle_e_corner_c", 0, "castle_e_corner_c", "bo_castle_e_corner_c", []),
@@ -1685,41 +1704,6 @@ scene_props = [
         sokf_type_ladder,
         "siege_ladder_14m",
         "bo_siege_ladder_14m",
-        [],
-    ),
-    (
-        "siege_ladder_move_6m",
-        sokf_type_ladder | sokf_moveable | spr_use_time(2),
-        "siege_ladder_move_6m",
-        "bo_siege_ladder_move_6m",
-        [],
-    ),
-    (
-        "siege_ladder_move_8m",
-        sokf_type_ladder | sokf_moveable | spr_use_time(2),
-        "siege_ladder_move_8m",
-        "bo_siege_ladder_move_8m",
-        [],
-    ),
-    (
-        "siege_ladder_move_10m",
-        sokf_type_ladder | sokf_moveable | spr_use_time(3),
-        "siege_ladder_move_10m",
-        "bo_siege_ladder_move_10m",
-        [],
-    ),
-    (
-        "siege_ladder_move_12m",
-        sokf_type_ladder | sokf_moveable | spr_use_time(3),
-        "siege_ladder_move_12m",
-        "bo_siege_ladder_move_12m",
-        [],
-    ),
-    (
-        "siege_ladder_move_14m",
-        sokf_type_ladder | sokf_moveable | spr_use_time(4),
-        "siege_ladder_move_14m",
-        "bo_siege_ladder_move_14m",
         [],
     ),
     ("portcullis", sokf_moveable, "portcullis_a", "bo_portcullis_a", []),
@@ -2555,10 +2539,8 @@ scene_props = [
     ("earth_gate_house_b", 0, "earth_gate_house_b", "bo_earth_gate_house_b", []),
     ("earth_tower_a", 0, "earth_tower_a", "bo_earth_tower_a", []),
     ("earth_stairs_c", 0, "earth_stairs_c", "bo_earth_stairs_c", []),
-
     # ("earth_sally_gate_left",0,"earth_sally_gate_left","bo_earth_sally_gate_left", []),
     # ("earth_sally_gate_right",0,"earth_sally_gate_right","bo_earth_sally_gate_right", []),
-    
     (
         "barrier_box",
         sokf_invisible | sokf_type_barrier3d,
@@ -2587,7 +2569,6 @@ scene_props = [
         "bo_barrier_sphere",
         [],
     ),
-
     (
         "ctf_flag_kingdom_1",
         sokf_moveable | sokf_face_player,
@@ -2789,77 +2770,4 @@ scene_props = [
     ("rock_bridge_a", 0, "rock_bridge_a", "bo_rock_bridge_a", []),
     ("suspension_bridge_a", 0, "suspension_bridge_a", "bo_suspension_bridge_a", []),
     ("mine_a", 0, "mine_a", "bo_mine_a", []),
-    (
-        "snowy_destroy_house_a",
-        0,
-        "snowy_destroy_house_a",
-        "bo_snowy_destroy_house_a",
-        [],
-    ),
-    (
-        "snowy_destroy_house_b",
-        0,
-        "snowy_destroy_house_b",
-        "bo_snowy_destroy_house_b",
-        [],
-    ),
-    (
-        "snowy_destroy_house_c",
-        0,
-        "snowy_destroy_house_c",
-        "bo_snowy_destroy_house_c",
-        [],
-    ),
-    ("snowy_destroy_heap", 0, "snowy_destroy_heap", "bo_snowy_destroy_heap", []),
-    (
-        "snowy_destroy_castle_a",
-        0,
-        "snowy_destroy_castle_a",
-        "bo_snowy_destroy_castle_a",
-        [],
-    ),
-    (
-        "snowy_destroy_castle_b",
-        0,
-        "snowy_destroy_castle_b",
-        "bo_snowy_destroy_castle_b",
-        [],
-    ),
-    (
-        "snowy_destroy_castle_c",
-        0,
-        "snowy_destroy_castle_c",
-        "bo_snowy_destroy_castle_c",
-        [],
-    ),
-    (
-        "snowy_destroy_castle_d",
-        0,
-        "snowy_destroy_castle_d",
-        "bo_snowy_destroy_castle_d",
-        [],
-    ),
-    (
-        "snowy_destroy_windmill",
-        0,
-        "snowy_destroy_windmill",
-        "bo_snowy_destroy_windmill",
-        [],
-    ),
-    ("snowy_destroy_tree_a", 0, "snowy_destroy_tree_a", "bo_snowy_destroy_tree_a", []),
-    ("snowy_destroy_tree_b", 0, "snowy_destroy_tree_b", "bo_snowy_destroy_tree_b", []),
-    (
-        "snowy_destroy_bridge_a",
-        0,
-        "snowy_destroy_bridge_a",
-        "bo_snowy_destroy_bridge_a",
-        [],
-    ),
-    (
-        "snowy_destroy_bridge_b",
-        0,
-        "snowy_destroy_bridge_b",
-        "bo_snowy_destroy_bridge_b",
-        [],
-    ),
 ]

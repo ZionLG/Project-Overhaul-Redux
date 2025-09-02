@@ -42,6 +42,7 @@ itp_unique               = 0x0000000000001000
 itp_always_loot          = 0x0000000000002000
 ##itp_melee                = 0x000002000
 itp_no_parry             = 0x0000000000004000 # left handed item without shield functionality
+itp_shield_no_parry      = itp_no_parry # WSE: right handed item without shield functionality
 ##itp_spear                = 0x000008000 #obsolete
 itp_default_ammo         = 0x0000000000008000
 itp_merchandise          = 0x0000000000010000
@@ -105,6 +106,7 @@ itp_kill_info_mask           = 0x0700000000000000
 itp_kill_info_bits           = 56 # 0x0700000000000000
  
 itp_offset_mortschlag        = 0x1000000000000000 # WSE: offsets melee weapon to mortschlag grip
+itp_crush_through_any_direction = 0x2000000000000000 # WSE: crush through works with any attack direction
 itp_offset_flip              = 0x4000000000000000 # WSE: flips melee weapon model 180 degrees on y-axis
 
 #equipment slots

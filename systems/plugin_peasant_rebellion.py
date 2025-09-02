@@ -2,7 +2,7 @@ from compiler import *
 
 from module_troops import *
 
-register_plugin(__name__) # v0.0.1
+register_plugin(__name__)  # v0.0.1
 
 factions = [
     (
@@ -43,8 +43,8 @@ troops = [
         def_attrib | level(4),
         wp(60),
         knows_common,
-        vaegir_face1,
-        vaegir_face2,
+        vaegir_face_middle_1,
+        vaegir_face_older_2,
     ],
     [
         "noble_refugee",
@@ -65,8 +65,8 @@ troops = [
         def_attrib | level(9),
         wp(100),
         knows_common,
-        swadian_face1,
-        swadian_face2,
+        swadian_face_middle_1,
+        swadian_face_old_2,
     ],
     [
         "noble_refugee_woman",
@@ -90,8 +90,8 @@ troops = [
         def_attrib | level(3),
         wp(45),
         knows_common,
-        refugee_face1,
-        refugee_face2,
+        swadian_woman_face_1,
+        swadian_woman_face_2,
     ],
 ]
 
@@ -149,5 +149,80 @@ dialogs = [
         "TODO: Nothing.",
         "close_window",
         [(assign, "$g_leave_encounter", 1)],
+    ],
+    [
+        party_tpl | pt.refugees,
+        "start",
+        [],
+        "We have been driven out of our homes because of this war.",
+        "close_window",
+        [(assign, "$g_leave_encounter", 1)],
+    ],
+    [
+        trp.nobleman,
+        "start",
+        [],
+        "Who are you? What do you want? Be warned, we are fully armed and more than capable to defend ourselves. Go to your way now or you will regret it.",
+        "nobleman_talk_1",
+        [(play_sound, "snd_encounter_nobleman")],
+    ],
+    [
+        trp.nobleman | plyr,
+        "nobleman_talk_1",
+        [],
+        "I demand that you surrender to me.",
+        "nobleman_talk_2",
+        [],
+    ],
+    [
+        trp.nobleman | plyr,
+        "nobleman_talk_1",
+        [],
+        "I am sorry sir. You may go.",
+        "close_window",
+        [(assign, "$g_leave_encounter", 1)],
+    ],
+    [
+        trp.nobleman,
+        "nobleman_talk_2",
+        [],
+        "Surrender to a puny peasant like you? Hah. Not likely.",
+        "close_window",
+        [[encounter_attack]],
+    ],
+    [
+        trp.nobleman,
+        "enemy_defeated",
+        [],
+        "Parley! I am of noble birth, and I ask for my right to surrender.",
+        "nobleman_defeated_1",
+        [],
+    ],
+    [
+        trp.nobleman | plyr,
+        "nobleman_defeated_1",
+        [],
+        "And I will grant you that. If you can be ransomed of course...",
+        "nobleman_defeated_2",
+        [],
+    ],
+    [
+        trp.nobleman,
+        "nobleman_defeated_2",
+        [],
+        "Oh, you need not worry about that. My family would pay a large ransom for me.",
+        "nobleman_defeated_3",
+        [],
+    ],
+    [
+        trp.nobleman | plyr,
+        "nobleman_defeated_3",
+        [[str_store_troop_name, 1, "$nobleman_quest_giver"]],
+        "Hmm. {s1} will be happy about this... Then you are my prisoner.",
+        "close_window",
+        [
+            [assign, "$nobleman_quest_succeeded", 1],
+            [assign, "$nobleman_quest_nobleman_active", 0],
+        ],
     ],
 ]
