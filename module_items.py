@@ -159,6 +159,7 @@ imodbits_sword_high = (
     | imodbit_masterwork
 )
 imodbits_axe = imodbit_rusty | imodbit_chipped | imodbit_heavy
+imodbits_axe_minus_heavy = imodbit_rusty | imodbit_chipped
 imodbits_mace = imodbit_rusty | imodbit_chipped | imodbit_heavy
 imodbits_pick = imodbit_rusty | imodbit_chipped | imodbit_balanced | imodbit_heavy
 imodbits_bow = imodbit_cracked | imodbit_bent | imodbit_strong | imodbit_masterwork
@@ -2018,6 +2019,48 @@ items = [
         | thrust_damage(1, pierce)
         | max_ammo(30),
         imodbits_missile,
+        [],
+        [fac.kingdom_1, fac.kingdom_4, fac.kingdom_5],
+    ],
+    [
+        "arrows_cav",
+        "Arrows",
+        [
+            ("arrow", 0),
+            ("flying_missile", ixmesh_flying_ammo),
+            ("quiver", ixmesh_carry),
+        ],
+        itp_type_arrows | itp_merchandise,
+        itcf_carry_quiver_back_right,
+        72,
+        weight(3)
+        | abundance(160)
+        | weapon_length(95)
+        | thrust_damage(1, pierce)
+        | max_ammo(30),
+        imodbits_missile,
+        [],
+        [fac.kingdom_2, fac.kingdom_3, fac.kingdom_6],
+    ],
+    [
+        "barbed_arrows",
+        "Barbed Arrows",
+        [
+            ("barbed_arrow", 0),
+            ("flying_missile", ixmesh_flying_ammo),
+            ("quiver_d", ixmesh_carry),
+        ],
+        itp_type_arrows | itp_merchandise,
+        itcf_carry_quiver_back_right,
+        124,
+        weight(3)
+        | abundance(70)
+        | weapon_length(95)
+        | thrust_damage(2, pierce)
+        | max_ammo(30),
+        imodbits_missile,
+        [],
+        [fac.kingdom_2, fac.kingdom_3, fac.kingdom_6],
     ],
     [
         "khergit_arrows",
@@ -2040,22 +2083,24 @@ items = [
         [fac.kingdom_3],
     ],
     [
-        "barbed_arrows",
-        "Barbed Arrows",
+        "steel_arrows",
+        "Steel Arrows",
         [
-            ("barbed_arrow", 0),
+            ("arrow_b", 0),
             ("flying_missile", ixmesh_flying_ammo),
-            ("quiver_d", ixmesh_carry),
+            ("arena_quiver", ixmesh_carry),
         ],
-        itp_type_arrows | itp_merchandise,
-        itcf_carry_quiver_back_right,
-        124,
+        itp_type_arrows | itp_merchandise | itp_default_ammo,
+        itcf_carry_quiver_back,
+        240,
         weight(3)
-        | abundance(70)
+        | abundance(160)
         | weapon_length(95)
         | thrust_damage(2, pierce)
         | max_ammo(30),
         imodbits_missile,
+        [],
+        [fac.kingdom_1, fac.kingdom_5],
     ],
     [
         "bodkin_arrows",
@@ -7134,6 +7179,27 @@ items = [
     ####################################################################################################################
     # [ ZK13 ] - One/Two-Handed Weapons
     #################################################################################################################### 
+    [
+        "fighting_axe_heavy",
+        "Heavy Fighting Axe",
+        [("fighting_ax", 0)],
+        itp_type_two_handed_wpn
+        | itp_merchandise
+        | itp_primary
+        | itp_secondary
+        | itp_bonus_against_shield
+        | itp_wooden_parry,
+        itc_morningstar | itcf_carry_axe_left_hip,
+        146,
+        weight(2.5)
+        | abundance(100)
+        | difficulty(10)
+        | spd_rtng(106)
+        | weapon_length(90)
+        | swing_damage(48, cut)
+        | thrust_damage(0, pierce),
+        imodbits_axe_minus_heavy,
+    ],  # Stats raised to counter 1h-penalty of -15% speed, -35% dmg; was 92, 31c (90, 33c for "heavy")
     [
         "club_with_spike_head",
         "Spiked Staff",

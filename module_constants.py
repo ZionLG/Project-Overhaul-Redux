@@ -556,13 +556,13 @@ pis_ship                        = 2
 ########################################################
 ##  SCENE SLOTS            #############################
 ########################################################
-slot_scene_visited               = 0
-slot_scene_belfry_props_begin    = 10
+slot_scene_visited              = 0
+slot_scene_belfry_props_begin   = 10
 
 
 
 ########################################################
-##  HERO TROOP SLOTS            #############################
+##  HERO TROOP SLOTS            ########################
 ########################################################
 
 slot_troop_occupation          = 2 # 0 = free, 1 = merchant
@@ -804,6 +804,7 @@ troop_slots_reserved_for_relations_start        = 165 #this is based on id_troop
 
 slot_troop_relations_begin				= 0 #this creates an array for relations between troops; use this to specify an offset
 											#Right now, lords start at 165 and run to around 290, including pretenders
+
 ### Troop occupations slot_troop_occupation
 slto_inactive           = 0 #for companions at the beginning of the game
 

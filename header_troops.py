@@ -25,11 +25,12 @@ troop_type_mask      = 0x0000000f #Hardcoded limit of 16 troop types/genders/rac
 tf_hero              = 0x00000010 #Has health percentage, doesn't stack, like companions.
 tf_inactive          = 0x00000020 #basically a comment out without messing up the order, I think.
 tf_unkillable        = 0x00000040 #will always be knocked out.
-tf_allways_fall_dead = 0x00000080 #will always die.
+tf_always_fall_dead = 0x00000080 #will always die.
 tf_no_capture_alive  = 0x00000100 #will never be captured
 tf_mounted           = 0x00000400 #Troop's movement speed on map is determined by riding skill.
 tf_is_merchant       = 0x00001000 #When set, troop does not equip stuff he owns
 tf_randomize_face    = 0x00008000 #randomize face at the beginning of the game.
+tf_allways_fall_dead = tf_always_fall_dead # For compatibility reasons...
 
 tf_disable_sounds 	 = 0x00010000 #disable agent related sounds, but not voices. useful for animals
 

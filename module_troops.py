@@ -52,6 +52,7 @@ def wp(x):
     n |= wp_archery(x)
     n |= wp_crossbow(x)
     n |= wp_throwing(x)
+    n |= wp_firearm(x)
     return n
 
 def wp2(x, r):
@@ -62,8 +63,10 @@ def wp2(x, r):
     n |= wp_archery(r)
     n |= wp_crossbow(r)
     n |= wp_throwing(r)
+    n |= wp_firearm(r)
     return n
-def wpe(m, a, c, t):
+
+def wpe(m, a, c, t, g):
     n = 0
     n |= wp_one_handed(m)
     n |= wp_two_handed(m)
@@ -71,6 +74,7 @@ def wpe(m, a, c, t):
     n |= wp_archery(a)
     n |= wp_crossbow(c)
     n |= wp_throwing(t)
+    n |= wp_firearm(g)
     return n
 
 def wpm(o, w, p, r):
@@ -81,8 +85,10 @@ def wpm(o, w, p, r):
     n |= wp_archery(r)
     n |= wp_crossbow(r)
     n |= wp_throwing(r)
+    n |= wp_firearm(r)
     return n
-def wpex(o, w, p, a, c, t):
+
+def wpex(o, w, p, a, c, t, g):
     n = 0
     n |= wp_one_handed(o)
     n |= wp_two_handed(w)
@@ -90,6 +96,7 @@ def wpex(o, w, p, a, c, t):
     n |= wp_archery(a)
     n |= wp_crossbow(c)
     n |= wp_throwing(t)
+    n |= wp_firearm(g)
     return n
 
 
@@ -106,6 +113,7 @@ def wp_ranged(a, c, t, g):
     n |= wp_archery(a)
     n |= wp_crossbow(c)
     n |= wp_throwing(t)
+    n |= wp_firearm(g)
     return n
 
 
@@ -117,6 +125,7 @@ def wp_bow(m, b):
     n |= wp_archery(b)
     n |= wp_crossbow(m)
     n |= wp_throwing(m)
+    n |= wp_firearm(m)
     return n
 
 
@@ -128,6 +137,7 @@ def wp_xbow(m, x):
     n |= wp_archery(m)
     n |= wp_crossbow(x)
     n |= wp_throwing(m)
+    n |= wp_firearm(m)
     return n
 
 
@@ -139,6 +149,7 @@ def wp_throw(m, t):
     n |= wp_archery(m)
     n |= wp_crossbow(m)
     n |= wp_throwing(t)
+    n |= wp_firearm(m)
     return n
 
 
@@ -150,6 +161,7 @@ def wp_gun(m, g):
     n |= wp_archery(m)
     n |= wp_crossbow(m)
     n |= wp_throwing(m)
+    n |= wp_firearm(g)
     return n
 
 
@@ -161,6 +173,7 @@ def wp_sarranid(m, r, t):
     n |= wp_archery(r)
     n |= wp_crossbow(r)
     n |= wp_throwing(t)
+    n |= wp_firearm(r)
     return n
 
 
@@ -172,6 +185,7 @@ def wp_skirmish(m, r):
     n |= wp_archery(r)
     n |= wp_crossbow(m)
     n |= wp_throwing(r)
+    n |= wp_firearm(m)
     return n
 
 
@@ -183,6 +197,7 @@ def wp_1h(o, m, r):
     n |= wp_archery(r)
     n |= wp_crossbow(r)
     n |= wp_throwing(r)
+    n |= wp_firearm(r)
     return n
 
 
@@ -194,6 +209,7 @@ def wp_2h(w, m, r):
     n |= wp_archery(r)
     n |= wp_crossbow(r)
     n |= wp_throwing(r)
+    n |= wp_firearm(r)
     return n
 
 
@@ -205,6 +221,7 @@ def wp_pole(p, m, r):
     n |= wp_archery(r)
     n |= wp_crossbow(r)
     n |= wp_throwing(r)
+    n |= wp_firearm(r)
     return n
 
 
@@ -1461,6 +1478,94 @@ troops = [
         mercenary_face_1,
         mercenary_face_2,
     ],
+    # Elite Mercenaries; can't be hired, only upgraded:
+    [
+        "mercenary_musketeer",
+        "Mercenary Musketeer",
+        "Mercenary Musketeers",
+        tf_guarantee_boots | tf_guarantee_armor | tf_guarantee_ranged,
+        no_scene,
+        reserved,
+        fac.neutral,
+        [
+            itm.cartridges,
+            itm.spiked_club,
+            itm.fighting_pick,
+            itm.sword_medieval_a,
+            itm.voulge,
+            itm.arquebus,
+            itm.leather_jerkin,
+            itm.leather_cap,
+            itm.nomad_boots,
+            itm.hide_boots,
+        ],
+        def_attrib | level(20),
+        wp_gun(90, 100),
+        knows_common | knows_athletics_5 | knows_shield_1,
+        mercenary_face_1,
+        mercenary_face_2,
+    ],
+    [
+        "black_guard",
+        "Black Guard",
+        "Black Guards",
+        tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_gloves
+        | tf_guarantee_helmet,
+        no_scene,
+        reserved,
+        fac.neutral,
+        [
+            itm.sword_of_war,
+            itm.great_axe,
+            itm.bec_de_corbin_a,
+            itm.black_armor,
+            itm.black_greaves,
+            itm.black_helmet,
+            itm.leather_gloves,
+        ],
+        def_attrib | level(26),
+        wp(130),
+        knows_common
+        | knows_riding_3
+        | knows_athletics_5
+        | knows_shield_5
+        | knows_power_strike_5
+        | knows_ironflesh_5,
+        mercenary_face_1,
+        mercenary_face_2,
+    ],
+    [
+        "black_knight",
+        "Black Knight",
+        "Black Knights",
+        tf_mounted | tf_guarantee_all_wo_ranged,
+        no_scene,
+        reserved,
+        fac.neutral,
+        [
+            itm.heavy_lance,
+            itm.morningstar,
+            itm.morningstar_short,
+            itm.tab_shield_heater_c,
+            itm.black_armor,
+            itm.black_greaves,
+            itm.black_helmet,
+            itm.leather_gloves,
+            itm.charger_plate,
+        ],
+        def_attrib | level(26),
+        wp(130),
+        knows_common
+        | knows_riding_5
+        | knows_ironflesh_4
+        | knows_shield_5
+        | knows_power_strike_4,
+        mercenary_face_1,
+        mercenary_face_2,
+    ],
     [
         "mercenaries_end",
         "mercenaries_end",
@@ -2012,6 +2117,7 @@ troops = [
         0,
         fac.kingdom_2,
         [
+            itm.arrows_cav,
             itm.arrows,
             itm.axe,
             itm.sword_khergit_1,
@@ -2148,6 +2254,7 @@ troops = [
             itm.bardiche,
             itm.battle_axe,
             itm.fighting_axe,
+            itm.fighting_axe_heavy,
             itm.tab_shield_kite_d,
             itm.banded_armor,
             itm.lamellar_vest,
@@ -2222,6 +2329,7 @@ troops = [
             itm.great_bardiche,
             itm.war_axe,
             itm.fighting_axe,
+            itm.fighting_axe_heavy,
             itm.lance,
             itm.lance,
             itm.tab_shield_kite_cav_b,
@@ -2352,6 +2460,7 @@ troops = [
         fac.kingdom_3,
         [
             itm.arrows,
+            itm.arrows_cav,
             itm.club,
             itm.spear,
             itm.hunting_bow,
@@ -2381,7 +2490,7 @@ troops = [
         0,
         fac.kingdom_3,
         [
-            itm.arrows,
+            itm.arrows_cav,
             itm.sword_khergit_1,
             itm.winged_mace,
             itm.spear,
@@ -2422,7 +2531,7 @@ troops = [
         0,
         fac.kingdom_3,
         [
-            itm.arrows,
+            itm.arrows_cav,
             itm.light_lance,
             itm.nomad_bow,
             itm.sword_khergit_2,
@@ -2465,7 +2574,7 @@ troops = [
         0,
         fac.kingdom_3,
         [
-            itm.arrows,
+            itm.arrows_cav,
             itm.sword_khergit_2,
             itm.winged_mace,
             itm.spear,
@@ -2511,7 +2620,7 @@ troops = [
             itm.khergit_bow,
             itm.khergit_bow,
             itm.nomad_bow,
-            itm.arrows,
+            itm.arrows_cav,
             itm.khergit_arrows,
             itm.khergit_arrows,
             itm.khergit_arrows,
@@ -3623,8 +3732,8 @@ troops = [
         0,
         fac.kingdom_6,
         [
-            itm.arrows,
-            itm.arrows,
+            itm.arrows_cav,
+            itm.arrows_cav,
             itm.nomad_bow,
             itm.arabian_sword_a,
             itm.archers_vest,
@@ -3713,8 +3822,8 @@ troops = [
         | knows_ironflesh_2
         | knows_shield_2
         | knows_power_strike_3,
-        swadian_face_young_1,
-        swadian_face_old_2,
+        sarranid_face_young_1,
+        sarranid_face_old_2,
     ],
     [
         "sarranid_mamluke",
@@ -3746,7 +3855,7 @@ troops = [
             itm.mail_mittens,
         ],
         def_attrib | level(27),
-        wpex(150, 130, 130, 75, 75, 110),
+        wpex(150, 130, 130, 75, 75, 110, 75),
         knows_common
         | knows_riding_6
         | knows_shield_5
@@ -3898,7 +4007,7 @@ troops = [
         fac.outlaws,
         [
             itm.arrows,
-            itm.spiked_mace,
+            itm.mace_3,
             itm.sword_viking_1,
             itm.short_bow,
             itm.falchion,
@@ -3927,7 +4036,7 @@ troops = [
         fac.outlaws,
         [
             itm.arrows,
-            itm.spiked_mace,
+            itm.mace_3,
             itm.sword_viking_1,
             itm.falchion,
             itm.wooden_shield,
@@ -3956,7 +4065,7 @@ troops = [
             itm.arrows,
             itm.sword_viking_1,
             itm.spear,
-            itm.winged_mace,
+            itm.mace_4,
             itm.maul,
             itm.falchion,
             itm.short_bow,
@@ -4023,6 +4132,7 @@ troops = [
             itm.sword_viking_1,
             itm.sword_viking_2,
             itm.fighting_axe,
+            itm.fighting_axe_heavy,
             itm.battle_axe,
             itm.spear,
             itm.nordic_shield,
@@ -4065,9 +4175,9 @@ troops = [
         0,
         fac.outlaws,
         [
-            itm.arrows,
+            itm.arrows_cav,
             itm.sword_khergit_1,
-            itm.winged_mace,
+            itm.mace_4,
             itm.spear,
             itm.light_lance,
             itm.nomad_bow,
@@ -4104,9 +4214,9 @@ troops = [
         0,
         fac.outlaws,
         [
-            itm.arrows,
+            itm.arrows_cav,
             itm.sword_khergit_1,
-            itm.winged_mace,
+            itm.mace_4,
             itm.spear,
             itm.light_lance,
             itm.nomad_bow,
@@ -4138,9 +4248,9 @@ troops = [
         0,
         fac.outlaws,
         [
-            itm.arrows,
+            itm.arrows_cav,
             itm.arabian_sword_a,
-            itm.winged_mace,
+            itm.mace_4,
             itm.spear,
             itm.light_lance,
             itm.jarid,
@@ -4173,7 +4283,7 @@ troops = [
         0,
         fac.outlaws,
         [
-            itm.arrows,
+            itm.barbed_arrows,
             itm.sword_khergit_2,
             itm.scimitar,
             itm.scimitar,
@@ -4184,13 +4294,12 @@ troops = [
             itm.khergit_bow,
             itm.nomad_bow,
             itm.nomad_bow,
-            itm.steppe_cap,
-            itm.nomad_cap,
+            itm.leather_warrior_cap,
+            itm.leather_warrior_cap,
             itm.khergit_war_helmet,
             itm.khergit_war_helmet,
-            itm.mail_hauberk,
             itm.lamellar_armor,
-            itm.hide_boots,
+            itm.khergit_leather_boots,
             itm.plate_covered_round_shield,
             itm.plate_covered_round_shield,
             itm.saddle_horse,
@@ -4200,6 +4309,39 @@ troops = [
         wp(100),
         knows_riding_3 | knows_ironflesh_3 | knows_horse_archery_3 | knows_power_draw_3,
         khergit_face_young_1,
+        khergit_face_old_2,
+    ],
+    [
+        "black_khergit_guard",
+        "Black Khergit Guard",
+        "Black Khergit Guard",
+        tf_mounted
+        | tf_guarantee_ranged
+        | tf_guarantee_gloves
+        | tf_guarantee_boots
+        | tf_guarantee_helmet
+        | tf_guarantee_armor
+        | tf_guarantee_horse,
+        0,
+        0,
+        fac.outlaws,
+        [
+            itm.khergit_arrows,
+            itm.sword_khergit_3b,
+            itm.sword_khergit_4b,
+            itm.winged_mace,
+            itm.lance,
+            itm.khergit_bow,
+            itm.khergit_guard_helmet,
+            itm.khergit_guard_boots,
+            itm.khergit_guard_armor,
+            itm.lamellar_gauntlets,
+            itm.warhorse_steppe,
+        ],
+        def_attrib | level(28),
+        wp(140),
+        knows_riding_6 | knows_ironflesh_4 | knows_horse_archery_6 | knows_power_draw_6,
+        khergit_face_middle_1,
         khergit_face_old_2,
     ],
     ############
@@ -4220,7 +4362,7 @@ troops = [
         fac.manhunters,
         [
             itm.mace_3,
-            itm.winged_mace,
+            itm.mace_4,
             itm.nasal_helmet,
             itm.padded_cloth,
             itm.aketon_green,
@@ -4233,6 +4375,62 @@ troops = [
         def_attrib | level(10),
         wp(50),
         knows_common,
+        bandit_face1,
+        bandit_face2,
+    ],
+    [
+        "bounty_hunter",
+        "Bounty Hunter",
+        "Bounty Hunters",
+        tf_mounted
+        | tf_guarantee_boots
+        | tf_guarantee_armor
+        | tf_guarantee_helmet
+        | tf_guarantee_horse
+        | tf_guarantee_shield,
+        0,
+        0,
+        fac.manhunters,
+        [
+            itm.spiked_mace,
+            itm.winged_mace,
+            itm.kettle_hat,
+            itm.mail_shirt,
+            itm.nordic_shield,
+            itm.leather_boots,
+            itm.leather_gloves,
+            itm.hunter,
+        ],
+        def_attrib | level(16),
+        wp(90),
+        knows_common,
+        bandit_face1,
+        bandit_face2,
+    ],
+    [
+        "knight_errant",
+        "Knight Errant",
+        "Knights Errant",
+        tf_mounted | tf_guarantee_all_wo_ranged,
+        0,
+        0,
+        fac.manhunters,
+        [
+            itm.military_hammer,
+            itm.warhammer,
+            itm.jousting_lance,
+            itm.mail_with_surcoat,
+            itm.great_helmet,
+            itm.guard_helmet,
+            itm.mail_mittens,
+            itm.tab_shield_heater_cav_a,
+            itm.mail_chausses,
+            itm.splinted_leather_greaves,
+            itm.warhorse,
+        ],
+        def_attrib | level(22),
+        wp(120),
+        knows_common | knows_riding_4 | knows_power_strike_4,
         bandit_face1,
         bandit_face2,
     ],
@@ -4282,7 +4480,7 @@ troops = [
             itm.club_with_spike_head,
             itm.segmented_helmet,
             itm.tribal_warrior_outfit,
-            itm.nordic_shield,
+            itm.leather_covered_round_shield,
             itm.leather_boots,
             itm.leather_gloves,
             itm.khergit_leather_boots,
@@ -4310,9 +4508,9 @@ troops = [
         [
             itm.winged_mace,
             itm.maul,
-            itm.kettle_hat,
-            itm.mail_shirt,
-            itm.tab_shield_round_c,
+            itm.spiked_helmet,
+            itm.studded_leather_coat,
+            itm.tab_shield_small_round_a,
             itm.leather_boots,
             itm.leather_gloves,
             itm.courser,
@@ -13079,6 +13277,7 @@ troops = [
         0x00000000000440C601E1CD45CFB38550,
     ],
     # Arena Champions
+    # NOTICE: the scn they appear in is from the zendar plugin
     [
         "xerina",
         "Xerina",
@@ -18054,7 +18253,7 @@ troops = [
             itm.leather_gloves,
         ],
         str_9 | agi_15 | int_12 | cha_12 | level(15),
-        wpex(109, 33, 132, 15, 32, 100),
+        wpex(109, 33, 132, 15, 32, 100, 15),
         knows_riding_3
         | knows_athletics_5
         | knows_shield_3
@@ -18083,7 +18282,7 @@ troops = [
             itm.splinted_greaves,
         ],
         str_12 | agi_14 | int_11 | cha_18 | level(22),
-        wpex(182, 113, 112, 159, 82, 115),
+        wpex(182, 113, 112, 159, 82, 115, 55),
         knows_horse_archery_2
         | knows_riding_3
         | knows_athletics_4
@@ -18116,7 +18315,7 @@ troops = [
             itm.mail_boots,
         ],
         str_18 | agi_16 | int_12 | cha_11 | level(24),
-        wpex(90, 152, 102, 31, 33, 34),
+        wpex(90, 152, 102, 31, 33, 34, 30),
         knows_riding_5
         | knows_athletics_5
         | knows_shield_3
@@ -18144,7 +18343,7 @@ troops = [
             itm.mail_boots,
         ],
         str_18 | agi_15 | int_12 | cha_12 | level(24),
-        wpex(130, 150, 130, 30, 50, 90),
+        wpex(130, 150, 130, 30, 50, 90, 30),
         knows_riding_2
         | knows_athletics_5
         | knows_shield_4
@@ -18174,7 +18373,7 @@ troops = [
             itm.leather_boots,
         ],
         str_15 | agi_15 | int_12 | cha_12 | level(21),
-        wpex(110, 130, 110, 80, 15, 110),
+        wpex(110, 130, 110, 80, 15, 110, 15),
         knows_riding_1
         | knows_athletics_5
         | knows_shield_4
@@ -18205,7 +18404,7 @@ troops = [
             itm.ankle_boots,
         ],
         str_12 | agi_15 | int_15 | cha_9 | level(18),
-        wpex(70, 70, 100, 140, 15, 100),
+        wpex(70, 70, 100, 140, 15, 100, 15),
         knows_horse_archery_2
         | knows_riding_2
         | knows_athletics_5
@@ -18236,7 +18435,7 @@ troops = [
             itm.leather_boots,
         ],
         str_12 | agi_15 | int_15 | cha_12 | level(21),
-        wpex(100, 70, 70, 30, 140, 80),
+        wpex(100, 70, 70, 30, 140, 80, 30),
         knows_horse_archery_2
         | knows_riding_2
         | knows_athletics_5
@@ -18267,7 +18466,7 @@ troops = [
             itm.sarranid_boots_b,
         ],
         str_12 | agi_15 | int_12 | cha_12 | level(18),
-        wpex(100, 40, 100, 85, 15, 130),
+        wpex(100, 40, 100, 85, 15, 130, 15),
         knows_horse_archery_2
         | knows_riding_2
         | knows_athletics_5
@@ -18297,7 +18496,7 @@ troops = [
             itm.lamellar_vest,
         ],
         str_16 | agi_21 | int_12 | cha_14 | level(26),
-        wpex(182, 113, 112, 159, 82, 115),
+        wpex(182, 113, 112, 159, 82, 115, 65),
         knows_horse_archery_2
         | knows_riding_2
         | knows_athletics_7
@@ -18329,7 +18528,7 @@ troops = [
             itm.sarranid_boots_b,
         ],
         str_13 | agi_18 | int_15 | cha_9 | level(18),
-        wpex(126, 19, 23, 149, 41, 26),
+        wpex(126, 19, 23, 149, 41, 26, 30),
         knows_horse_archery_6
         | knows_riding_6
         | knows_weapon_master_2
@@ -18359,7 +18558,7 @@ troops = [
             itm.leather_jacket,
         ],
         str_15 | agi_12 | int_14 | cha_20 | level(28),
-        wpex(101, 35, 136, 15, 17, 19),
+        wpex(101, 35, 136, 15, 17, 19, 15),
         knows_riding_4
         | knows_athletics_2
         | knows_shield_4
@@ -18738,26 +18937,19 @@ upgrade(troops, "mercenary_horseman", "mercenary_cavalry")
 
 upgrade(troops, "village_walker_1_m", "swadian_militia")
 upgrade(troops, "swadian_recruit", "swadian_militia")
-
 upgrade2(troops, "swadian_militia", "swadian_footman", "swadian_skirmisher")
 upgrade2(troops, "swadian_footman", "swadian_man_at_arms", "swadian_infantry")
 upgrade(troops, "swadian_infantry", "swadian_sergeant")
 upgrade(troops, "swadian_skirmisher", "swadian_crossbowman")
-
 upgrade(troops, "swadian_crossbowman", "swadian_sharpshooter")
-
 upgrade(troops, "swadian_man_at_arms", "swadian_knight")
 
 upgrade(troops, "village_walker_2_m", "vaegir_footman")
 upgrade(troops, "vaegir_recruit", "vaegir_footman")
 upgrade2(troops, "vaegir_footman", "vaegir_veteran", "vaegir_skirmisher")
-
 upgrade(troops, "vaegir_skirmisher", "vaegir_archer")
-
 upgrade(troops, "vaegir_archer", "vaegir_marksman")
-
 upgrade2(troops, "vaegir_veteran", "vaegir_horseman", "vaegir_infantry")
-
 upgrade(troops, "vaegir_infantry", "vaegir_guard")
 upgrade(troops, "vaegir_horseman", "vaegir_knight")
 
@@ -18788,18 +18980,12 @@ upgrade(troops, "rhodok_veteran_crossbowman", "rhodok_sharpshooter")
 
 upgrade(troops, "village_walker_6_m", "sarranid_footman")
 upgrade(troops, "sarranid_recruit", "sarranid_footman")
-
 upgrade2(troops, "sarranid_footman", "sarranid_veteran_footman", "sarranid_skirmisher")
 upgrade2(troops, "sarranid_veteran_footman", "sarranid_horseman", "sarranid_infantry")
 upgrade(troops, "sarranid_infantry", "sarranid_guard")
 upgrade(troops, "sarranid_skirmisher", "sarranid_archer")
-
 upgrade(troops, "sarranid_archer", "sarranid_master_archer")
-
 upgrade(troops, "sarranid_horseman", "sarranid_mamluke")
-
-
-upgrade2(troops, "looter", "mountain_bandit", "forest_bandit")
 
 # new tree connections
 upgrade(troops, "mountain_bandit", "mercenary_footman")
@@ -18814,6 +19000,14 @@ upgrade(troops, "looter", "bandit")
 upgrade2(troops, "bandit", "brigand", "mercenary_footman")
 upgrade(troops, "brigand", "mercenary_horseman")
 
+upgrade(troops, "black_khergit_horseman", "black_khergit_guard")
+
+inject("undead_upgrades")
+
+upgrade(troops, "manhunter", "bounty_hunter")
+upgrade(troops, "bounty_hunter", "knight_errant")
+
+upgrade(troops, "slave_keeper", "slave_driver")
 upgrade(troops, "slave_driver", "slave_hunter")
 upgrade(troops, "slave_hunter", "slave_crusher")
 upgrade(troops, "slave_crusher", "slaver_chief")

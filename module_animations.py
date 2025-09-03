@@ -2650,7 +2650,7 @@ animations = [
         "reload_musket",
         0,
         amf_priority_reload | amf_use_weapon_speed | amf_play,
-        [2.0, "anim_human", combat + 2650, combat + 2860, arf_blend_in_8],
+        [3.0, "musket_reload_revised", 0, 318, arf_blend_in_8],
     ],
     [
         "ready_swingright_fist",
@@ -2979,7 +2979,8 @@ animations = [
         "release_thrust_twohanded",
         acf_thrust | acf_rot_vertical_bow | acf_anim_length(100),
         amf_priority_attack | amf_use_weapon_speed | amf_play | amf_continue_to_next,
-        [0.61, "anim_human", combat + 6010, combat + 6031, blend_in_release],
+        # ORIGINAL: [0.61, "anim_human", combat + 6010, combat + 6031, blend_in_release],
+        [0.46, "anim_human", combat + 6010, combat + 6031, blend_in_release],
     ],
     [
         "release_thrust_twohanded_continue",
@@ -3090,7 +3091,8 @@ animations = [
         | amf_rider_rot_thrust
         | amf_continue_to_next,
         ##   [0.61, "anim_human", combat+8510, combat+8540, blend_in_release],
-        [0.62, "attacks_thrust_onehanded", 12, 32, blend_in_release],
+        # ORIGINAL: [0.62, "attacks_thrust_onehanded", 12, 32, blend_in_release],
+        [0.47, "attacks_thrust_onehanded", 12, 32, blend_in_release],
     ],
     [
         "release_thrust_onehanded_continue",
@@ -3155,7 +3157,8 @@ animations = [
         | amf_continue_to_next,
         ##   [0.61, "anim_human", combat+8510, combat+8540, blend_in_release],
         ##   [0.9, "attacks_thrust_onehanded", 16, 54, blend_in_release],
-        [0.62, "attacks_thrust_onehanded", 12, 32, blend_in_release],
+        # ORIGINAL: [0.62, "attacks_thrust_onehanded", 12, 32, blend_in_release],
+        [0.47, "attacks_thrust_onehanded", 12, 32, blend_in_release],
     ],
     [
         "release_thrust_onehanded_horseback_continue",
@@ -3219,7 +3222,8 @@ animations = [
         | amf_rider_rot_thrust
         | amf_continue_to_next,
         ##   [0.62, "anim_human", combat+9507, combat+9530, blend_in_release],
-        [0.62, "thrust_onehanded_lance_hb", 8, 33, blend_in_release],
+        # ORIGINAL: [0.62, "thrust_onehanded_lance_hb", 8, 33, blend_in_release],
+        [0.47, "thrust_onehanded_lance_hb", 8, 33, blend_in_release],
     ],
     [
         "release_thrust_onehanded_lance_continue",
@@ -3721,7 +3725,8 @@ animations = [
         "release_thrust_staff",
         acf_thrust | acf_rot_vertical_bow | acf_anim_length(100),
         amf_priority_attack | amf_use_weapon_speed | amf_play,
-        [0.6, "attacks_staff_thrust", 21, 40, blend_in_release],
+        # ORIGINAL: [0.6, "attacks_staff_thrust", 21, 40, blend_in_release],
+        [0.45, "attacks_staff_thrust", 21, 40, blend_in_release],
     ],
     [
         "release_thrust_staff_continue",
@@ -5561,11 +5566,12 @@ animations = [
         "crouch_pike",
         0,
         amf_client_prediction,
+        # [3.3, "crouch_staff_cstance_attack", 0, 100, arf_use_stand_progress|arf_cyclic, 0, (0, 0, 0), 0.0],
         [
             3.3,
-            "crouch_staff_cstance_attack",
+            "staff_cstance",
             0,
-            100,
+            60,
             arf_use_stand_progress | arf_cyclic,
             0,
             (0, 0, 0),
@@ -5576,16 +5582,8 @@ animations = [
         "crouch_pike_recover",
         0,
         amf_priority_parried | amf_use_weapon_speed | amf_play,
-        [
-            1.2,
-            "crouch_staff_cstance_attack",
-            105,
-            137,
-            arf_blend_in_3,
-            0,
-            (0, 0, 0),
-            0.0,
-        ],
+        # [1.2, "crouch_staff_cstance_attack", 105, 137, arf_blend_in_3, 0, (0, 0, 0), 0.0],
+        [1.2, "staff_cstance", 10, 11, arf_blend_in_3, 0, (0, 0, 0), 0.0],
     ],
     [
         "ready_overswing_spear",
@@ -5595,13 +5593,15 @@ animations = [
         | amf_use_inertia
         | amf_keep
         | amf_client_owner_prediction,
-        [ready_durn, "spear_thrust_overhead", 0, 20, blend_in_ready],
+        # [ready_durn, "spear_thrust_overhead", 0, 20, blend_in_ready],
+        [ready_durn, "attacks_staff_thrust_overhead", 6, 21, blend_in_ready],
     ],
     [
         "release_overswing_spear",
         acf_overswing,
         amf_priority_attack | amf_use_weapon_speed | amf_play | amf_continue_to_next,
-        [0.6, "spear_thrust_overhead", 20, 41, blend_in_release],
+        # [0.6, "spear_thrust_overhead", 20, 41, blend_in_release],
+        [0.45, "attacks_staff_thrust_overhead", 21, 43, blend_in_release],
     ],
     [
         "release_overswing_spear_continue",
@@ -5610,19 +5610,22 @@ animations = [
         | amf_use_weapon_speed
         | amf_play
         | amf_client_owner_prediction,
-        [0.3, "spear_thrust_overhead", 41, 52, arf_blend_in_2],
+        # [0.3, "spear_thrust_overhead", 41, 52, arf_blend_in_2],
+        [0.3, "attacks_staff_thrust_overhead", 43, 50, arf_blend_in_2],
     ],
     [
         "parried_overswing_spear",
         0,
         amf_priority_parried | amf_use_weapon_speed | amf_play,
-        [0.3, "spear_thrust_overhead", 26, 22, arf_blend_in_2],
+        # [0.3, "spear_thrust_overhead", 26, 22, arf_blend_in_2],
+        [0.3, "attacks_staff_thrust_overhead", 50, 43, arf_blend_in_2],
     ],
     [
         "blocked_overswing_spear",
         0,
         amf_priority_blocked | amf_use_weapon_speed | amf_play,
-        [0.3, "spear_thrust_overhead", 26, 22, arf_blend_in_2],
+        # [0.3, "spear_thrust_overhead", 26, 22, arf_blend_in_2],
+        [0.3, "attacks_staff_thrust_overhead", 50, 43, arf_blend_in_2],
     ],
     [
         "reload_pistol_half",
@@ -5632,19 +5635,26 @@ animations = [
     ],
     [
         "ready_overswing_musket",
-        acf_overswing,
+        acf_rot_vertical_sword | acf_overswing,
         amf_priority_attack
         | amf_use_weapon_speed
         | amf_use_inertia
         | amf_keep
-        | amf_client_owner_prediction,
-        [ready_durn, "musket_upper_swing", 12, 24, blend_in_ready],
+        | amf_client_owner_prediction
+        | amf_rider_rot_thrust,
+        # [ready_durn, "musket_upper_swing", 12, 24, blend_in_ready],
+        [ready_durn, "javelin_thrust_overhead", 0, 48, blend_in_ready],
     ],
     [
         "release_overswing_musket",
-        acf_overswing,
-        amf_priority_attack | amf_use_weapon_speed | amf_play | amf_continue_to_next,
-        [0.55, "musket_upper_swing", 24, 40, blend_in_release],
+        acf_rot_vertical_sword | acf_overswing,
+        amf_priority_attack
+        | amf_use_weapon_speed
+        | amf_play
+        | amf_continue_to_next
+        | amf_rider_rot_thrust,
+        # [0.55, "musket_upper_swing", 24, 40, blend_in_release],
+        [0.40, "javelin_thrust_overhead", 48, 78, blend_in_release],  # 78
     ],
     [
         "release_overswing_musket_continue",
@@ -5652,20 +5662,24 @@ animations = [
         amf_priority_continue
         | amf_use_weapon_speed
         | amf_play
-        | amf_client_owner_prediction,
-        [0.4, "musket_upper_swing", 40, 48, arf_blend_in_2],
+        | amf_client_owner_prediction
+        | amf_rider_rot_thrust,
+        # [0.4, "musket_upper_swing", 40, 48, arf_blend_in_2],
+        [0.3, "javelin_thrust_overhead", 79, 95, arf_blend_in_2],
     ],
     [
         "parried_overswing_musket",
         0,
         amf_priority_parried | amf_use_weapon_speed | amf_play,
-        [attack_parried_duration, "musket_upper_swing", 34, 30, blend_in_parry],
+        # [attack_parried_duration, "musket_upper_swing", 34, 30, blend_in_parry],
+        [0.3, "javelin_thrust_overhead", 95, 79, blend_in_parry],
     ],
     [
         "blocked_overswing_musket",
         0,
         amf_priority_blocked | amf_use_weapon_speed | amf_play,
-        [attack_blocked_duration, "musket_upper_swing", 34, 30, blend_in_parry],
+        # [attack_blocked_duration, "musket_upper_swing", 34, 30, blend_in_parry],
+        [0.3, "javelin_thrust_overhead", 95, 79, blend_in_parry],  # 95 79
     ],
     [
         "ready_thrust_musket",
