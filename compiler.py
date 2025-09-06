@@ -9,13 +9,10 @@ from copy import deepcopy, copy
 get_globals = globals
 get_locals = locals
 
-headers_package = path_exists('./headers')
+check_nested_loops =  False if 'nested_loops' in sys.argv else True
 
 try:
-	if headers_package:
-		from headers.header_common import *
-	else:
-		from header_common import *
+	from header_common import *
 except:
 	print(('\nError importing header_common.py file:\n\n%s' % formatted_exception()))
 	if 'wait' in sys.argv: input('Press Enter to finish>')
@@ -230,7 +227,7 @@ class VARIABLE(object):
 		except MSException as e:
 			raise MSException('failed to calculate expression %r' % self, *e.args)
 		except Exception as e:
-			raise MSException('failed to calculate expression %r' % self, e.message)
+			raise MSException('failed to calculate expression %r' % self, str(e))
 
 	def __float__(self): return float(self.__int__())
 
@@ -285,7 +282,7 @@ class VARIABLE(object):
 		except MSException as e:
 			raise MSException('failed to generate dynamic code for expression %r' % self, *e.args)
 		except Exception as e:
-			raise MSException('failed to generate dynamic code for expression %r' % self, e.message)
+			raise MSException('failed to generate dynamic code for expression %r' % self, str(e))
 	def newcopy(self):
 		cls = self.__class__
 		result = cls.__new__(cls)
@@ -321,9 +318,9 @@ class VAR_PROPERTY(VARIABLE):
 		return '<%s>' % self.formatted_name()
 
 	def __val__(self):
-		try: result = self.module[7][int(self.entity)]
+		try: result = self.module[7][parse_int(self.entity)]
 		except MSException as e: raise MSException('failed to calculate property %s' % repr(self), *e.args)
-		except Exception as e: raise MSException('failed to calculate property %s' % repr(self), e.message)
+		except Exception as e: raise MSException('failed to calculate property %s' % repr(self), str(e))
 		for key, convertor, default in self.retrieval:
 			try:
 				result = result[key]
@@ -340,47 +337,47 @@ class VAR_PROPERTY(VARIABLE):
 class VAR_ITEM(VARIABLE):
 
 	@property
-	def flags(self):              return VAR_PROPERTY(WRECK.itm, self, 'flags',              (3, None, 0))
+	def flags(self):              return VAR_PROPERTY(WRECK.itm, self, 'flags',              (4, None, 0))
 	@property
-	def capabilities(self):       return VAR_PROPERTY(WRECK.itm, self, 'capabilities',       (4, None, 0))
+	def capabilities(self):       return VAR_PROPERTY(WRECK.itm, self, 'capabilities',       (5, None, 0))
 	@property
-	def price(self):              return VAR_PROPERTY(WRECK.itm, self, 'price',              (5, None, 0))
+	def price(self):              return VAR_PROPERTY(WRECK.itm, self, 'price',              (6, None, 0))
 	@property
-	def weight(self):             return VAR_PROPERTY(WRECK.itm, self, 'weight',             (6, unparse_item_aggregate, {}), ('weight', None, 0.0))
+	def weight(self):             return VAR_PROPERTY(WRECK.itm, self, 'weight',             (7, unparse_item_aggregate, {}), ('weight', None, 0.0))
 	@property
-	def head_armor(self):         return VAR_PROPERTY(WRECK.itm, self, 'head_armor',         (6, unparse_item_aggregate, {}), ('head', None, 0))
+	def head_armor(self):         return VAR_PROPERTY(WRECK.itm, self, 'head_armor',         (7, unparse_item_aggregate, {}), ('head', None, 0))
 	@property
-	def body_armor(self):         return VAR_PROPERTY(WRECK.itm, self, 'body_armor',         (6, unparse_item_aggregate, {}), ('body', None, 0))
+	def body_armor(self):         return VAR_PROPERTY(WRECK.itm, self, 'body_armor',         (7, unparse_item_aggregate, {}), ('body', None, 0))
 	@property
-	def leg_armor(self):          return VAR_PROPERTY(WRECK.itm, self, 'leg_armor',          (6, unparse_item_aggregate, {}), ('leg', None, 0))
+	def leg_armor(self):          return VAR_PROPERTY(WRECK.itm, self, 'leg_armor',          (7, unparse_item_aggregate, {}), ('leg', None, 0))
 	@property
-	def difficulty(self):         return VAR_PROPERTY(WRECK.itm, self, 'difficulty',         (6, unparse_item_aggregate, {}), ('diff', None, 0))
+	def difficulty(self):         return VAR_PROPERTY(WRECK.itm, self, 'difficulty',         (7, unparse_item_aggregate, {}), ('diff', None, 0))
 	@property
-	def hp(self):                 return VAR_PROPERTY(WRECK.itm, self, 'hp',                 (6, unparse_item_aggregate, {}), ('hp', None, 0))
+	def hp(self):                 return VAR_PROPERTY(WRECK.itm, self, 'hp',                 (7, unparse_item_aggregate, {}), ('hp', None, 0))
 	@property
-	def speed(self):              return VAR_PROPERTY(WRECK.itm, self, 'speed',              (6, unparse_item_aggregate, {}), ('speed', None, 0))
+	def speed(self):              return VAR_PROPERTY(WRECK.itm, self, 'speed',              (7, unparse_item_aggregate, {}), ('speed', None, 0))
 	@property
-	def missile_speed(self):      return VAR_PROPERTY(WRECK.itm, self, 'missile_speed',      (6, unparse_item_aggregate, {}), ('msspd', None, 0))
+	def missile_speed(self):      return VAR_PROPERTY(WRECK.itm, self, 'missile_speed',      (7, unparse_item_aggregate, {}), ('msspd', None, 0))
 	@property
-	def size(self):               return VAR_PROPERTY(WRECK.itm, self, 'size',               (6, unparse_item_aggregate, {}), ('size', None, 0))
+	def size(self):               return VAR_PROPERTY(WRECK.itm, self, 'size',               (7, unparse_item_aggregate, {}), ('size', None, 0))
 	@property
-	def max_amount(self):         return VAR_PROPERTY(WRECK.itm, self, 'max_amount',         (6, unparse_item_aggregate, {}), ('qty', None, 0))
+	def max_amount(self):         return VAR_PROPERTY(WRECK.itm, self, 'max_amount',         (7, unparse_item_aggregate, {}), ('qty', None, 0))
 	@property
-	def swing(self):              return VAR_PROPERTY(WRECK.itm, self, 'swing',              (6, unparse_item_aggregate, {}), ('swing', None, 0))
+	def swing(self):              return VAR_PROPERTY(WRECK.itm, self, 'swing',              (7, unparse_item_aggregate, {}), ('swing', None, 0))
 	@property
-	def swing_damage(self):       return VAR_PROPERTY(WRECK.itm, self, 'swing_damage',       (6, unparse_item_aggregate, {}), ('swing', lambda x: x&ibf_armor_mask, 0))
+	def swing_damage(self):       return VAR_PROPERTY(WRECK.itm, self, 'swing_damage',       (7, unparse_item_aggregate, {}), ('swing', lambda x: x&ibf_armor_mask, 0))
 	@property
-	def swing_damage_type(self):  return VAR_PROPERTY(WRECK.itm, self, 'swing_damage_type',  (6, unparse_item_aggregate, {}), ('swing', lambda x: x>>iwf_damage_type_bits, 0))
+	def swing_damage_type(self):  return VAR_PROPERTY(WRECK.itm, self, 'swing_damage_type',  (7, unparse_item_aggregate, {}), ('swing', lambda x: x>>iwf_damage_type_bits, 0))
 	@property
-	def thrust(self):             return VAR_PROPERTY(WRECK.itm, self, 'thrust',             (6, unparse_item_aggregate, {}), ('thrust', None, 0))
+	def thrust(self):             return VAR_PROPERTY(WRECK.itm, self, 'thrust',             (7, unparse_item_aggregate, {}), ('thrust', None, 0))
 	@property
-	def thrust_damage(self):      return VAR_PROPERTY(WRECK.itm, self, 'thrust_damage',      (6, unparse_item_aggregate, {}), ('thrust', lambda x: x&ibf_armor_mask, 0))
+	def thrust_damage(self):      return VAR_PROPERTY(WRECK.itm, self, 'thrust_damage',      (7, unparse_item_aggregate, {}), ('thrust', lambda x: x&ibf_armor_mask, 0))
 	@property
-	def thrust_damage_type(self): return VAR_PROPERTY(WRECK.itm, self, 'thrust_damage_type', (6, unparse_item_aggregate, {}), ('thrust', lambda x: x>>iwf_damage_type_bits, 0))
+	def thrust_damage_type(self): return VAR_PROPERTY(WRECK.itm, self, 'thrust_damage_type', (7, unparse_item_aggregate, {}), ('thrust', lambda x: x>>iwf_damage_type_bits, 0))
 	@property
-	def abundance(self):          return VAR_PROPERTY(WRECK.itm, self, 'abundance',          (6, unparse_item_aggregate, {}), ('abundance', None, 0))
+	def abundance(self):          return VAR_PROPERTY(WRECK.itm, self, 'abundance',          (7, unparse_item_aggregate, {}), ('abundance', None, 0))
 	@property
-	def modifiers(self):          return VAR_PROPERTY(WRECK.itm, self, 'modifiers',          (7, None, 0))
+	def modifiers(self):          return VAR_PROPERTY(WRECK.itm, self, 'modifiers',          (8, None, 0))
 
 	food_quality = head_armor
 	accuracy = leg_armor
@@ -549,9 +546,9 @@ class VAR_TROOP(VARIABLE):
 # Root class for all Warband entities. This represents all basic entities like `scn`, `script`, `scn`, `itm` et cetera.
 class UID(list):
 
-	def __init__(self, basename, defaults = {}, opmask = 0, varclass = VARIABLE, data = []):
+	def __init__(self, basename, defaults = {}, opmask = 0, varclass = VARIABLE):
 		# dict(vars), set(unassigned vars), var_category_name, dict(default_settings_for_new_vars), allow_declaring_new_vars, opmask_to_apply, variable_class, data_source
-		super(UID, self).__init__([{}, set(), basename, defaults, True, opmask, varclass, data])
+		super(UID, self).__init__([{}, set(), basename, defaults, True, opmask, varclass, []])
 
 	def __getattr__(self, name):
 		#name = name.lower()
@@ -600,6 +597,7 @@ class WRECK(object):
 	time_syntax = None
 	time_compile = None
 	time_export = None
+	scripts_depth = [] # check for performance_heavy_loops
 
 	# ENTITY REFERENCES
 	if 'tag' in sys.argv:
@@ -727,6 +725,7 @@ class WRECK(object):
 
 	# MISSION DUPLICATE MESSAGE TRACKING
 	mt_errors = []
+	mt_warnings = []
 	mt_notices = []
 
 	# SUPPORT FOR GLOBAL VARIABLES
@@ -814,7 +813,8 @@ class CUSTOM_OPERATION(object):
 		try:
 			return self.callback(*argl) if self.callback else []
 		except Exception as e:
-			raise MSException('illegal syntax for custom operation `%s`.`%s`' % (self.module, self.name), *e.args)
+			_argl = [str(arg) for arg in argl]
+			raise MSException('illegal syntax for custom operation %s.%s(%s)\n%s' % (self.module, self.name, ", ".join(_argl), e.message), *e.args)
 	def __or__(self, other):
 		if other == neg: other = 'neg'
 		elif other == this_or_next: other = 'this_or_next'
@@ -902,7 +902,7 @@ def calculate_identifiers(source, uid, mask_uid = None, *argl):
 	except MSException as e:
 		raise MSException('failed to parse identifier for %r element #%d' % (uid[2], index), *e.args)
 	except Exception as e:
-		raise MSException('failed to parse identifier for %r element #%d' % (uid[2], index), e.message)
+		raise MSException('failed to parse identifier for %r element #%d' % (uid[2], index), str(e))
 	uid[4] = False
 	if mask_uid: mask_uid[4] = False
 
@@ -931,7 +931,7 @@ def allocate_quick_strings():
 	except MSException as e:
 		raise MSException('failed to allocate quick strings', *e.args)
 	except Exception as e:
-		raise MSException('failed to allocate quick strings', e.message)
+		raise MSException('failed to allocate quick strings', str(e))
 
 def allocate_global_variables(enforce_sgc = True):
 	max_global_index = 0
@@ -1023,6 +1023,9 @@ def preprocess_entities_internal(glob):
 			WRECK.dialog_states_dict[output_token] = len(WRECK.dialog_states_list)
 			WRECK.dialog_states_list.append(output_token)
 			WRECK.dialog_states_usage.append(0)
+	for e in glob['items']:
+		if e[2] is None:
+			e[2] = e[1]
 
 #	#parties check
 #	for e in glob['parties']:
@@ -1033,17 +1036,57 @@ def preprocess_entities_internal(glob):
 #		if e[0] != party_id:
 #			WRECK.notices.append('White space in party_id %r.' % e[0])
 #		e[0] = e[0].lower().replace(' ', '_')
-#
-#	#troops check
-#	for e in glob['troops']:
-#		troop_id = e[0].lower()
-#		if e[0] != troop_id:
-#			WRECK.notices.append('Capital characters in troop_id %r.' % e[0])
-#		troop_id = e[0].replace(' ', '_')
-#		if e[0] != troop_id:
-#			WRECK.notices.append('White space in troop_id %r.' % e[0])
-#		e[0] = e[0].lower().replace(' ', '_')
-#
+
+	#troops check
+	for e in glob['troops']:
+		if (e[3] & tf_is_merchant) == tf_is_merchant: continue
+		if not isinstance(e[8], AGGREGATE): e[8] = unparse_attr_aggregate(e[8])
+		for item, modifier in e[7]:
+			item_list = glob['items'][parse_int(item)]
+			difficulty = item_list[7].get('diff', 0)
+			if modifier == imod_stubborn: difficulty += 1
+			elif modifier == imod_timid: difficulty -= 1
+			elif modifier == imod_champion: difficulty += 2
+			elif modifier == imod_masterwork: difficulty += 4
+			elif modifier == imod_heavy: difficulty += 1
+			elif modifier == imod_strong: difficulty += 2
+			type = (item_list[4] & 0xFF)
+			notice = ""
+			if modifier == 0:
+				str_modifier = ""
+			else:
+				str_modifier = " with modifier imod_" + glob['item_modifiers'][modifier][0]
+			if type == itp_type_horse:
+				riding = (e[10] >> (skl_riding << 2)) & 0xf
+				if riding < difficulty:
+					notice = "trp.%s doesn't have riding skill to handle itm.%s%s. Required %d." % (e[0], item_list[0], str_modifier, difficulty)
+			elif (type == itp_type_one_handed_wpn) or (type == itp_type_two_handed_wpn) or (type == itp_type_polearm):
+				strength = e[8].get('str', 0)
+				if strength < difficulty:
+					notice = "trp.%s doesn't have enough strength to handle itm.%s%s. Required %d." % (e[0], item_list[0], str_modifier, difficulty)
+			elif type == itp_type_shield:
+				shield = (e[10] >> (skl_shield <<2)) & 0xf
+				if shield < difficulty:
+					notice = "trp.%s doesn't have shield skill to handle itm.%s%s. Required %d." % (e[0], item_list[0], str_modifier, difficulty)
+			elif type == itp_type_bow:
+				power_draw = (e[10] >> (skl_power_draw <<2)) & 0xf
+				if power_draw < difficulty:
+					notice = "trp.%s doesn't have power draw skill to handle itm.%s%s. Required %d." % (e[0], item_list[0], str_modifier, difficulty)
+			elif type == itp_type_thrown:
+				power_throw = (e[10] >> (skl_power_throw <<2)) & 0xf
+				if power_throw < difficulty:
+					notice = "trp.%s doesn't have power throw skill to handle itm.%s%s. Required %d." % (e[0], item_list[0], str_modifier, difficulty)
+			elif (type == itp_type_head_armor) or (type == itp_type_body_armor) or (type == itp_type_foot_armor) or (type == itp_type_hand_armor):
+				strength = e[8].get('str', 0)
+				if strength < difficulty:
+					notice = "trp.%s doesn't have enough strength to handle itm.%s%s. Required %d." % (e[0], item_list[0], str_modifier, difficulty)
+			elif (type == itp_type_musket) or (type == itp_type_pistol) or (type == itp_type_crossbow):
+				strength = e[8].get('str', 0)
+				if strength < difficulty:
+					notice = "trp.%s doesn't have enough strength to handle itm.%s%s. Required %d." % (e[0], item_list[0], str_modifier, difficulty)
+			if notice != "":
+				if not notice in WRECK.notices: WRECK.notices.append(notice)
+
 #	for e in glob['scripts']:
 #		script_id = e[0].lower()
 #		if e[0] != script_id:
@@ -1081,8 +1124,6 @@ def process_animations(e, index):
 			else:
 				sequence += '0.0 '
 			result.append(sequence)
-	else:
-		result.append('  none 0 0')
 	return '\r\n'.join(result)
 
 def process_info_pages(entity, index):
@@ -1280,17 +1321,17 @@ def aggregate_scripts(entities):
 	entities.append('')
 	return '\r\n'.join(entities)
 def process_items(e, index):
-	output = [' itm_%s %s %s %d  %s  %s %s %s %s ' % (compiled_identifier(e[0], 'item'), external_string(e[1]), external_string(e[1]), len(e[2]), '  '.join(['%s %s' % (imesh[0], imesh[1]) for imesh in e[2]]), e[3], e[4], e[5], e[7])]
-	if not isinstance(e[6], AGGREGATE): e[6] = unparse_item_aggregate(e[6])
-	if e[6].get('abundance', 0) == 0: e[6]['abundance'] = 100
-	output.append('%f %s %s %s %s %s %s %s %s %s %s %s %s' % (e[6].get('weight', 0.0), e[6].get('abundance', 0), e[6].get('head', 0), e[6].get('body', 0), e[6].get('leg', 0), e[6].get('diff', 0), e[6].get('hp', 0), e[6].get('speed', 0), e[6].get('msspd', 0), e[6].get('size', 0), e[6].get('qty', 0), e[6].get('thrust', 0), e[6].get('swing', 0)))
-	output.append('\r\n %d' % len(e[9]))
-	if len(e[9]):
-		#print("\n%s (#%d) factions: %s" % (e[0], index, ', '.join(['%d' % faction for faction in e[9]])),)
+	output = [' itm_%s %s %s %d  %s  %s %s %s %s ' % (compiled_identifier(e[0], 'item'), external_string(e[1]), external_string(e[2]), len(e[3]), '  '.join(['%s %s' % (imesh[0], imesh[1]) for imesh in e[3]]), e[4], e[5], e[6], e[8])]
+	if not isinstance(e[7], AGGREGATE): e[7] = unparse_item_aggregate(e[7])
+	if e[7].get('abundance', 0) == 0: e[7]['abundance'] = 100
+	output.append('%f %s %s %s %s %s %s %s %s %s %s %s %s' % (e[7].get('weight', 0.0), e[7].get('abundance', 0), e[7].get('head', 0), e[7].get('body', 0), e[7].get('leg', 0), e[7].get('diff', 0), e[7].get('hp', 0), e[7].get('speed', 0), e[7].get('msspd', 0), e[7].get('size', 0), e[7].get('qty', 0), e[7].get('thrust', 0), e[7].get('swing', 0)))
+	output.append('\r\n %d' % len(e[10]))
+	if len(e[10]):
+		#print("\n%s (#%d) factions: %s" % (e[0], index, ', '.join(['%d' % faction for faction in e[10]])),)
 		output.append('\r\n')
-		output.append(''.join([' %d' % parse_int(faction) for faction in e[9]]))
-	output.append('\r\n%d\r\n' % len(e[8]))
-	for trigger, code_block in e[8]:
+		output.append(''.join([' %d' % parse_int(faction) for faction in e[10]]))
+	output.append('\r\n%d\r\n' % len(e[9]))
+	for trigger, code_block in e[9]:
 		try: output.append('%f  %s \r\n' % (trigger, parse_module_code(code_block, 'itm.%s(#%d).%s' % (e[0], index, simple_trigger_to_string(trigger)))))
 		except MSException as er: raise MSException('failed to compile trigger for item %s (#%d)' % (e[0], index), *er.args)
 	return ''.join(output)
@@ -1456,7 +1497,7 @@ parsers = {
 	'factions':          { 'parser': (id, str, int, float, [(WRECK.fac, float)], [str], OPTIONAL(int, 0xAAAAAA)), 'processor': process_factions, 'aggregator': aggregate_factions },
 	'game_menus':        { 'parser': (id, int, str, 'none', SCRIPT, [(id, SCRIPT, str, SCRIPT, OPTIONAL(str, ''))]), 'processor': process_game_menus, 'aggregator': aggregate_game_menus },
 	'info_pages':        { 'parser': (id, str, str), 'processor': process_info_pages, 'aggregator': aggregate_info_pages },
-	'items':             { 'parser': (id, str, [(id, int)], int, int, int, AGGREGATE, int, OPTIONAL([(float, SCRIPT)], []), OPTIONAL([int], [])), 'processor': process_items, 'aggregator': aggregate_items },
+	'items':             { 'parser': (id, str, OPTIONAL(str, None), [(id, int)], int, int, int, AGGREGATE, int, OPTIONAL([(float, SCRIPT)], []), OPTIONAL([int], [])), 'processor': process_items, 'aggregator': aggregate_items },
 	'map_icons':         { 'parser': (id, int, id, float, int, OPTIONAL(float, None), OPTIONAL(float, None), OPTIONAL(float, None), OPTIONAL([(float, SCRIPT)], []) ), 'processor': process_map_icons, 'aggregator': aggregate_map_icons },
 	'meshes':            { 'parser': (id, int, id, float, float, float, float, float, float, float, float, float), 'processor': process_meshes, 'aggregator': aggregate_simple },
 	'mission_templates': { 'parser': (id, int, int, str, [(int, int, int, int, int, [int])], [TRIGGER]), 'processor': process_mission_templates, 'aggregator': aggregate_mission_templates },
@@ -1609,6 +1650,9 @@ def parse_module_code(code_block, script_name, check_can_fail = False):
 	export = ['']
 	total_commands = len(code_block)
 	current_depth = 0
+	maximum_performance_depth = 0
+	current_performance_depth = 0
+	checked_performance_depth = []
 	can_fail = False
 	tag = script_name.split('.')[0]
 	if tag == 'mt':
@@ -1628,6 +1672,7 @@ def parse_module_code(code_block, script_name, check_can_fail = False):
 			current_depth += 1
 		elif command[0] == try_end:
 			current_depth -= 1
+		
 		# Check for assignment and can_fail operations
 		if command[0] in lhs_operations:
 			if len(command) < 3:
@@ -1724,6 +1769,25 @@ def parse_module_code(code_block, script_name, check_can_fail = False):
 			print(repr(command))
 			print(repr([v.__int__() if isinstance(v, VARIABLE) else v for v in command]))
 			raise
+
+		# Performance heavy loops check
+		if command[0] in performance_heavy_loops:
+			is_heavy = True
+			if command[0] == try_for_prop_instances:
+				is_heavy = False
+				if command[1] == 1: is_heavy = True # all instances
+				elif command[1] > 1:
+					if command[3] == 0: is_heavy = True # all instances with flags
+					elif isinstance(command[3], VAR_ITEM): is_heavy = True # items
+			if is_heavy:
+				current_performance_depth += 1
+				checked_performance_depth.insert(0, current_depth)
+				maximum_performance_depth = max(maximum_performance_depth, current_performance_depth)
+		if len(checked_performance_depth) > 0:
+			if (command[0] == try_end) and (checked_performance_depth[0] == (current_depth + 1)):
+				current_performance_depth -= 1
+				checked_performance_depth.pop(0)
+
 	if current_depth != 0:
 		explanation = 'missing' if (current_depth > 0) else 'extra'
 		if tag == 'mt':
@@ -1732,7 +1796,14 @@ def parse_module_code(code_block, script_name, check_can_fail = False):
 				WRECK.mt_errors.append((explanation, trigger, block, num))
 		else:
 			WRECK.errors.append('try/end operations do not match in %s: %d try_end(s) %s' % (script_name, abs(current_depth), explanation))
-	if check_can_fail and can_fail and (script_name[7:10] != 'cf_'):
+	if check_nested_loops and maximum_performance_depth > 1:
+		if tag == 'mt':
+			if not (maximum_performance_depth, trigger, block, num) in WRECK.mt_warnings:
+				WRECK.warnings.append('Nested performance heavy loops in %s' % script_name)
+				WRECK.mt_warnings.append((maximum_performance_depth, trigger, block, num))
+		else:
+			WRECK.warnings.append('Nested performance heavy loops in %s' % script_name)
+	if check_can_fail and can_fail and (script_name[7:10] != 'cf_') and (script_name[7:12] != 'game_'):
 		WRECK.warnings.append('%s can fail but it\'s name does not start with "cf_"' % script_name)
 	for unused_local in locals_def - locals_use:
 		if tag == 'mt':
@@ -1914,41 +1985,36 @@ REQUIRED_UIDS = { 'anim': WRECK.anim, 'fac': WRECK.fac, 'ip': WRECK.ip, 'itm': W
 WRECK.initialized = True
 
 try:
-	if headers_package:
-		from headers import *
-		import headers.header_operations as OPLIST
-		import headers.header_triggers as TRLIST
-	else:
-		from header_ground_types import *
-		from header_item_modifiers import *
-		from header_mission_types import *
-		from header_terrain_types import *
-		from header_operations import *
-		from header_animations import *
-		from header_dialogs import *
-		from header_factions import *
-		from header_game_menus import *
-		from header_items import *
-		from header_map_icons import *
-		from header_meshes import *
-		from header_mission_templates import *
-		from header_music import *
-		from header_particle_systems import *
-		from header_parties import *
-		from header_postfx import *
-		from header_presentations import *
-		from header_quests import *
-		from header_scene_props import *
-		from header_scenes import *
-		from header_skills import *
-		from header_skins import *
-		from header_sounds import *
-		from header_strings import *
-		from header_tableau_materials import *
-		from header_triggers import *
-		from header_troops import *
-		import header_operations as OPLIST
-		import header_triggers as TRLIST
+	from header_ground_types import *
+	from header_item_modifiers import *
+	from header_mission_types import *
+	from header_terrain_types import *
+	from header_operations import *
+	from header_animations import *
+	from header_dialogs import *
+	from header_factions import *
+	from header_game_menus import *
+	from header_items import *
+	from header_map_icons import *
+	from header_meshes import *
+	from header_mission_templates import *
+	from header_music import *
+	from header_particle_systems import *
+	from header_parties import *
+	from header_postfx import *
+	from header_presentations import *
+	from header_quests import *
+	from header_scene_props import *
+	from header_scenes import *
+	from header_skills import *
+	from header_skins import *
+	from header_sounds import *
+	from header_strings import *
+	from header_tableau_materials import *
+	from header_triggers import *
+	from header_troops import *
+	import header_operations as OPLIST
+	import header_triggers as TRLIST
 except:
 	print(("\nError importing module header files:\n\n%s" % formatted_exception()))
 	if 'wait' in sys.argv: input('Press Enter to finish>')
@@ -1956,8 +2022,11 @@ except:
 
 if 'depth_operations' not in globals():
 	depth_operations = [try_begin, try_for_range, try_for_range_backwards, try_for_parties, try_for_agents]
-	try: depth_operations.extend([try_for_prop_instances, try_for_players, try_for_dict_keys])
+	try: depth_operations.extend([try_for_prop_instances, try_for_players])
 	except: pass
+
+if 'performance_heavy_loops' not in globals():
+	performance_heavy_loops = [try_for_agents, try_for_parties, try_for_prop_instances]
 
 try:
 	from module_constants import *

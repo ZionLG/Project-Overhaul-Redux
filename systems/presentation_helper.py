@@ -42,6 +42,7 @@ scripts = [
 (ui_create_numberbox, "$input_area_size_x", 200, 135, 0, 100000), # Macro operator
 (ui_create_numberbox, "$input_area_size_y", 200, 100, 0, 100000), # Macro operator
 (ui_create_game_button, "$restart_button", "@Restart", 430, 160, 120, 30), # Macro operator
+
 (ui_create_game_button, "$aligment_button", "@Alignment", 430, 130, 120, 30), # Macro operator
 (ui_create_container, "$aligment_container", 490, 0, 210, 200), # Macro operator
 (set_container_overlay, "$aligment_container"),
@@ -63,9 +64,35 @@ scripts = [
 (ui_create_label, reg1, "@single`line", 30, 50, 0, ":element_scale"), # Macro operator
 (ui_create_label, reg1, "@with`outline", 30, 30, 0, ":element_scale"), # Macro operator
 (ui_create_label, reg1, "@scrollable`style`2", 30, 10, 0, ":element_scale"), # Macro operator
+(assign, "$current_subpanel", "$aligment_container"),
 (set_container_overlay, "$panel"),
 (ui_create_game_button, "$display_button", "@Display Off", 430, 100, 120, 30), # Macro operator
 (ui_create_game_button, "$grid_button", "@Grid", 430, 70, 120, 30), # Macro operator
+
+(ui_create_game_button, "$rotation_button", "@Rotation", 430, 40, 120, 30), # Macro operator
+(ui_create_container, "$rotation_container", 490, 0, 210, 200), # Macro operator
+(set_container_overlay, "$rotation_container"),
+(ui_create_label, reg1, "@rot`X", 10, 170, 0, ":element_scale",), # Macro operator
+(ui_create_numberbox, "$rotation_x", 50, 170, 0, 360, ":element_scale"), # Macro operator
+(ui_create_label, reg1, "@rot`Y", 10, 150, 0, ":element_scale",), # Macro operator
+(ui_create_numberbox, "$rotation_y", 50, 150, 0, 360, ":element_scale"), # Macro operator
+(ui_create_label, reg1, "@rot`Z", 10, 130, 0, ":element_scale",), # Macro operator
+(ui_create_numberbox, "$rotation_z", 50, 130, 0, 360, ":element_scale"), # Macro operator
+(overlay_set_display, "$rotation_container", 0),
+(set_container_overlay, "$panel"),
+
+(ui_create_game_button, "$color_button", "@Color", 430, 10, 120, 30),
+(ui_create_container, "$color_container", 490, 0, 210, 200), # Macro operator
+(set_container_overlay, "$color_container"),
+(ui_create_label, reg1, "@Red", 10, 160, 0, ":element_scale",), # Macro operator
+(ui_create_numberbox, "$color_red", 50, 160, 0, 256, ":element_scale"), # Macro operator
+(ui_create_label, reg1, "@Green", 10, 130, 0, ":element_scale",), # Macro operator
+(ui_create_numberbox, "$color_green", 50, 130, 0, 256, ":element_scale"), # Macro operator
+(ui_create_label, reg1, "@Blue", 10, 100, 0, ":element_scale",), # Macro operator
+(ui_create_numberbox, "$color_blue", 50, 100, 0, 256, ":element_scale"), # Macro operator
+(overlay_set_display, "$color_container", 0),
+(set_container_overlay, "$panel"),
+
 (ui_create_label, reg1, "@{!}Mouse`pos", 170, 10, 0, ":element_scale"), # Macro operator
 (ui_create_label, "$label_mouse_xy", "@{!} ", 250, 10, tf_center_justify, ":element_scale"), # Macro operator
 (set_container_overlay, -1),
@@ -215,7 +242,32 @@ scripts = [
 	(eq, ":object", "$restart_button"),
 	(call_script, "script_restart_presentation"),
 (else_try),
+	(eq, ":object", "$aligment_button"),
+	(overlay_set_display, "$current_subpanel", 0),
+	(assign, "$current_subpanel", "$aligment_container"),
+	(overlay_set_display, "$current_subpanel", 1),
+(else_try),
 	(call_script, "script_cf_alignment_change", ":object", ":value"),
+(else_try),
+	(eq, ":object", "$rotation_button"),
+	(overlay_set_display, "$current_subpanel", 0),
+	(assign, "$current_subpanel", "$rotation_container"),
+	(overlay_set_display, "$current_subpanel", 1),
+(else_try),
+	(this_or_next|eq, ":object", "$rotation_x"),
+	(this_or_next|eq, ":object", "$rotation_y"),
+	(eq, ":object", "$rotation_z"),
+	(call_script, "script_cf_rotation_change", ":object", ":value"),
+(else_try),
+	(eq, ":object", "$color_button"),
+	(overlay_set_display, "$current_subpanel", 0),
+	(assign, "$current_subpanel", "$color_container"),
+	(overlay_set_display, "$current_subpanel", 1),
+(else_try),
+	(this_or_next|eq, ":object", "$color_red"),
+	(this_or_next|eq, ":object", "$color_green"),
+	(eq, ":object", "$color_blue"),
+	(call_script, "script_cf_color_change", ":object", ":value"),
 (try_end),
 ]),
 
@@ -246,7 +298,7 @@ scripts = [
 	(gt, ":end", 100000), #prevent soft lock
 (else_try),
 	(troop_slot_eq, "trp_overlay_storage", 0, ":slot"), #reached end of storage - add new overlay
-	(call_script, "script_store_overlay_data", ":overlay", "str_unknown", ":x", ":y", 0, 0, 0, 0, 0, 0, 0),
+	(call_script, "script_store_overlay_data", ":overlay", "str_unknown", ":x", ":y", 0, 0, 0, 0, 0, 0, 0,0,0),
 (else_try),
 	(troop_get_slot, ":data_length", "trp_overlay_storage", ":slot"),
 	(troop_get_slot, ":compared_overlay", "trp_overlay_storage", l.slot + 1),
@@ -271,7 +323,7 @@ scripts = [
 	(gt, ":end", 100000), #prevent soft lock
 (else_try),
 	(troop_slot_eq, "trp_overlay_storage", 0, ":slot"), #reached end of storage - add new overlay
-	(call_script, "script_store_overlay_data", ":overlay", "str_unknown", 0, 0, ":size_x", ":size_y", 0, 0, 0, 0, 0),
+	(call_script, "script_store_overlay_data", ":overlay", "str_unknown", 0, 0, ":size_x", ":size_y", 0, 0, 0, 0, 0,0,0),
 (else_try),
 	(troop_get_slot, ":data_length", "trp_overlay_storage", ":slot"),
 	(troop_get_slot, ":compared_overlay", "trp_overlay_storage", l.slot + 1),
@@ -279,6 +331,64 @@ scripts = [
 	(val_add, ":slot", 5),
 	(troop_set_slot, "trp_overlay_storage", l.slot, ":size_x"), (val_add, ":slot", 1),
 	(troop_set_slot, "trp_overlay_storage", l.slot, ":size_y"),
+(else_try),
+	(val_add, ":slot", ":data_length"),
+	(val_add, ":end", 1), #repeat
+(try_end),
+]),
+
+#Input: <overlay>
+("store_overlay_rotation", [
+(store_script_param, ":overlay", 1),
+(assign, ":rot_z", "$rotation_z_value"),
+(assign, ":rot_x", "$rotation_x_value"),
+(assign, ":rot_y", "$rotation_y_value"),
+(assign, ":end", 1),
+(assign, ":slot", 1),
+(try_for_range, ":unused", 0, ":end"),
+	(gt, ":end", 100000), #prevent soft lock
+(else_try),
+	(troop_slot_eq, "trp_overlay_storage", 0, ":slot"), #reached end of storage - add new overlay
+	(call_script, "script_store_overlay_data", ":overlay", "str_unknown", 0, 0, 0, 0, 0, 0, 0, 0, ":rot_z", ":rot_x", ":rot_y"),
+(else_try),
+	(troop_get_slot, ":data_length", "trp_overlay_storage", ":slot"),
+	(troop_get_slot, ":compared_overlay", "trp_overlay_storage", l.slot + 1),
+	(eq, ":compared_overlay", ":overlay"),
+	(val_add, ":slot", 11),
+	(troop_set_slot, "trp_overlay_storage", l.slot, ":rot_z"), (val_add, ":slot", 1),
+	(troop_set_slot, "trp_overlay_storage", l.slot, ":rot_x"), (val_add, ":slot", 1),
+	(troop_set_slot, "trp_overlay_storage", l.slot, ":rot_y"),
+(else_try),
+	(val_add, ":slot", ":data_length"),
+	(val_add, ":end", 1), #repeat
+(try_end),
+]),
+
+#Input: <overlay>
+("store_overlay_color", [
+(store_script_param, ":overlay", 1),
+(assign, ":red", "$color_red_val"),
+(assign, ":green", "$color_green_val"),
+(assign, ":blue", "$color_blue_val"),
+(assign, ":color", ":red"),
+(val_lshift, ":color", 8),
+(val_add, ":color", ":green"),
+(val_lshift, ":color", 8),
+(val_add, ":color", ":blue"),
+
+(assign, ":end", 1),
+(assign, ":slot", 1),
+(try_for_range, ":unused", 0, ":end"),
+	(gt, ":end", 100000), #prevent soft lock
+(else_try),
+	(troop_slot_eq, "trp_overlay_storage", 0, ":slot"), #reached end of storage - add new overlay
+	(call_script, "script_store_overlay_data", ":overlay", "str_unknown", 0, 0, 0, 0, 0, 0, 0, ":color", 0, 0, 0),
+(else_try),
+	(troop_get_slot, ":data_length", "trp_overlay_storage", ":slot"),
+	(troop_get_slot, ":compared_overlay", "trp_overlay_storage", l.slot + 1),
+	(eq, ":compared_overlay", ":overlay"),
+	(val_add, ":slot", 9),
+	(troop_set_slot, "trp_overlay_storage", l.slot, ":color"),
 (else_try),
 	(val_add, ":slot", ":data_length"),
 	(val_add, ":end", 1), #repeat
@@ -321,6 +431,12 @@ scripts = [
 	(overlay_set_val, "$input_size_y", 0),
 	(assign, "$value_size_x", 0),
 	(assign, "$value_size_y", 0),
+	(assign, "$rotation_x_value", 0), (overlay_set_val, "$rotation_x", 0),
+	(assign, "$rotation_y_value", 0), (overlay_set_val, "$rotation_y", 0),
+	(assign, "$rotation_z_value", 0), (overlay_set_val, "$rotation_z", 0),
+	(assign, "$color_red_val", 0),    (overlay_set_val, "$color_red", 0),
+	(assign, "$color_green_val", 0),  (overlay_set_val, "$color_green", 0),
+	(assign, "$color_blue_val", 0),   (overlay_set_val, "$color_blue", 0),
 (else_try),
 	(troop_get_slot, ":data_length", "trp_overlay_storage", ":slot"),
 	(troop_get_slot, ":compared_overlay", "trp_overlay_storage", l.slot + 1),
@@ -375,7 +491,16 @@ scripts = [
 	(val_add, ":slot", 1), (troop_get_slot, ":area_size_y", "trp_overlay_storage", l.slot),
 	(overlay_set_val, "$input_area_size_x", ":area_size_x"), (assign, "$value_area_size_x", ":area_size_x"),
 	(overlay_set_val, "$input_area_size_y", ":area_size_y"), (assign, "$value_area_size_y", ":area_size_y"),
-	(val_add, ":slot", 1), #(troop_get_slot, ":color", "trp_overlay_storage", l.slot),
+	(val_add, ":slot", 1), (troop_get_slot, ":color", "trp_overlay_storage", l.slot),
+	(store_and, "$color_blue_val", ":color", 0xFF),
+	(val_rshift, ":color", 8),
+	(store_and, "$color_green_val", ":color", 0xFF),
+	(val_rshift, ":color", 8),
+	(assign, "$color_red_val", ":color"),
+	(overlay_set_val, "$color_red", "$color_red_val"),
+	(overlay_set_val, "$color_green", "$color_green_val"),
+	(overlay_set_val, "$color_blue", "$color_blue_val"),
+
 	(val_add, ":slot", 1), (troop_get_slot, ":alignment", "trp_overlay_storage", l.slot),
 	(call_script, "script_flag_checked", ":alignment", tf_left_align), (assign, ":checked", reg0), (overlay_set_val, "$left_align_checkbox", ":checked"),
 	(call_script, "script_flag_checked", ":alignment", tf_right_align), (assign, ":checked", reg0), (overlay_set_val, "$right_align_checkbox", ":checked"),
@@ -386,7 +511,13 @@ scripts = [
 	(call_script, "script_flag_checked", ":alignment", tf_single_line), (assign, ":checked", reg0), (overlay_set_val, "$single_line_checkbox", ":checked"),
 	(call_script, "script_flag_checked", ":alignment", tf_with_outline), (assign, ":checked", reg0), (overlay_set_val, "$with_outline_checkbox", ":checked"),
 	(call_script, "script_flag_checked", ":alignment", tf_scrollable_style_2), (assign, ":checked", reg0), (overlay_set_val, "$scrollable_style_2_checkbox", ":checked"),
-	(val_add, ":slot", 1), #(troop_get_slot, ":rotation", "trp_overlay_storage", l.slot),
+	
+	(val_add, ":slot", 1), (troop_get_slot, "$rotation_z_value", "trp_overlay_storage", l.slot),
+	(overlay_set_val, "$rotation_z", "$rotation_z_value"),
+	(val_add, ":slot", 1), (troop_get_slot, "$rotation_x_value", "trp_overlay_storage", l.slot),
+	(overlay_set_val, "$rotation_x", "$rotation_x_value"),
+	(val_add, ":slot", 1), (troop_get_slot, "$rotation_y_value", "trp_overlay_storage", l.slot),
+	(overlay_set_val, "$rotation_y", "$rotation_y_value"),
 (try_end),
 ]),
 
@@ -415,6 +546,75 @@ scripts = [
 (eq, ":fail", 0),
 ]),
 
+("cf_rotation_change", [
+(store_script_param, ":object", 1),
+(store_script_param, ":value", 2),
+(assign, ":fail", 1),
+(try_begin),
+	(this_or_next|eq, ":object", "$rotation_x"),
+	(this_or_next|eq, ":object", "$rotation_y"),
+	(eq, ":object", "$rotation_z"),
+	(try_begin),
+		(eq, ":object", "$rotation_x"),
+		(assign, "$rotation_x_value", ":value"),
+	(else_try),
+		(eq, ":object", "$rotation_y"),
+		(assign, "$rotation_y_value", ":value"),
+	(else_try),
+		(eq, ":object", "$rotation_z"),
+		(assign, "$rotation_z_value", ":value"),
+	(try_end),
+	(init_position, pos1),
+	(position_rotate_x, pos1, "$rotation_x_value"),
+	(position_rotate_y, pos1, "$rotation_y_value"),
+	(position_rotate_z, pos1, "$rotation_z_value"),
+	(overlay_set_mesh_rotation, "$selected_overlay", pos1),
+	(call_script, "script_store_overlay_rotation", "$selected_overlay"),
+	(assign, reg0, "$selected_overlay"),
+	(assign, reg1, "$rotation_x_value"),
+	(assign, reg2, "$rotation_y_value"),
+	(assign, reg3, "$rotation_z_value"),
+	(str_store_string, s1, "@Set ovelay#{reg0} rotation ({reg1}, {reg2}, {reg3})"),
+	(call_script, "script_update_log"),
+(try_end),
+(eq, ":fail", 0),
+]),
+
+("cf_color_change", [
+(store_script_param, ":object", 1),
+(store_script_param, ":value", 2),
+(assign, ":fail", 1),
+(try_begin),
+	(this_or_next|eq, ":object", "$color_red"),
+	(this_or_next|eq, ":object", "$color_green"),
+	(eq, ":object", "$color_blue"),
+	(try_begin),
+		(eq, ":object", "$color_red"),
+		(assign, "$color_red_val", ":value"),
+	(else_try),
+		(eq, ":object", "$color_green"),
+		(assign, "$color_green_val", ":value"),
+	(else_try),
+		(eq, ":object", "$color_blue"),
+		(assign, "$color_blue_val", ":value"),
+	(try_end),
+	(assign, ":color", "$color_red_val"),
+	(val_lshift, ":color", 8),
+	(val_add, ":color", "$color_green_val"),
+	(val_lshift, ":color", 8),
+	(val_add, ":color", "$color_blue_val"),
+	(overlay_set_color, "$selected_overlay", ":color"),
+	(call_script, "script_store_overlay_color", "$selected_overlay"),
+	(assign, reg0, "$selected_overlay"),
+	(assign, reg1, "$color_red_val"),
+	(assign, reg2, "$color_green_val"),
+	(assign, reg3, "$color_blue_val"),
+	(str_store_string, s1, "@Set ovelay#{reg0} color ({reg1}, {reg2}, {reg3})"),
+	(call_script, "script_update_log"),
+(try_end),
+(eq, ":fail", 0),
+]),
+
 ("show_mouse_positions",[
 (set_fixed_point_multiplier, 1000),
 (mouse_get_position, pos10),
@@ -439,7 +639,9 @@ def preprocess_entities(glob):
 	# Integrate helper to all presentations
 	if compiler_store_overlay_data:
 		for presentation_no in glob['presentations']:
-			
+
+			presentation_no[1] = 0 # cursor
+
 			for cur_trigger in presentation_no[3]:
 				if cur_trigger[0] == ti_on_presentation_load: break
 			else: presentation_no[3].append((ti_on_presentation_load,[]))
@@ -491,6 +693,9 @@ def preprocess_entities(glob):
 						(try_begin),
 							(key_clicked, key_f),
 							(call_script, "script_move_to_top"),
+						(else_try),
+							(key_clicked, key_escape),
+							(presentation_set_duration, 0),
 						(try_end),
 						(call_script, "script_show_mouse_positions"),
 					])
