@@ -26,6 +26,8 @@ ti_on_switch_to_map           = -75.0 # Patch 1.165+. In simple triggers will fi
 ti_on_init_item               = -50.0 # Item mesh has been created.
     # trigger param #1 = agent_id who has this item equipped (-1 if none)
     # trigger param #2 = troop_id who has this item equipped (-1 if none)
+    # WSE param 3 = item modifier
+    # WSE param 4 = is extra mesh (Used for gloves. This trigger is executed twice when wearing them.)
 
 ti_on_weapon_attack           = -51.0 # Agent has performed an attack with this item. Does not fire on client side in multiplayer missions.
     # trigger param #1 = attacking agent_id
@@ -267,7 +269,7 @@ ti_on_agent_start_reloading = -105.0 #can only be used in module_mission_templat
 ti_on_agent_end_reloading = -106.0 #can only be used in module_mission_templates triggers
 # Trigger Param 1: agent no
 
-ti_on_shield_penetrated = -107.0 #can only be used in module_mission_templates triggers (requires WSE2)
+ti_on_shield_penetrated = -107.0 #can only be used in module_items triggers
 # Trigger Param 1: receiver agent no
 # Trigger Param 2: dealer agent no
 # Trigger Param 3: inflicted damage
@@ -282,20 +284,23 @@ ti_on_scene_prop_is_deforming = -108.0 #can only be used in module_scene_props t
 # Trigger Param 1: prop instance no
 # Trigger Param 2: remaining deform time (1/1000th of second)
 
-ti_on_agent_fill_collision_capsule = -109.0 #can only be used in module_mission_templates triggers
-# Trigger Param 1: agent no
-# Trigger Param 2: capsule radius (fixed point)
-# Position Register 0: point A position (global)
-# Position Register 1: point B position (global)
-# Trigger Result: If result >= 0, replace capsule radius with this value (fixed point), point A with pos0 and point B with pos1.
+ti_on_agent_fill_collision_capsule = -109.0
+    # Trigger Param 1 = agent no
+    # Trigger Param 2 = capsule radius (fixed point)
+    # Position Register 0 = point A position (global)
+    # Position Register 1 = point B position (global)
+    # Trigger Result: If result >= 0, replace capsule radius with this value (fixed point), point A with pos0 and point B with pos1.
+# This trigger is needed when you are using very large or non-humanoid skeletons to correctly determine collisions of hits on an agent.
+# A standard capsule is generated from two points - the position of the head bone and the middle between the positions of the feet bones.
+# This trigger allows you to override this capsule.
 
-ti_on_agent_fill_movement_capsule = -110.0 #can only be used in module_mission_templates triggers
-# Trigger Param 1: agent no
-# Trigger Param 2: capsule radius (fixed point)
-# Position Register 0: point A position (global)
-# Position Register 1: point B position (global)
-# Trigger Result: If result >= 0, replace capsule radius with this value (fixed point), point A with pos0 and point B with pos1.
-
+ti_on_agent_fill_movement_capsule = -110.0
+    # Trigger Param 1 = agent no
+    # Trigger Param 2 = capsule radius (fixed point)
+    # Position Register 0 = point A position (global)
+    # Position Register 1 = point B position (global)
+    # Trigger Result: If result >= 0, replace capsule radius with this value (fixed point), point A with pos0 and point B with pos1.
+    
 ti_on_agent_block_crushed  = -111.0 #can only be used in module_mission_templates triggers
 # Trigger Param 1: receiver agent no
 # Trigger Param 2: dealer agent no
