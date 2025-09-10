@@ -21,6 +21,17 @@ if __main__.__file__ == 'compile.py':#This is WRECK compiler?
 | Change log |
 --------------
 
+v1.1.3
+1) New warnings of nested performance heavy loops. By default this notices are turned off. To turn them on remove <nested_loops> from command line in the file "compile.bat". You can customise operations in the file "header_operations.py" by changing/creating list "performance_heavy_loops". Default performance_heavy_loops = [try_for_agents, try_for_parties, try_for_prop_instances]. If this list is present it will replace default values.
+2) Fixed error 'TypeError' has no attribute 'message' caused by migrating from Python 2 to 3.
+3) Fixed bug of processing animations. If there were no subsequent animation then string "none 0 0" was added wich crashed engine at loading.
+4) Added support for items plural name. Just add string to items 3d position. ("tutorial_axe", "Axe", "Axes"), Can be used with operand
+(str_store_item_name_plural, <string_register>, <item_id>),
+5) Changed <colorama> syntax for compatibility with python 3.12.
+6) Removed header folder loading.
+7) Fixed error when using property of entities like trp.knight.level.
+8) Added items difficulty check of troops equipment.
+
 v1.1.2
 1) Added "plugin_item_factions_limit_remover.py". It helps to bypass 16 faction limit for items. Uncomment in 'module_info.py' for usage.
 2) Updated to WSE v1.1.1.0 
