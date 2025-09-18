@@ -3303,7 +3303,32 @@ parties = [
     ####################################################################################################################
     # _ZE_ - Bandit Spawn Points
     ####################################################################################################################
-    
+    (   
+        "plains_bandit_spawn_point_1",
+        "the plains",
+        pf_disabled | pf_is_static,
+        no_menu,
+        pt.none,
+        fac.outlaws,
+        0,
+        ai_bhvr_hold,
+        0,
+        (25.5, -48),
+        [(trp.looter, 15, 0)],
+    ),
+    (   
+        "plains_bandit_spawn_point_2",
+        "the plains",
+        pf_disabled | pf_is_static,
+        no_menu,
+        pt.none,
+        fac.outlaws,
+        0,
+        ai_bhvr_hold,
+        0,
+        (48.5, -18.4),
+        [(trp.looter, 15, 0)],
+    ),
     (
         "steppe_bandit_spawn_point_1",
         "the steppes",

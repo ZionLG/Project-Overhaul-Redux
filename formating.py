@@ -38,4 +38,4 @@ def indent_blocks(input_file, output_file):
                 out_file.write("\t" * indent_level + line)
 
 # Usage: (make sure the file is already FORMATTED, this will only fix indentation!, Black python formatter is used.) NOTE: After you indent, make sure to not use Black formatter again, as it will mess up the indentation.
-indent_blocks('module_presentations.py', 'module_presentations_f.py')
+indent_blocks('systems/plugin_troop_tree_presetation.py', 'systems/plugin_troop_tree_presetation_f.py')

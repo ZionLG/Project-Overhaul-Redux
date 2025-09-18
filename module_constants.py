@@ -65,7 +65,6 @@ slot_agent_target_prop_instance   = 9
 slot_agent_map_overlay_id         = 10
 slot_agent_target_entry_point     = 11
 slot_agent_is_running_away        = 12
-
 slot_agent_is_respawn_as_bot      = 17
 slot_agent_cur_animation          = 18
 slot_agent_next_action_time       = 19

@@ -93,6 +93,15 @@ party_templates = [
         ],
     ),
     (
+        "plains_bandits",
+        "Bandits",
+        icon.khergit | carries_goods(2),
+        0,
+        fac.outlaws,
+        bandit_personality,
+        [(trp.bandit, 4, 58)],
+    ),
+    (
         "steppe_bandits",
         "Steppe Bandits",
         icon.khergit | carries_goods(2),
@@ -482,6 +491,15 @@ party_templates = [
         [(trp.sarranid_horseman, 3, 5)],
     ),
     # Bandit Lairs
+    (
+        "plains_bandit_lair",
+        "Bandit Lair",
+        icon.bandit_lair | carries_goods(2) | pf_is_static | pf_hide_defenders,
+        0,
+        fac.neutral,
+        bandit_personality,
+        [(trp.bandit, 15, 58)],
+    ),
     (
         "steppe_bandit_lair",
         "Steppe Bandit Lair",

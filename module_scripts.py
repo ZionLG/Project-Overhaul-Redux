@@ -9124,6 +9124,12 @@ scripts = [
         [
             (
                 party_template_set_slot,
+                "pt_plains_bandits",
+                slot_party_template_lair_type,
+                "pt_plains_bandit_lair",
+            ),
+            (
+                party_template_set_slot,
                 "pt_steppe_bandits",
                 slot_party_template_lair_type,
                 "pt_steppe_bandit_lair",
@@ -9157,6 +9163,13 @@ scripts = [
                 "pt_desert_bandits",
                 slot_party_template_lair_type,
                 "pt_desert_bandit_lair",
+            ),
+            
+            (
+                party_template_set_slot,
+                "pt_plains_bandits",
+                slot_party_template_lair_spawnpoint_begin,
+                "p_plains_bandit_spawn_point_1"
             ),
             (
                 party_template_set_slot,
@@ -9194,6 +9207,7 @@ scripts = [
                 slot_party_template_lair_spawnpoint_begin,
                 "p_desert_bandit_spawn_point_1",
             ),
+            
             (
                 party_template_set_slot,
                 "pt_steppe_bandits",
@@ -9271,6 +9285,7 @@ scripts = [
         [
             (set_spawn_radius, 1),
             (options_get_campaign_ai, ":difficulty_setting"),
+            
             (try_begin),
               (eq, ":difficulty_setting", 0),  # hard
               (assign, ":max_bandits", max_bandit_parties_hard),
@@ -9280,6 +9295,7 @@ scripts = [
             (else_try),
               (assign, ":max_bandits", max_bandit_parties_easy),
             (try_end),
+            
             (try_for_range, ":bandit_template", "pt_steppe_bandits", "pt_deserters"),
               (store_num_parties_of_template, ":num_parties", ":bandit_template"),
               (lt, ":num_parties", ":max_bandits"),
@@ -9299,6 +9315,7 @@ scripts = [
               (set_spawn_radius, bandit_spawn_radius),
               (spawn_around_party, ":spawn_point", ":bandit_template"),
             (try_end),
+            
             (try_begin),
               (store_num_parties_of_template, ":num_parties", "pt_looters"),
               (lt, ":num_parties", max_looter_parties),
