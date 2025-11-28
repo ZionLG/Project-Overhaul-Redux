@@ -165,11 +165,13 @@ try_end                 =    3  # (try_end),
 end_try                 =    3  # (end_try),
                                 # Deprecated form of (try_end),
 try_for_range           =    6  # (try_for_range, <destination>, <lower_bound>, <upper_bound>),
-                                # Iterates from the <lower bound> to <<upper bound> -1>. <destination> is the variable iterated in the loop,
-                                # which always increments to the next value at the end of the loop. Break the loop by lowering the upper bound.
+                                # Loops/iterates over a numeric range from <lower bound> to <upper bound> - 1. <destination> is the numeric variable
+                                # that starts at lower bound and increments by one at the end of each loop. Break the loop by lowering the upper bound.
+                                # Example, loop over the 0 to 5 range: (try_for_range, ":i", 0, 5 + 1), - loops six times: 0, 1, 2, 3, 4 and 5.
 try_for_range_backwards =    7  # (try_for_range_backwards, <destination>, <lower_bound>, <upper_bound>),
-                                # Iterates from <<upper bound> - 1> to the <lower bound>. <destination> is the variable iterated in the loop,
-                                # which always decrements to the next value at the end of the loop. Break the loop by increasing the lower bound.
+                                # Loops/iterates over the numeric range from <upper bound> - 1 to <lower bound>. <destination> is the numeric variable
+                                # that starts at upper bound minus one and decrements by one at the end of each loop. Break the loop by increasing the lower bound.
+                                # Example, loop over the 5 to 0 range: (try_for_range_backwards, ":i", 0, 5 + 1), - loops six times: 5, 4, 3, 2, 1 and 0.
 try_for_parties         =   11  # (try_for_parties, <destination>),
                                 # Runs a cycle, iterating all parties on the map.
 try_for_agents          =   12  # (try_for_agents, <agent_no>, [<position_no>, <radius_fixed_point>]), 
@@ -2124,9 +2126,9 @@ position_get_scale_z                        =  737  # (position_get_scale_z, <de
                                                     # Retrieves position scaling along Z axis.
 
 position_set_scale_x                        =  744  # (position_set_scale_x, <position>, <value_fixed_point>),
-                                                    # Sets position scaling along X axis.
+                                                    # Sets position scaling along X axis. NOTE: Also changes position rotation!
 position_set_scale_y                        =  745  # (position_set_scale_y, <position>, <value_fixed_point>),
-                                                    # Sets position scaling along Y axis.
+                                                    # Sets position scaling along Y axis. NOTE: Also changes position rotation!
 position_set_scale_z                        =  746  # (position_set_scale_z, <position>, <value_fixed_point>),
                                                     # Sets position scaling along Z axis.
 
@@ -2159,8 +2161,8 @@ position_is_behind_position                 =  714  # (position_is_behind_positi
 get_sq_distance_between_position_heights    =  715  # (get_sq_distance_between_position_heights, <destination>, <position_no_1>, <position_no_2>),
                                                     # Returns squared distance between position *heights* in centimeters.
 position_normalize_origin                   =  741  # (position_normalize_origin, <destination_fixed_point>, <position>),
-                                                    # What this operation seems to do is calculate the distance between the zero point [0,0,0] and the point with position's coordinates. 
-                                                    # Can be used to quickly calculate distance to relative positions.
+                                                    # Calculates distance from [0,0,0] to position coordinates, then transforms <position> so distance becomes 1 meter.
+                                                    # The x,y coordinates can then be multiplied to create a unit direction vector of any length.
 position_get_screen_projection              =  750  # (position_get_screen_projection, <position_screen>, <position_world>),
                                                     # Calculates the screen coordinates of the position and stores it as position_screen's X and Y coordinates. 
                                                     # Works in missions. 
@@ -3748,6 +3750,8 @@ agent_set_no_dynamics                    = 1762  # (agent_set_no_dynamics, <agen
                                                  # Agent will have collision and physics disabled on it if dynamics are turned off,
                                                  # allowing for (agent_set_position) to teleport them to any location,
                                                  # as well as allowing for a scripted no clipping flight mode ala Half-Life.
+                                                 # When set from 1 to 0 mid-air on non-player agent, will leave it floating if ground is >2m away.
+                                                 # Player will fall no matter how far ground is.
 
 agent_get_animation                      = 1768  # (agent_get_animation, <destination>, <agent_id>, <body_part>),
                                                  # Retrieves current agent animation for specified body part (0 = lower, 1 = upper).
@@ -3895,8 +3899,8 @@ agent_start_running_away                 = 1751  # (agent_start_running_away, <a
                                                  # When used on a mounted horse makes the agent 'fall off' instantly and the horse will run away
                                                  # (works for player too). Falling off from horse doesn't fire 'ti_on_agent_dismount' trigger.
                                                  # Agents left the map in this mode will be counted as routed (agent_is_routed) and dead (agent_is_alive) But they will not decrease party size.
-                                                 # Riderless horses don't start running away. 
-                                                 # Use <agent_set_scripted_destination, horse, border_pos>. The horse will fade out when reached border.
+                                                 # Riderless horses don't start running away. Use (agent_set_scripted_destination, horse, border_pos) instead.
+                                                 # NOTE: This operation has no effect on the player's agent, even if control was surrendered to AI with Ctrl+F5.
 agent_stop_running_away                  = 1752  # (agent_stop_run_away, <agent_id>),
                                                  # Cancels fleeing behavior for the agent, turning him back to combat state.
 agent_ai_set_aggressiveness              = 1753  # (agent_ai_set_aggressiveness, <agent_id>, <value>),
