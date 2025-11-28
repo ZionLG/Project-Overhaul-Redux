@@ -21,6 +21,18 @@ if __main__.__file__ == 'compile.py':#This is WRECK compiler?
 | Change log |
 --------------
 
+v1.1.4
+1) Added an error of using this_or_next without closing condtion.
+2) New macro operands from 'Universal Mission Scripts Handler'.
+       (push_script_with_params, <time_out_msec>, <script_callback>, <param1>, [<param2>, ...]),
+       (get_params, <param1>, [<param2>,...]),
+   For example, when agent is spawning you don't know if he is a rider because horses are not spawned yet.
+       So you can deal with this agent in the same frame after non-timer triggers.
+   For more info, examples and vanilla compatible code look into:
+       https://forums.taleworlds.com/index.php?threads/python-script-scheme-exchange.8652/post-9906974
+      
+
+
 v1.1.3
 1) New warnings of nested performance heavy loops. By default this notices are turned off. To turn them on remove <nested_loops> from command line in the file "compile.bat". You can customise operations in the file "header_operations.py" by changing/creating list "performance_heavy_loops". Default performance_heavy_loops = [try_for_agents, try_for_parties, try_for_prop_instances]. If this list is present it will replace default values.
 2) Fixed error 'TypeError' has no attribute 'message' caused by migrating from Python 2 to 3.

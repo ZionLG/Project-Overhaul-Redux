@@ -878,7 +878,7 @@ def compiled_identifier(name, module, lowercase = True):
 			if module != 'scene_prop':
 				WRECK.notices.append('Capital characters in %s identifier %r.' % (module, name))
 			else:
-				WRECK.notices.append('Capital characters in %s identifier %r. Use SublimeText or Swyter\'s SceneObj tools to rename scene prop in ".sco" files.' % (module, name))
+				WRECK.notices.append('Capital characters in %s identifier %r. Use Swyter\'s SceneObj tools to rename scene prop in ".sco" files.' % (module, name))
 		name = name.lower()
 	formated_name = name.replace(' ', '_')
 	if name != formated_name:
@@ -1659,6 +1659,7 @@ def parse_module_code(code_block, script_name, check_can_fail = False):
 		trigger = script_name.split('.', 2)[2].rsplit('(', 1)[0]
 		block = script_name.rsplit('.', 1)[1]
 		num = len(code_block)
+	this_or_next_started = False
 	for index in range(len(code_block)):
 		operation = code_block[index]
 		is_assign = False
@@ -1787,6 +1788,18 @@ def parse_module_code(code_block, script_name, check_can_fail = False):
 			if (command[0] == try_end) and (checked_performance_depth[0] == (current_depth + 1)):
 				current_performance_depth -= 1
 				checked_performance_depth.pop(0)
+		if command[0] & this_or_next:
+			this_or_next_started = True
+		elif this_or_next_started and command[0] & 0xFFFF in can_fail_operations:
+			this_or_next_started = False
+		elif this_or_next_started:
+			this_or_next_started = False
+			if tag != 'mt':
+				WRECK.errors.append('<this_or_next> doesn\'t have closing condition: %s line %d' % (script_name, index - 1))
+			else:
+				if not (this_or_next, trigger, block, index - 1) in WRECK.mt_errors:
+					WRECK.errors.append('<this_or_next> doesn\'t have closing condition: %s line %d' % (script_name, index - 1))
+					WRECK.mt_errors.append((this_or_next, trigger, block, index - 1))
 
 	if current_depth != 0:
 		explanation = 'missing' if (current_depth > 0) else 'extra'

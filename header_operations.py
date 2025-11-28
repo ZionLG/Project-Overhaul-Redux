@@ -109,6 +109,26 @@
 # [ Z01 ] OPERATION MODIFIERS
 ################################################################################
 
+  # You can think of opcode modifiers as tags that you apply to certain operations to change their behavior and results.
+  # We can invert the operation logic to fail when it succeeds (and vice versa) with <neg>.
+  # We can chain "this OR that" conditions (when only one of them needs to be true to pass instead of all at once) via <this_or_next>.
+  # Internally, they are bitflags added on top of the opcode number.
+  #
+  # DEBUGGING TIP: During gameplay you might see an error that says "SCRIPT ERROR ON OPCODE" with a huge (or even negative) number,
+  # instead of a tiny opcode in the normal 1~9999 range. The two operation modifiers below are to blame.
+  # To decode the actual opcode from the huge number:
+  #   - When your huge number starts with -107XXXXXXX it is (this_or_next|neg|operation). To get operation: {huge number} + 1073741824
+  #   - When your huge number starts with -214XXXXXXX it is (neg|operation). To get operation: {huge number} + 2147483648
+  #   - When your huge number is positive and starts with 107XXXXXXX it is (this_or_next|operation). To get operation: {huge number} - 1073741824
+  #
+  # Example with (eq) opcode = 31:
+  #   decimal       hex          meaning
+  #   -----------   ----------   ---------------------
+  #   -1073741793 = 0xc000001f = (neg|this_or_next|eq),
+  #   -2147483617 = 0x8000001f = (neg             |eq),
+  #    1073741855 = 0x4000001f = (    this_or_next|eq),
+  #            31 =       0x1f = (eq),  # normal opcode, no extras
+
 neg          = 0x80000000  # (neg|<operation_name>, ...),
                            # Used in combination with conditional operations to invert their results.
 negate = neg               # Avoid using <neg> as it is similar to <neq> operator and causes misleadings
@@ -127,6 +147,9 @@ call_script             =    1  # (call_script, <script_id>, [<script_param>...]
                                 # (in properly written module system names of such scripts start with script_cf_ rather than just script_)
                                 # preventing execution of the code below the call_script operation, as if call_script was a conditional operation itself.
                                 # However, unlike conditional operations, call_script can't be combined with neg| nor this_or_next| so keep that in mind.
+                                # TIP: You can pass another script name as a parameter to implement callbacks - just do another call_script inside
+                                # your script body using that parameter to make logic more modular and reusable.
+                                # Reference: https://forums.taleworlds.com/index.php?threads/common-warp-functional-programming-in-warband.335511/
 try_begin               =    4  # (try_begin),
                                 # Opens a conditional block.
                                 # Any conditional operation inside that fails (e.g. (eq, 1, 2),) will immediately make it exit the block
@@ -151,33 +174,61 @@ try_for_parties         =   11  # (try_for_parties, <destination>),
                                 # Runs a cycle, iterating all parties on the map.
 try_for_agents          =   12  # (try_for_agents, <agent_no>, [<position_no>, <radius_fixed_point>]), 
                                 # Runs a cycle, iterating all active agents on the scene.
-                                # Iteration works for active agents alive and dead
-                                # The reference <agent_no> is active until the next mission or scene is loaded.
-                                # So don't check agent_is_active. It will always return true.
+                                # Iteration works for active agents alive and dead.
+                                # The reference <agent_no> is always valid until the next mission or scene is loaded.
+                                # So don't check (agent_is_active) - it will always return true inside this loop.
                                 # Optional parameters allow to check agents only within specific radius around certain position.
-                                # Radius is fixed point value so you need to specify fixed_point_multiplier before using this operator.
-                                # Avoid using pos0. This will pass zero to the second argument and radius and position will be skipped.
-                                # Like optional arguments were ommited.
-                                # Radius can be used to break loop if assigned to 0 which will just run a loop without body.
-                                # Square loops (using try_for_agents inside other try_for_agents) can cause stutters. Large and long battles when
-                                # thousands of agents spawned in on session can cause even bigger stutters as the dead agents remain active and
-                                # consume memory aproximately 40Kb. And try_for_agents iterates dead agents too.
+                                # Radius is a fixed point value so you need to specify fixed_point_multiplier before using this operator.
+                                # AVOID using pos0: This will pass zero to the second argument and radius/position will be skipped as if omitted.
+                                # You can change the radius to 0 to break the loop early - it will just run a fast loop without ever executing its body.
+                                #
+                                # PERFORMANCE WARNING: Nesting loops (using try_for_agents inside other try_for_agents) can be a BIG performance bottleneck,
+                                # causing stutters due to the big O(n²) algorithmic progression, making the compounded search infinitely more expensive.
+                                # This should be AVOIDED AT ALL COSTS.
+                                # Large and long battles with thousands of agents spawned in a mission can cause even bigger frame-rate hitching.
+                                # Each dead agent remains active, consumes memory (~40 KB), and still appears in a try_for_agents loop.
+                                # Even a small number of agents can cause a frame-rate drop from 60 to 40-50 FPS.
+                                # This is an issue on the arena, where there aren't many agents or props, but there are still frame drops.
+                                #
                                 # WSE+
                                 # (try_for_agents, <agent_no>, [<position_no>, <radius_fixed_point>, <use_mission_grid>]), 
-                                # If [<use_mission_grid>] is non-zero, it will use mission grid iterator.
-                                # This is better in performance than searching through all agents.
-                                # Does not take into account the height of positions.
+                                # If [<use_mission_grid>] is non-zero, it will use the internal 2D mission grid iterator to find "nearby" agents.
+                                # This is simpler and has much better performance than searching through all nearby agents in 3D, but with the caveat
+                                # that it only works in 2D from a top-down perspective, so it does NOT take into account the height or vertical overlap
+                                # (or lack thereof) between positions. E.g. a nearby agent can be under a bridge way below the player and they will
+                                # still overlap in the 2D mission grid, so the radius and distance isn't meaningful and can cause bugs and side effects
+                                # for scripting 3D actions if not taken into account.
                                 # WSE-
+try_for_attached_parties = 15  # (try_for_attached_parties, <attached_party_no>, <root_party_no>),
+                                # DEPRECATED. Not fully functional. Meant to loop through parties attached to <root_party_no>, but has two problems:
+                                # 1) Always returns party=0 as the first pass of the loop regardless of whether the player's party is attached or not.
+                                # 2) Only loops over predefined parties present in parties.txt (i.e. module_parties.py), and not the ones created at runtime.
+                                # Ultimately, the only good way to loop over every attached party is a combination of (party_get_num_attached_parties),
+                                # (try_for_range) and (party_get_attached_party_with_rank) like this:
+                                ######
+                                # (party_get_num_attached_parties, ":num_attached_parties", ":root_party"),
+                                # (try_for_range, ":cur_attachment_index", 0, ":num_attached_parties"),
+                                #   (party_get_attached_party_with_rank, ":cur_attached_party", ":root_party", ":cur_attachment_index"),
+                                #   # your operations on ":cur_attached_party" go here
+                                # (try_end),
+                                ######
 try_for_prop_instances  =   16  # (try_for_prop_instances, <instance_no>, [<object_id>], [<object_type>]),
                                 # Version 1.161+. Loops or iterates over every scene prop instance on the scene. Returning it into <instance_no> as destination.
                                 # <object_id> refers to <scene_prop_id> or <item_kind_id>.
                                 # The loop only takes the ID into account, so use somt_ flags to narrow down or limit the search.
                                 # For somt_ flag definitions see module_constants.py (Native) or header_common.py (Viking Conquest)
                                 # If <object_id> and <object_type> aren't given, then it will loop through every instance of every object.
-                                # Bug: When iterating over every instance sometimes it returns an invalid zero instance (what? 4research), which usually is spr_inventory.
-                                # This bug is fixed in WSE.
+                                # BUG: When iterating over every instance and instance with id=0 is invalid, the loop will still iterate over it,
+                                # resulting in error message at runtime: "Instance ID = 0 invalid".
+                                # WORKAROUND: Add (prop_instance_is_valid) as the 1st operation of the loop to ensure that invalid instance is skipped.
+                                # This workaround is unnecessary in WSE where this bug doesn't occur.
+                                # ANOTHER BUG: When providing object id the loop seems to skip some instances even though they exist in the scene.
+                                # This problem seems to go away when somt_object (or other somt_ constant) is given as parameter.
+                                # Using object id without somt_ parameter should be considered UNSAFE.
                                 # To specify somt_ without specifying <object_id> pass -1 as <object_id>.
                                 # Example: (try_for_prop_instances, ":instance", -1, somt_spawned_item),
+                                # Note: definitely doesn't loop over randomly generated flora (e.g. in random scenes).
+                                # Probably only allows operations on flora manually put in scenes.
 try_for_players         =   17  # (try_for_players, <destination>, [skip_server]),
                                 # Version 1.165+. Iterates through all active players in a multiplayer game.
                                 # Set optional parameter to 1 to skip server's player entry.
@@ -1322,8 +1373,25 @@ troop_get_upgrade_troop                  = 1561  # (troop_get_upgrade_troop, <de
 store_character_level                    = 2171  # (store_character_level, <destination>, [troop_id]),
                                                  # Retrieves character level of the troop. Default troop is trp_player. Doesn't change behavior when different troop is assigned to player with (set_player_troop).
 get_level_boundary                       =  991  # (get_level_boundary, <destination>, <level_no>),
-                                                 # Returns the amount of experience points required to reach the specified level (will return 0 for 1st level).
-                                                 # Maximum possible level in the game is 63.
+                                                 # Returns the amount of experience points required to reach the specified level. Minimum level is 1, so the required experience is 0.
+                                                 # Maximum possible level in the game is 63. After achieving a level, experience doesn't reset to 0 and continues to accumulate.
+                                                 # For invalid levels: returns 0 XP for level 0, -23 XP for levels below 0, and 2050460032 XP for levels above 63.
+                                                 #
+                                                 # FULL XP TABLE:
+                                                 # lvl   at xp  | lvl   at xp   | lvl   at xp   | lvl    at xp    | lvl    at xp
+                                                 #  1        0  | 14    28832   | 27    226879  | 40    1721626   | 53   21968216
+                                                 #  2      600  | 15    34362   | 28    262533  | 41    2070551   | 54   27466220
+                                                 #  3     1360  | 16    40682   | 29    303381  | 42    2489361   | 55   34338824
+                                                 #  4     2296  | 17    47892   | 30    350164  | 43    2992033   | 56   42929680
+                                                 #  5     3426  | 18    56103   | 31    412091  | 44    3595340   | 57   53668348
+                                                 #  6     4768  | 19    65441   | 32    484440  | 45    4319408   | 58   67091784
+                                                 #  7     6345  | 20    77233   | 33    568947  | 46    5188389   | 59   83871184
+                                                 #  8     8179  | 21    90809   | 34    667638  | 47    6231267   | 60  160204608
+                                                 #  9    10297  | 22   106425   | 35    782877  | 48    7482821   | 61  320304608
+                                                 # 10    13010  | 23   124371   | 36    917424  | 49    8984785   | 62  644046016
+                                                 # 11    16161  | 24   144981   | 37   1074494  | 50   11236531   | 63 2050460032
+                                                 # 12    19806  | 25   168636   | 38   1257843  | 51   14051314   |
+                                                 # 13    24007  | 26   195769   | 39   1471851  | 52   17569892   |
 add_gold_as_xp                           = 1063  # (add_gold_as_xp, <value>, [troop_id]),
                                                  # Adds a certain amount of experience points to the specified troop, depending on the amount of gold specified.
                                                  # Default troop is trp_player, unless a different troop was specified with (set_player_troop), in which case that troop gets xp instead.
@@ -1768,15 +1836,21 @@ store_random_armor                  = 2259  # (store_random_armor, <destination>
                                             # Deprecated since early M&B days.
 
 cur_item_add_mesh                   = 1964  # (cur_item_add_mesh, <mesh_name_string>, [<lod_begin>], [<lod_end>], [<color>]),
-                                            # Version 1.161+. Only call inside ti_on_init_item trigger. Adds another mesh to item as submesh, allowing
-                                            # the creation of combined items. Parameter <mesh_name_string> should contain mesh name itself, NOT a mesh reference.
-                                            # LOD values are optional. If <lod_end> is used, it will not be loaded.
+                                            # Version 1.161+. Adds another mesh to item as submesh, allowing the creation of dynamically combined items.
+                                            # Parameter <mesh_name_string> should contain mesh name itself, NOT a mesh reference.
+                                            # LOD values are optional - if unspecified, engine will use available lods at its own discretion.
+                                            # <lod_end> is upper bound and is not included (e.g. if you only have lod1 and lod2, pass 0,3 as lod parameters).
+                                            # Color parameter is also optional and can be used to tell the engine to vertex-color the added mesh.
+                                            # Only works when called within ti_on_init_item in module_items.py.
+                                            # Due to trigger bug, in scenes this fails for horses, gloves and boots.
 cur_item_set_material               = 1978  # (cur_item_set_material, <string_no>, <sub_mesh_no>, [<lod_begin>], [<lod_end>]),
-                                            # Version 1.161+. Only call inside ti_on_init_item trigger. Replaces material that will be used to render
-                                            # the item mesh. Works only for main meta-mesh, so not for scabbards, etc., and does not work for horses,
-                                            # gloves and boots. Use 0 for <sub_mesh_no> to replace material for base mesh. Higher numbers for submeshes
+                                            # Version 1.161+. Replaces material that will be used to render the item mesh.
+                                            # Works only for main meta-mesh, so not for scabbards, etc., and does not work for horses, gloves and boots.
+                                            # Use 0 for <sub_mesh_no> to replace material for base mesh. Higher numbers for submeshes.
                                             # Submeshes added by cur_item_add_mesh can also be modified this way. LOD values are optional.
                                             # If <lod_end> is used, it will not be loaded.
+                                            # Only works when called within ti_on_init_item in module_items.py.
+                                            # Due to trigger bug, in scenes this fails for horses, gloves and boots.
 
 item_get_weight                     = 2700  # (item_get_weight, <destination_fixed_point>, <item_kind_no>),
                                             # Version 1.161+. Retrieves item weight as a fixed point value.
@@ -2080,7 +2154,8 @@ get_sq_distance_between_positions           =  712  # (get_sq_distance_between_p
 get_sq_distance_between_positions_in_meters =  713  # (get_sq_distance_between_positions_in_meters, <destination>, <position_no_1>, <position_no_2>),
                                                     # Returns squared distance between two positions in meters.
 position_is_behind_position                 =  714  # (position_is_behind_position, <position_base>, <position_to_check>),
-                                                    # Checks if the second position is behind the first.
+                                                    # Checks if the first position is behind the second, i.e. position is in -Y zone (on the right side of X-axis).
+                                                    # BUG: Fails to calculate correctly for all-axis rotated positions or if there is slight deviation from axis.
 get_sq_distance_between_position_heights    =  715  # (get_sq_distance_between_position_heights, <destination>, <position_no_1>, <position_no_2>),
                                                     # Returns squared distance between position *heights* in centimeters.
 position_normalize_origin                   =  741  # (position_normalize_origin, <destination_fixed_point>, <position>),
@@ -2243,10 +2318,10 @@ add_info_page_note_from_sreg    = 1092 # (add_info_page_note_from_sreg, <info_pa
   # face and banner are drawn using tableaus.
 
 cur_item_set_tableau_material                    = 1981  # (cur_item_set_tableu_material, <tableau_material_id>, <instance_code>),
-                                                         # Can only be used inside ti_on_init_item trigger in module_items.py.
-                                                         # Assigns tableau to the item instance.
-                                                         # Value of <instance_code> will be passed to tableau code.
+                                                         # Assigns tableau to the item instance. Value of <instance_code> will be passed to tableau code.
                                                          # Commonly used for heraldic armors and shields.
+                                                         # Only works when called within ti_on_init_item in module_items.py.
+                                                         # As a result it's hindered by this trigger's bug and in scenes fails for horses, gloves and boots.
 cur_scene_prop_set_tableau_material              = 1982  # (cur_scene_prop_set_tableau_material, <tableau_material_id>, <instance_code>),
                                                          # Can only be used inside ti_on_init_scene_prop trigger in module_scene_props.py.
                                                          # Assigns tableau to the scene prop instance.
@@ -2612,6 +2687,10 @@ disable_menu_option                   = 2061  # (disable_menu_option),
                                               # Greys out the menu option, making it unclickable, 
                                               # while still showing it to player, so he knows that such an option exists, 
                                               # but criteria for it have not been met.
+set_tooltip_text                      = 1130  # (set_tooltip_text, <string_id>),
+                                              # Displays tooltips for menu options in the menu window.
+                                              # Should be called in the condition block of the menu-option entry (or in a script called from there).
+                                              # NOTE: Does NOT work for unclickable menus greyed out using disable_menu_option.
 
 # Game encounter handling operations
 
@@ -2710,8 +2789,9 @@ all_enemies_defeated                  = 1003                     # (all_enemies_
                                                                  # When a time value x (in seconds) is given the operation only succeeds if
                                                                  # the last status change (dead, alive, wounded...) happened more than (or exactly) x seconds ago.
 race_completed_by_player              = 1004                     # (race_completed_by_player),
-                                                                 # Not documented. Not used in Native.
-                                                                 # Apparently deprecated, doesn't do anything, only returns true.
+                                                                 # Not documented. Not used in Native. Apparently deprecated.
+                                                                 # In the original engine it always returns true.
+                                                                 # In WSE2 this always returns false, after being conveniently renamed to (is_vanilla_warband).
 num_active_teams_le                   = 1005                     # (num_active_teams_le, <value>),
                                                                  # Checks that the number of active teams (i.e. teams with at least one active agent) is less than or equal to given value.
 num_active_teams_gt                   = neg|num_active_teams_le  # (num_active_teams_gt, <value>),
@@ -2756,7 +2836,7 @@ set_visitor                                  = 1263  # (set_visitor, <mission_te
                                                      # Default team for visitor entries is 7. It can be overridden by <entry_no> flags.
                                                      # Team 7 is hardcoded neutral for everyone and cannot be changed.
 set_visitors                                 = 1264  # (set_visitors, <mission_template_spawn_record>, <troop_id>, <number_of_troops>),
-                                                     # Same as (set_visitors), but spawns an entire group of some troop type.
+                                                     # Same as (set_visitor), but spawns an entire group of some troop type.
 add_visitors_to_current_scene                = 1265  # (add_visitors_to_current_scene, <mission_template_spawn_record>, <troop_id>, <number_of_troops>, [<team_no>, <group_no>]),
                                                      # Adds a number of troops to the specified spawn record (not the entry point) when the scene is already loaded.
                                                      # Requires the entry point to have the flag mtef_visitor_source. Optional <team_no> and <group_no> parameters are used
@@ -2799,6 +2879,19 @@ entry_point_set_position                     = 1781  # (entry_point_set_position
                                                      # Moves the entry point to the specified position on the scene.
 entry_point_is_auto_generated                = 1782  # (entry_point_is_auto_generated, <entry_no>),
                                                      # Checks that the entry point is auto-generated (in other words, there was no such entry point placed in the scene file).
+
+# AI mesh and pathfinding
+
+ai_mesh_face_group_show_hide                 = 1805  # (ai_mesh_face_group_show_hide, <ai_mesh_group_no>, <value>), 
+                                                     # AI mesh polygons (only in face mode) can be tagged with a number in the edit mode interface.
+                                                     # This operation can conditionally disable AI mesh faces tagged with a specific number
+                                                     # to "hide it" from the agent pathfinding calculations.
+                                                     # Use case: Toggle off the AI mesh under a castle door until it breaks. Once faces are
+                                                     # re-enabled and connected with the nearby mesh, agents will interpret the new avenue as walkable.
+                                                     # Without disabling the AI mesh, agents would mindlessly try to walk into the impassable obstruction.
+                                                     # Debug: Draws the selected index of triangles/quads from the navigation graph on-screen.
+                                                     # Use value 1 to (re)enable the tagged navigation mesh with the matching ID, use 0 to disable them.
+                                                     # By default all groups are enabled.
 
 # Scene parameters handling
 
@@ -2953,6 +3046,10 @@ mouse_get_world_projection                   =  751  # (mouse_get_world_projecti
                                                      # Version 1.161+.
                                                      # Returns current camera coordinates (first position) and mouse projection to the back of the world (second position).
                                                      # Rotation data of resulting positions seems unreliable.
+                                                     # It produces 2 points in 3D space from the nearest projected point to the furthest, defining a line.
+                                                     # In scenes you can use cast_ray to get the nearest collision, but that doesn't work on the map due to no collisions.
+                                                     # pos1 is basically the camera position with a slight offset. pos2 is that same place in the furthest point in the projection.
+                                                     # To get what your cursor is over, point pos1 towards pos2 and cast a ray to hit the collision.
 cast_ray                                     = 1900  # (cast_ray, <destination>, <hit_position_register>, <ray_position_register>, [<ray_length_fixed_point>]),
                                                      # Version 1.161+.
                                                      # Casts a ray starting from <ray_position_register> and stores the closest hit position into <hit_position_register>.
@@ -3129,6 +3226,8 @@ scene_prop_fade_out                         = 1822  # (scene_prop_fade_out, <sce
                                                     # Doesn't work with time values below 100.
                                                     # Leaving meta_mesh blank will have the operation only affect the main mesh.
                                                     # Setting it to -1 will affect all submeshes.
+                                                    # NOTE: It doesn't make the prop invisible - it makes it transparent (using pre-existing alpha
+                                                    # parameters of its material). A fully transparent object can still be visible on certain backgrounds!
 scene_prop_fade_in                          = 1823  # (scene_prop_fade_in, <scene_prop_id>, <fade_in_time>),
                                                     # Version 1.153+. Makes the scene prop instance reappear within specified time.
 
@@ -3183,6 +3282,7 @@ prop_instance_animate_to_position           = 1860  # (prop_instance_animate_to_
                                                     # If prop was animating it stops current animation first, i.e. ti_on_scene_prop_animation_finished is launched.
                                                     # Also prop is moved to animation target position simultaneously.
                                                     # Doesn't move on the first frame.
+                                                    # NOTE: There is a small gap of ~10cm where the engine considers the prop as "reached target" and teleports it there.
                                                     # There is a small gap of 10cm engines thinks as reached to target position and teleports prop there.
 prop_instance_get_animation_target_position = 1863  # (prop_instance_get_animation_target_position, <pos>, <scene_prop_id>),
                                                     # Retrieves the position that the prop instance is currently animating to.
@@ -3570,6 +3670,33 @@ str_store_agent_face_keys                = 2749  # (str_store_agent_face_keys, <
                                                  # Stores agent face code. Regular agents have random generated face from two face codes of the troop.
 
 # Agent equipment [Additional information: https://mbcommands.fandom.com/wiki/Operations#Agent_equipment]
+#
+# SHIELD MECHANICS NOTES:
+# Shields are processed in an unusual way. They are wielded at agent spawn even if the primary item can't be used with them.
+# You can think of a shield as always wielded even if it's not visible in the arm.
+#
+# - When agent switches to an item that CAN be worn with the shield, it will be wielded WITHOUT triggering ti_on_item_wielded.
+# - When agent switches to an item that CAN'T be worn with the shield, it will be unwielded WITHOUT triggering ti_on_item_unwielded.
+#
+# This mechanic is suited for player only because they can put a shield behind their back. This WILL trigger ti_on_item_unwielded.
+# After unwielding this way, the shield will NOT be wielded again with suitable items until player wields it again with mouse scroll
+# button, which triggers ti_on_item_wielded.
+#
+# Shields don't break from friendly fire shots. Breaking a shield DOES trigger ti_on_item_unwielded. Shield item will be removed after trigger.
+#
+# Trigger behavior summary:
+# - (agent_set_wielded_item, agent, -1) will unwield shield and any wielded item and trigger ti_on_item_unwielded for them.
+# - (agent_set_wielded_item, agent, item) will trigger ti_on_item_unwielded and ti_on_item_wielded in an ordered way.
+# - Equip/unequip agent operations (agent_equip_item, agent_unequip_item) DON'T trigger ti_on_item_unwielded or ti_on_item_wielded.
+# - When shield is in the hand and agent switches to two-handed weapon (or not wieldable with shield), the shield is still in the hand
+#   in ti_on_item_wielded. Shield is removed AFTER trigger without triggering ti_on_item_unwielded.
+# - When shield isn't in the hand and agent switches to one-handed weapon (or wieldable with shield), the shield is NOT in the hand
+#   in ti_on_item_wielded. Shield is added AFTER trigger if it was wielded previously (has triggered ti_on_item_wielded before).
+# - Dropping a two-handed weapon on the ground will NOT trigger ti_on_item_unwielded for dropped weapon, but puts shield in the hand
+#   if it was wielded previously.
+# - Picking up a two-handed weapon from the ground WILL trigger ti_on_item_wielded for picked item. Shield removed after trigger.
+#
+# To cover dropping weapons you should use ti_on_item_dropped.
 
 agent_refill_wielded_shield_hit_points   = 1692  # (agent_refill_wielded_shield_hit_points, <agent_id>),
                                                  # Restores all hit points for the shield the agent is currently wielding.
@@ -3726,7 +3853,16 @@ agent_ai_set_always_attack_in_melee      = 1737  # (agent_ai_set_always_attack_i
 agent_get_simple_behavior                = 1738  # (agent_get_simple_behavior, <destination>, <agent_id>),
                                                  # Retrieves agent's current simple behavior (see aisb_* constants in header_mission_templates.py for details).
 agent_ai_get_behavior_target             = 2082  # (agent_ai_get_behavior_target, <destination>, <agent_id>),
-                                                 # Version 1.153+. UNTESTED. Supposedly returns agent_id which is the target of current agent's behavior.
+                                                 # Version 1.153+. Supposedly returns agent_id which is the target of current agent's behavior.
+                                                 # Preliminary testing reveals the following:
+                                                 #  - In scenes without enemies returns unusual values like: 8179, -1103830338, 4526, -1094558779
+                                                 #  - For player usually returns 0, but in scenes without enemies sometimes 5 was observed
+                                                 #  - In scenes with enemies returned value is usually different than what is returned by agent_ai_get_move_target
+                                                 #    (these two operations seem to return the same value when ai behavior is aisb_charge_horseback)
+                                                 #  - It may seem that agents pick a target that they intend to attack when a chance arises and keep that target "in mind"
+                                                 #    However, when agent behavior is aisb_charge, then agent_ai_get_move_target and agent_ai_get_behavior_target
+                                                 #    return different enemy agents (move to enemy A to attack enemy B doesn't seem to make much sense).
+                                                 #  - It's still unclear what this operation does and if it's fully functional at all.
 agent_get_combat_state                   = 1739  # (agent_get_combat_state, <destination>, <agent_id>),
                                                  # Retrieves agent's current combat state:
                                                  #   0 = nothing special, this value is also always returned for player and for dead agents.
@@ -3765,9 +3901,11 @@ agent_stop_running_away                  = 1752  # (agent_stop_run_away, <agent_
                                                  # Cancels fleeing behavior for the agent, turning him back to combat state.
 agent_ai_set_aggressiveness              = 1753  # (agent_ai_set_aggressiveness, <agent_id>, <value>),
                                                  # Sets the aggressiveness parameter for agent AI to use.
-                                                 # Default value is 100.
-                                                 # Higher values make agent more aggressive.
-                                                 # Used to avoid melee, when a bot moves away from you in melee.
+                                                 # Default value is 100. Higher values make agent more aggressive.
+                                                 # Usage in vanilla Warband and Viking Conquest DLC suggest this is meant for singleplayer (values used range 0 to 9000).
+                                                 # NOTE: Some testing reports no noticeable effect from this operation (tested in SP).
+                                                 # According to Dalion, "aggressiveness" determines how frequently the engine will make an agent
+                                                 # who is slowly backing off from melee range return to melee range.
 agent_set_kick_allowed                   = 1754  # (agent_set_kick_allowed, <agent_id>, <value>),
                                                  # Enables (value = 1) or disables (value = 0) kicking for the specified agent.
                                                  # Only makes sense for player-controlled agents as bots don't know how to kick anyway (if not scripted into the mod, kicking AI).
@@ -3821,7 +3959,38 @@ team_get_movement_order                  = 1785  # (team_get_movement_order, <de
                                                  # Note however, that unlike aord_*, wordr_* and rordr_*, mordr_* are not just statuses.
                                                  # They are also orders that can be given to agent divisions.
                                                  # On top of that, certain orders, once given, don't leave a trace to detect with any operation (most notably formation-related orders).
-                                                 # See more here: [https://mbcommands.fandom.com/wiki/Operations#team_get_movement_order]
+                                                 #
+                                                 # ORDER DETECTION TABLE:
+                                                 # mordr_hold               -> detect as mordr_hold via team_get_movement_order
+                                                 # mordr_follow             -> detect as mordr_follow via team_get_movement_order
+                                                 # mordr_charge             -> detect as mordr_charge via team_get_movement_order
+                                                 # mordr_mount              -> detect as rordr_mount via team_get_riding_order
+                                                 # mordr_dismount           -> detect as rordr_dismount via team_get_riding_order
+                                                 # mordr_advance            -> NOT DETECTABLE (issues mordr_hold and moves its position)
+                                                 # mordr_fall_back          -> NOT DETECTABLE (issues mordr_hold and moves its position)
+                                                 # mordr_stand_closer       -> detect as integer values 3~6 via team_get_gap_distance
+                                                 # mordr_spread_out         -> detect as integer values 3~6 via team_get_gap_distance
+                                                 # mordr_use_blunt_weapons  -> detect as wordr_use_blunt_weapons via team_get_weapon_usage_order
+                                                 #                            NOTE: Troops don't check if ammo makes attacks blunt, only weapon damage type.
+                                                 # mordr_use_any_weapon     -> detect as wordr_use_any_weapon via team_get_weapon_usage_order
+                                                 # mordr_stand_ground       -> detect as mordr_stand_ground via team_get_movement_order
+                                                 # mordr_hold_fire          -> detect as aordr_hold_fire via team_get_hold_fire_order
+                                                 # mordr_fire_at_will       -> detect as aordr_fire_at_will via team_get_hold_fire_order
+                                                 # mordr_retreat            -> detect as mordr_retreat via team_get_movement_order
+                                                 # mordr_use_melee_weapons  -> detect as wordr_use_melee_weapons via team_get_weapon_usage_order
+                                                 # mordr_use_ranged_weapons -> detect as wordr_use_ranged_weapons via team_get_weapon_usage_order
+                                                 # mordr_fire_at_my_command -> detect as aordr_hold_fire via team_get_hold_fire_order
+                                                 # mordr_all_fire_now       -> NOT DETECTABLE (instant execution, no persisting status)
+                                                 # mordr_left_fire_now      -> NOT DETECTABLE (instant execution, no persisting status)
+                                                 # mordr_middle_fire_now    -> NOT DETECTABLE (instant execution, no persisting status)
+                                                 # mordr_right_fire_now     -> NOT DETECTABLE (instant execution, no persisting status)
+                                                 # mordr_form_1_row         -> NOT DETECTABLE (formation order)
+                                                 # mordr_form_2_row         -> NOT DETECTABLE (formation order)
+                                                 # mordr_form_3_row         -> NOT DETECTABLE (formation order)
+                                                 # mordr_form_4_row         -> NOT DETECTABLE (formation order)
+                                                 # mordr_form_5_row         -> NOT DETECTABLE (formation order)
+                                                 # Note: Formation orders can be given to one division or multiple, mixing troops into rows.
+                                                 # If storing formation state in slots, remember it may not be sufficient to just store row count.
 team_get_riding_order                    = 1786  # (team_get_riding_order, <destination>, <team_no>, <division>),
                                                  # Retrieves current status of riding order for specified team/division - see rordr_* constants in header_mission_templates.py for reference.
 team_get_weapon_usage_order              = 1787  # (team_get_weapon_usage_order, <destination>, <team_no>, <division>),
@@ -3836,6 +4005,7 @@ team_set_leader                          = 1793  # (team_set_leader, <team_no>, 
                                                  # Sets the player agent as the new leader of specified team. Doesn't work with regular agent.
 team_get_order_position                  = 1794  # (team_get_order_position, <position>, <team_no>, <division>),
                                                  # Retrieves position which is used for specified team/division current orders.
+                                                 # NOTE: It doesn't store the rotation for the order, so you can't tell which way troops are facing.
 team_set_order_listener                  = 1795  # (team_set_order_listener, <team_no>, <division>, [add_to_listeners]),
                                                  # Set the specified division as the one which will be following orders issued by the player (assuming the player is on the same team).
                                                  # If optional parameter add_to_listeners is greater than 0, then the operation will instead *add* specified division to order listeners.
@@ -3963,6 +4133,10 @@ create_mesh_overlay                               =  911  # (create_mesh_overlay
                                                           # Creates a mesh overlay and returns its overlay_id.
 create_mesh_overlay_with_item_id                  =  944  # (create_mesh_overlay_with_item_id, <destination>, <item_id>),
                                                           # Creates a mesh overlay, using the specified item mesh. Returns overlay_id.
+                                                          # NOTE: When detecting mouse hover with ti_on_mouse_enter_leave, it's not the overlay's set size
+                                                          # that gets taken into consideration - the area that reacts to hover is usually smaller and depends
+                                                          # on the item itself. The engine draws the smallest possible rectangle around the drawn item and
+                                                          # reacts to that instead.
 create_mesh_overlay_with_tableau_material         =  939  # (create_mesh_overlay_with_tableau_material, <destination>, <mesh_id>, <tableau_material_id>, <value>),
                                                           # Creates a mesh overlay, using the specified tableau_material. When mesh_id = -1, it is generated automatically.
                                                           # Value is passed as the parameter for tableau_material script. Returns overlay_id.
@@ -4114,7 +4288,10 @@ overlay_set_tooltip                               =  950  # (overlay_set_tooltip
 # Popups and some esoteric stuff
 
 show_item_details                                 =  970  # (show_item_details, <item_id>, <position>, <price_multiplier_percentile>),
-                                                          # Shows a popup label at the specified position, containing standard game information for the specified item, same as when hovering over an item in inventory.
+                                                          # Shows a popup label at the specified position, containing standard game information for the specified item,
+                                                          # same as when hovering over an item in inventory, but WITHOUT the line about difficulty requirements
+                                                          # (e.g. Power Draw for bows, Strength for swords). Intelligence requirement for books is handled by
+                                                          # script_game_get_item_extra_text so that still appears.
                                                           # Specified <position> will point at the bottom-center point of the 1st line of text of the label.
                                                           # Last parameter determines price percentile multiplier.
                                                           # Multiplier value of 100 will display item standard price, value of 0 will display "Default Item" instead of price (used in multiplayer equipment selection presentation).
@@ -4186,7 +4363,9 @@ player_slot_ge                               =  568  # (player_slot_ge, <player_
 send_message_to_url                          =  380  # (send_message_to_url, <string_id>, <encode_url>),
                                                      # Sends an HTTP request. The response from that URL will be returned to the script_game_receive_url_response callback.
                                                      # Parameter <encode_url> is optional and effects are unclear.
-                                                     # Supposedly it's equivalent to using (str_encode_url) on the first parameter, which doesn't make sense for me. (4research)
+                                                     # Supposedly it's equivalent to using (str_encode_url) on the first parameter.
+                                                     # NOTE: Despite being intended for multiplayer, this can also be used in singleplayer.
+                                                     # Reference: https://forums.taleworlds.com/index.php?threads/239544/
 
 multiplayer_send_message_to_server           =  388  # (multiplayer_send_message_to_server, <message_type>),
                                                      # Multiplayer client operation. Send a simple message (only message code, no data) to game server.
@@ -4426,16 +4605,16 @@ server_set_anti_cheat                        =  477  # (server_set_anti_cheat, <
   # know, please let me know ASAP! :-)
 
 set_physics_delta_time                       =  58   # (set_physics_delta_time, <fixed_value>), 
-                                                     # Default is 0.025 (40 fps).
-                                                     # Additional info: [https://mbcommands.fandom.com/wiki/Operations#set_physics_delta_time]
-set_tooltip_text                             = 1130  # (set_tooltip_text, <string_id>),
-                                                     # Assigns the output text for the selected item? (4research)
-ai_mesh_face_group_show_hide                 = 1805  # (ai_mesh_face_group_show_hide, <group_no>, <value>), 
-                                                     # Debug -- Draws the selected index of triangles/quads from the navigation graph on-screen.
-                                                     # Use value 1 to (re)enable the tagged navigation mesh with the matching ID, use 0 to disable them.
-                                                     # Additional info: [https://mbcommands.fandom.com/wiki/Operations#ai_mesh_face_group_show_hide]
+                                                     # Default is value 0.025 = 40 fps (1/40 = 0.025).
+                                                     # The Warband engine equivalent of Time.fixedDeltaTime from Unity 3D engine - the value decides
+                                                     # the interval (1/frequency) of how often physics calculations occur.
+                                                     # Lower values produce more accurate but computationally expensive physics,
+                                                     # higher values result in less accurate but faster physics calculations.
+                                                     # In preliminary testing, no particular changes were noticed in vanilla engine.
+                                                     # However, this operation is confirmed to work on WSE2.
 auto_set_meta_mission_at_end_commited        = 1305  # (auto_set_meta_mission_at_end_commited),
-                                                     # Returns the mission as successful by the game. Used in campaign. (4research)
+                                                     # Sets m_endCommitted to false in the meta mission structure.
+                                                     # Used in campaign to control encounter end behavior. (4research)
 													 
 ################################################################################
 # [ Z26 ] WRECK macro operators.

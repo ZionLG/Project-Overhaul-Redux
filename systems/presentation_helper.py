@@ -84,12 +84,19 @@ scripts = [
 (ui_create_game_button, "$color_button", "@Color", 430, 10, 120, 30),
 (ui_create_container, "$color_container", 490, 0, 210, 200), # Macro operator
 (set_container_overlay, "$color_container"),
+(assign, ":x", 140),
 (ui_create_label, reg1, "@Red", 10, 160, 0, ":element_scale",), # Macro operator
-(ui_create_numberbox, "$color_red", 50, 160, 0, 256, ":element_scale"), # Macro operator
+(ui_create_numberbox, "$color_red", ":x", 150, 0, 256, ":element_scale"), # Macro operator
 (ui_create_label, reg1, "@Green", 10, 130, 0, ":element_scale",), # Macro operator
-(ui_create_numberbox, "$color_green", 50, 130, 0, 256, ":element_scale"), # Macro operator
+(ui_create_numberbox, "$color_green", ":x", 120, 0, 256, ":element_scale"), # Macro operator
 (ui_create_label, reg1, "@Blue", 10, 100, 0, ":element_scale",), # Macro operator
-(ui_create_numberbox, "$color_blue", 50, 100, 0, 256, ":element_scale"), # Macro operator
+(ui_create_numberbox, "$color_blue", ":x", 90, 0, 256, ":element_scale"), # Macro operator
+(ui_create_label, reg1, "@Hue", 10, 70, 0, ":element_scale",), # Macro operator
+(ui_create_numberbox, "$color_hue", ":x", 60, 0, 361, ":element_scale"), # Macro operator
+(ui_create_label, reg1, "@Saturation", 10, 40, 0, ":element_scale",), # Macro operator
+(ui_create_numberbox, "$color_saturation", ":x", 30, 0, 101, ":element_scale"), # Macro operator
+(ui_create_label, reg1, "@Lightness", 10, 10, 0, ":element_scale",), # Macro operator
+(ui_create_numberbox, "$color_lightness", ":x", 0, 0, 101, ":element_scale"), # Macro operator
 (overlay_set_display, "$color_container", 0),
 (set_container_overlay, "$panel"),
 
@@ -266,7 +273,10 @@ scripts = [
 (else_try),
 	(this_or_next|eq, ":object", "$color_red"),
 	(this_or_next|eq, ":object", "$color_green"),
-	(eq, ":object", "$color_blue"),
+	(this_or_next|eq, ":object", "$color_blue"),
+	(this_or_next|eq, ":object", "$color_hue"),
+	(this_or_next|eq, ":object", "$color_saturation"),
+	(eq, ":object", "$color_lightness"),
 	(call_script, "script_cf_color_change", ":object", ":value"),
 (try_end),
 ]),
@@ -431,12 +441,17 @@ scripts = [
 	(overlay_set_val, "$input_size_y", 0),
 	(assign, "$value_size_x", 0),
 	(assign, "$value_size_y", 0),
-	(assign, "$rotation_x_value", 0), (overlay_set_val, "$rotation_x", 0),
-	(assign, "$rotation_y_value", 0), (overlay_set_val, "$rotation_y", 0),
-	(assign, "$rotation_z_value", 0), (overlay_set_val, "$rotation_z", 0),
-	(assign, "$color_red_val", 0),    (overlay_set_val, "$color_red", 0),
-	(assign, "$color_green_val", 0),  (overlay_set_val, "$color_green", 0),
-	(assign, "$color_blue_val", 0),   (overlay_set_val, "$color_blue", 0),
+	(assign, "$rotation_x_value", 0),     (overlay_set_val, "$rotation_x", 0),
+	(assign, "$rotation_y_value", 0),     (overlay_set_val, "$rotation_y", 0),
+	(assign, "$rotation_z_value", 0),     (overlay_set_val, "$rotation_z", 0),
+	(assign, "$color_red_val", 0),        (overlay_set_val, "$color_red", 0),
+	(assign, "$color_green_val", 0),      (overlay_set_val, "$color_green", 0),
+	(assign, "$color_blue_val", 0),       (overlay_set_val, "$color_blue", 0),
+	(assign, "$color_hue_val", 0),        (overlay_set_val, "$color_hue", 0),
+	(assign, "$color_saturation_val", 0), (overlay_set_val, "$color_saturation", 0),
+	(assign, "$color_lightness_val", 0),  (overlay_set_val, "$color_lightness", 0),
+	
+	
 (else_try),
 	(troop_get_slot, ":data_length", "trp_overlay_storage", ":slot"),
 	(troop_get_slot, ":compared_overlay", "trp_overlay_storage", l.slot + 1),
@@ -500,6 +515,13 @@ scripts = [
 	(overlay_set_val, "$color_red", "$color_red_val"),
 	(overlay_set_val, "$color_green", "$color_green_val"),
 	(overlay_set_val, "$color_blue", "$color_blue_val"),
+	(call_script, "script_rgb_to_hsl_wreck", "$color_red_val", "$color_green_val", "$color_blue_val"),
+	(assign, "$color_hue_val", reg0),
+	(assign, "$color_saturation_val", reg1),
+	(assign, "$color_lightness_val", reg2),
+	(overlay_set_val, "$color_hue", "$color_hue_val"),
+	(overlay_set_val, "$color_saturation", "$color_saturation_val"),
+	(overlay_set_val, "$color_lightness", "$color_lightness_val"),
 
 	(val_add, ":slot", 1), (troop_get_slot, ":alignment", "trp_overlay_storage", l.slot),
 	(call_script, "script_flag_checked", ":alignment", tf_left_align), (assign, ":checked", reg0), (overlay_set_val, "$left_align_checkbox", ":checked"),
@@ -580,6 +602,187 @@ scripts = [
 (eq, ":fail", 0),
 ]),
 
+# script_rgb_to_hsl_wreck
+# Input:  param1, param2, param3 = R, G, B (values 0~255)
+# Output: reg0 - hue
+#         reg1 - saturation
+#         reg2 - lightness
+# Note:   takes RGB values and outputs them as HSL
+("rgb_to_hsl_wreck", [
+#when operating on colors always use RGB as the base, and HSV/HSL only as a derivative! RGB has information density of 255*255*255, HSV/HSL only 360*100*100, which is over 4.6x less
+(store_script_params, ":r", ":g", ":b"),
+(assign, ":min", ":r"),
+(val_min, ":min", ":g"),
+(val_min, ":min", ":b"),
+(assign, ":max", ":r"),
+(val_max, ":max", ":g"),
+(val_max, ":max", ":b"),
+(store_sub, ":chroma", ":max", ":min"),
+#H in range 0~360 (same for HSV and HSL)
+(try_begin),
+	(eq, ":chroma", 0),
+	(assign, ":hue", 0),
+(else_try),
+	(eq, ":max", ":r"),
+	(try_begin),
+		(gt, ":b", ":g"),
+		(store_mul, ":add_fix", 6, ":chroma"),
+		(val_add, ":g", ":add_fix"),
+	(try_end),
+	(store_sub, ":hue", ":g", ":b"),
+	(val_mul, ":hue", 100),
+	(val_div_round, ":hue", ":chroma"),
+(else_try),
+	(eq, ":max", ":g"),
+	(store_mul, ":blue_fixed", ":chroma", 2),
+	(val_add, ":blue_fixed", ":b"),
+	(store_sub, ":hue", ":blue_fixed", ":r"),
+	(val_mul, ":hue", 100),
+	(val_div_round, ":hue", ":chroma"), 
+(else_try),
+	(eq, ":max", ":b"),
+	(store_mul, ":red_fixed", ":chroma", 4),
+	(val_add, ":red_fixed", ":r"),
+	(store_sub, ":hue", ":red_fixed", ":g"),
+	(val_mul, ":hue", 100),
+	(val_div_round, ":hue", ":chroma"),
+(try_end),
+(val_mul, ":hue", 60),
+(val_div_round, ":hue", 100),
+
+# Calculate lightness
+# L in range 0~100
+# lum = (max + min) / 2;
+(store_add, ":lightness", ":max", ":min"),
+(val_mul, ":lightness", 100),
+(val_div_round, ":lightness", 2*255),
+
+# Calculate saturation
+# S in range 0~100
+# sat = chroma / (1 - Math.abs(2 * lum - 1));
+(try_begin),
+	(eq, ":chroma", 0),
+	(assign, ":saturation", 0),
+(else_try),
+	(store_mul, ":val", ":lightness", 2),
+	(val_sub, ":val", 100),
+	(val_abs, ":val"),
+	(store_sub, ":val", 100, ":val"),
+	(store_mul, ":chroma_adj", ":chroma", 100),
+	(val_mul, ":chroma_adj", 100),
+	(val_mul, ":val", 255),
+	(store_div_round, ":saturation", ":chroma_adj", ":val"),
+(try_end),
+(assign, reg0, ":hue"),
+(assign, reg1, ":saturation"),
+(assign, reg2, ":lightness"),
+]),
+
+# script_hue_to_rgb
+# Input:  p (0~100)*100, q (0~100)*100, t (0~360)
+# Output: reg0 - color (0~255)
+("hue_to_rgb", [
+(store_script_params, ":p", ":q", ":t"), # Macro operator
+(try_begin),
+	(lt, ":t", 0),
+	(val_add, ":t", 360),
+(try_end),
+(try_begin),
+	(gt, ":t", 360),
+	(val_sub, ":t", 360),
+(try_end),
+(try_begin),
+	(lt, ":t", 60),
+	(store_sub, ":result", ":q", ":p"), #100^2
+	(val_mul, ":result", 6), #100^2
+	(val_mul, ":result", ":t"), #100^2*360
+	(val_div_round, ":result", 360), #100^2
+	(val_add, ":result", ":p"), #100^2
+(else_try),
+	(lt, ":t", 180),
+	(assign, ":result", ":q"), #100^2
+(else_try),
+	(lt, ":t", 240),
+	(store_sub, ":result", ":q", ":p"), #100^2
+	(store_sub, ":t", 240, ":t"),
+	(val_mul, ":result", 6), #100^2
+	(val_mul, ":result", ":t"), #100^2*360
+	(val_div_round, ":result", 360),
+	(val_add, ":result", ":p"), #100^2
+(else_try),
+	(assign, ":result", ":p"), #100^2
+(try_end),
+(val_mul, ":result", 255), #100^2*255
+(val_div_round, ":result", 100*100), #255
+(assign, reg0, ":result"),
+]),
+
+# script_hsl_to_rgb_wreck
+# Input:  param1, param2, param3 = H (0~359), S (0~100), L (0~100)
+# Output: reg0 - red
+#         reg1 - green
+#         reg2 - blue
+# Note:   takes HSL values and outputs them as RGB
+("hsl_to_rgb_wreck", [
+(store_script_params, ":hue", ":saturation", ":lightness"),
+(try_begin),
+	(eq, ":saturation", 0),
+	(store_mul, ":red", ":lightness", 255),
+	(val_div_round, ":red", 100),
+	(assign, ":green", ":red"),
+	(assign, ":blue", ":red"),
+(else_try),
+	(try_begin),
+		(lt, ":lightness", 50),
+		(store_add, ":q", ":saturation", 100),
+		(val_mul, ":q", ":lightness"),
+		#(val_div_round, ":q", 100),
+	(else_try),
+		(store_mul, ":q", ":lightness", ":saturation"),
+		#(val_div_round, ":q", 100),
+		(store_mul, ":lightness_100", ":lightness", 100),
+		(store_sub, ":q", ":lightness_100", ":q"),
+		(store_mul, ":saturation_100", ":saturation", 100),
+		(val_add, ":q", ":saturation_100"),
+	(try_end),
+	(store_mul, ":p", ":lightness", 2),
+	(val_mul, ":p", 100),
+	(val_sub, ":p", ":q"),
+	(store_add, ":t", ":hue", 120),
+	(call_script, "script_hue_to_rgb", ":p", ":q", ":t"),
+	(assign, ":red", reg0),
+	(assign, ":t", ":hue"),
+	(call_script, "script_hue_to_rgb", ":p", ":q", ":t"),
+	(assign, ":green", reg0),
+	(store_sub, ":t", ":hue", 120),
+	(call_script, "script_hue_to_rgb", ":p", ":q", ":t"),
+	(assign, ":blue", reg0),
+(try_end),
+(assign, reg0, ":red"),
+(assign, reg1, ":green"),
+(assign, reg2, ":blue"),
+]),
+
+("set_hsl", [
+(call_script, "script_rgb_to_hsl_wreck", "$color_red_val", "$color_green_val", "$color_blue_val"),
+(assign, "$color_hue_val", reg0),
+(assign, "$color_saturation_val", reg1),
+(assign, "$color_lightness_val", reg2),
+(overlay_set_val, "$color_hue", "$color_hue_val"),
+(overlay_set_val, "$color_saturation", "$color_saturation_val"),
+(overlay_set_val, "$color_lightness", "$color_lightness_val"),
+]),
+
+("set_rgb", [
+(call_script, "script_hsl_to_rgb_wreck", "$color_hue_val", "$color_saturation_val", "$color_lightness_val"),
+(assign, "$color_red_val", reg0),
+(assign, "$color_green_val", reg1),
+(assign, "$color_blue_val", reg2),
+(overlay_set_val, "$color_red", "$color_red_val"),
+(overlay_set_val, "$color_green", "$color_green_val"),
+(overlay_set_val, "$color_blue", "$color_blue_val"),
+]),
+
 ("cf_color_change", [
 (store_script_param, ":object", 1),
 (store_script_param, ":value", 2),
@@ -587,16 +790,34 @@ scripts = [
 (try_begin),
 	(this_or_next|eq, ":object", "$color_red"),
 	(this_or_next|eq, ":object", "$color_green"),
-	(eq, ":object", "$color_blue"),
+	(this_or_next|eq, ":object", "$color_blue"),
+	(this_or_next|eq, ":object", "$color_hue"),
+	(this_or_next|eq, ":object", "$color_saturation"),
+	(eq, ":object", "$color_lightness"),
 	(try_begin),
 		(eq, ":object", "$color_red"),
 		(assign, "$color_red_val", ":value"),
+		(call_script, "script_set_hsl"),
 	(else_try),
 		(eq, ":object", "$color_green"),
 		(assign, "$color_green_val", ":value"),
+		(call_script, "script_set_hsl"),
 	(else_try),
 		(eq, ":object", "$color_blue"),
 		(assign, "$color_blue_val", ":value"),
+		(call_script, "script_set_hsl"),
+	(else_try),
+		(eq, ":object", "$color_hue"),
+		(assign, "$color_hue_val", ":value"),
+		(call_script, "script_set_rgb"),
+	(else_try),
+		(eq, ":object", "$color_saturation"),
+		(assign, "$color_saturation_val", ":value"),
+		(call_script, "script_set_rgb"),
+	(else_try),
+		(eq, ":object", "$color_lightness"),
+		(assign, "$color_lightness_val", ":value"),
+		(call_script, "script_set_rgb"),
 	(try_end),
 	(assign, ":color", "$color_red_val"),
 	(val_lshift, ":color", 8),
@@ -633,6 +854,8 @@ scripts = [
 	(call_script, "script_update_log"),
 (try_end),
 ]),
+
+
 ]
 
 def preprocess_entities(glob):

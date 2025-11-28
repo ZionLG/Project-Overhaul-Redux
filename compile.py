@@ -1,16 +1,12 @@
-WRECK_VERSION = '1.1.3'
+WRECK_VERSION = '1.1.4'
 
 # Whats new in this version:
-# 1) New warnings of nested performance heavy loops. You can add new operatiions to header_operations.py list performance_heavy_loops.
-#    Default is performance_heavy_loops = [try_for_agents, try_for_parties, try_for_prop_instances].
-#    If this list is present it will replace default values.
-# 2) Fixed error 'TypeError' has no attribute 'message' caused by migrating from Python 2 to 3.
-# 3) Fixed bug of processing animations. If there were no subsequent animation then string "none 0 0" was added wich crashed engine at loading.
-# 4) Added support for items plural name.
-# 5) Changed <colorama> syntax for compatibility with python 3.12.
-# 6) Removed header folder loading.
-# 7) Fixed error when using property of entities like trp.knight.level.
-# 8) Added items difficulty check of troops equipment.
+# 1) Added an error of using this_or_next without closing condtion.
+# 2) New macro operands from 'Universal Mission Scripts Handler'.
+#       (push_script_with_params, <time_out_msec>, <script_callback>, <param1>, [<param2>, ...]),
+#       (get_params, <param1>, [<param2>,...]),
+# https://forums.taleworlds.com/index.php?threads/python-script-scheme-exchange.8652/post-9906974
+
 
 # The MIT License (MIT)
 #
@@ -86,7 +82,7 @@ export_filename = '%s.txt'  # How to name export files (only used for some debug
 WRECK.time_started = gettime()
 
 print()
-print('{2}*** Warband Refined & Enhanced Compiler Kit (W.R.E.C.K.) version {version!s} ***{0}'.format(*COLORAMA,
+print('{2}Warband Refined & Enhanced Compiler Kit (W.R.E.C.K.) v{version!s}{0}'.format(*COLORAMA,
 																									  version=WRECK_VERSION))
 print(
 	'Please report errors, problems and suggestions at\n{5}https://forums.taleworlds.com/index.php?threads/325102/{0}'.format(

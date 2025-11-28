@@ -8,6 +8,15 @@ troops = [
 	["static_data_array",   "{!}disabled", "{!}disabled", tf_hero|tf_inactive, 0, 0, 0, [], 0, 0, 0, 0],
 	["animation_duration",  "{!}disabled", "{!}disabled", tf_hero|tf_inactive, 0, 0, 0, [], 0, 0, 0, 0],
 	["troop_flags",  "{!}disabled", "{!}disabled", tf_hero|tf_inactive, 0, 0, 0, [], 0, 0, 0, 0],
+
+	# Universal mission scripts handler.
+	# [       0          |      1    |         2        |   3    |                4            ]
+	# [ number_of_tuples | time_msec | time_out_in_msec | script | scripts_handler_params slot ]
+	["mission_scripts_handler","{!}MSH","{!}MSH",tf_hero,0,0,fac.commoners,[],0,0,0,0],
+
+	# [      0       |        1      |    2    |    3    |    4    |      5        |    6    |    7    |    8     | end_of_slots ]
+	# [ end_of_slots | num_of_params | param_1 | param_2 | param_N | num_of_params | param_1 | param_2 | param_N  |      0       ]
+	["scripts_handler_params","{!}SHP","{!}SHP",tf_hero,0,0,fac.commoners,[],0,0,0,0],
 ]
 stack_storage = trp.stack_storage_troop
 timer_storage = trp.timer_storage_troop
@@ -87,6 +96,23 @@ scripts = [
 	#place holders
 	("animation_duration_init", []),
 	("init_troop_flags", []),
+
+	# script_array_remove_item
+	("array_remove_item", [
+		(store_script_param, ":troop", 1),
+		(store_script_param, ":shift_start", 2),
+		(store_script_param, ":item_size", 3),
+		(troop_get_slot, ":num_slots", ":troop", 0),
+		(store_add, ":shift_size", ":item_size", 1),
+		(store_sub, ":shift_end", ":num_slots", ":shift_size"),
+		(try_for_range, ":slot_destination", ":shift_start", ":shift_end"),
+			(store_add, ":slot_source", ":slot_destination", ":shift_size"),
+			(troop_get_slot, ":value", ":troop", ":slot_source"),
+			(troop_set_slot, ":troop", ":slot_destination", ":value"),
+		(try_end),
+		(val_sub, ":num_slots", ":shift_size"),
+		(troop_set_slot, ":troop", 0, ":num_slots"),
+	]),
 ]
 
 
@@ -209,12 +235,123 @@ strings = [
 	("damage_type_1_adj", "piercing"),
 	("damage_type_2_adj", "blunt"),
 
+	# Human bones
+	("hb_none",       "None"      ),
+	("hb_abdomen",    "abdomen"   ),
+	("hb_thigh_l",    "thigh-l"   ),
+	("hb_calf_l",     "calf-l"    ),
+	("hb_foot_l",     "foot-l"    ),
+	("hb_thigh_r",    "thigh-r"   ),
+	("hb_calf_r",     "calf-r"    ),
+	("hb_foot_r",     "foot-r"    ),
+	("hb_spine",      "spine"     ),
+	("hb_thorax",     "thorax"    ),
+	("hb_head",       "head"      ),
+	("hb_shoulder_l", "shoulder-l"),
+	("hb_upperarm_l", "upperarm-l"),
+	("hb_forearm_l",  "forearm-l" ),
+	("hb_hand_l",     "hand-l"    ),
+	("hb_item_l",     "item-l"    ),
+	("hb_shoulder_r", "shoulder-r"),
+	("hb_upperarm_r", "upperarm-r"),
+	("hb_forearm_r",  "forearm-r" ),
+	("hb_hand_r",     "hand-r"    ),
+	("hb_item_r",     "item-r"    ),
+	# Horse bones (from wse)
+	("hrsb_none",         "None"        ),
+	("hrsb_pelvis",       "pelvis"      ),
+	("hrsb_spine_1",      "spine-1"     ),
+	("hrsb_spine_2",      "spine-2"     ),
+	("hrsb_spine_3",      "spine-3"     ),
+	("hrsb_neck_1",       "neck-1"      ),
+	("hrsb_neck_2",       "neck-2"      ),
+	("hrsb_neck_3",       "neck-3"      ),
+	("hrsb_head",         "head"        ),
+	("hrsb_l_clavicle",   "l-clavicle"  ),
+	("hrsb_l_upper_arm",  "l-upper_arm" ),
+	("hrsb_l_forearm",    "l-forearm"   ),
+	("hrsb_l_hand",       "l-hand"      ),
+	("hrsb_l_front_hoof", "l-front_hoof"),
+	("hrsb_r_clavicle",   "r-clavicle"  ),
+	("hrsb_r_upper_arm",  "r-upper-arm" ),
+	("hrsb_r_forearm",    "r-forearm"   ),
+	("hrsb_r_hand",       "r-hand"      ),
+	("hrsb_r_front_hoof", "r-front-hoof"),
+	("hrsb_l_thigh",      "l-thigh"     ),
+	("hrsb_l_calf",       "l-calf"      ),
+	("hrsb_l_foot",       "l-foot"      ),
+	("hrsb_l_back_hoof",  "l-back-hoof" ),
+	("hrsb_r_thigh",      "r-thigh"     ),
+	("hrsb_r_calf",       "r-calf"      ),
+	("hrsb_r_foot",       "r-foot"      ),
+	("hrsb_r_back_hoof",  "r-back-hoof" ),
+	("hrsb_tail_1",       "tail-1"      ),
+	("hrsb_tail_2",       "tail-2"      ),
+]
+
+triggers = [
+	# Universal mission scripts handler +
+	(ti_before_mission_start, 0, 0, [],[
+		(troop_set_slot, "trp_mission_scripts_handler", 0, 0),
+		(troop_set_slot, "trp_scripts_handler_params", 0, 1),
+	]),
+
+	(0, 0, 0, [
+		(negate|troop_slot_eq, "trp_mission_scripts_handler", 0, 0),
+	],[
+		(store_mission_timer_a_msec, ":cur_time"),
+		(troop_get_slot, ":num_tuples", "trp_mission_scripts_handler", 0),
+		(assign, ":end", ":num_tuples"),
+		(try_for_range_backwards, ":i", 0, ":end"),
+			(store_mul, ":slot", ":i", 4),
+			(val_add, ":slot", 1),
+			(troop_get_slot, ":time", "trp_mission_scripts_handler", ":slot"),
+			(assign, ":time_slot", ":slot"),
+			(val_add, ":slot", 1),
+			(troop_get_slot, ":time_out", "trp_mission_scripts_handler", ":slot"),
+			(val_add, ":time", ":time_out"),
+			(ge, ":cur_time", ":time"),
+			(val_add, ":slot", 1),
+			(troop_get_slot, ":script", "trp_mission_scripts_handler", ":slot"),
+			(val_add, ":slot", 1),
+			(troop_get_slot, ":params_slot", "trp_mission_scripts_handler", ":slot"),
+			(try_begin),
+				(call_script, ":script", ":params_slot"), # if script fail - we don't remove it
+				
+				(troop_get_slot, ":num_params", "trp_scripts_handler_params", ":params_slot"),
+				(call_script, "script_array_remove_item", "trp_scripts_handler_params", ":params_slot", ":num_params"),
+				
+				(store_mul, ":shift_start", ":i", 4),
+				(val_add, ":shift_start", 1),
+				(troop_get_slot, ":num_tuples", "trp_mission_scripts_handler", 0), # we can add new script inside previous
+				(store_mul, ":shift_end", ":num_tuples", 4),
+				(val_sub, ":shift_end", 3),
+				(try_for_range, ":slot_destination", ":shift_start", ":shift_end"),
+					(store_add, ":slot_source", ":slot_destination", 4),
+					(troop_get_slot, ":value", "trp_mission_scripts_handler", ":slot_source"),
+					(try_begin),
+						(store_sub, ":module", ":slot_source", 1),
+						(val_mod, ":module", 4),
+						(eq, ":module", 3),
+						(val_sub, ":value", ":num_params"), # adjust reference to params
+						(val_sub, ":value", 1), # +1 slot of size (number of params)
+					(try_end),
+					(troop_set_slot, "trp_mission_scripts_handler", ":slot_destination", ":value"),
+				(try_end),
+				(val_sub, ":num_tuples", 1),
+				(troop_set_slot, "trp_mission_scripts_handler", 0, ":num_tuples"),
+			(else_try),
+				(troop_set_slot, "trp_mission_scripts_handler", ":time_slot", ":cur_time"),
+			(try_end),
+		(try_end),
+	]),
+	# Universal mission scripts handler -
 ]
 
 #strings.extend([('animation_00%d' if i < 100 else 'animation_0%d' if i < 10 else 'animation_%d') % i, ('animation_00%d' if i<100 else 'animation_0%d' if i<10 else 'animation_%d') % i] for i in range(670))
-
+strings.append(("animation_none", "none")) # id = -1
 for cur_id in range(0, 670 + 200):
-  strings.append( ("animation_{:0>3}".format(cur_id), "animation_{:0>3}".format(cur_id)), )
+	strings.append( ("animation_{:0>3}".format(cur_id), "animation_{:0>3}".format(cur_id)), )
 
 #init_animation_strings()
 
@@ -248,7 +385,7 @@ def preprocess_entities(glob):
 		skill_real_name = glob['skills'][index][1]
 		str_offset = int(getattr(WRECK.s, str_id)) & 0xFFFFFFFF # Strip opmask
 		glob['strings'][str_offset][1] = skill_real_name
-  # Retrieve animation names
+	# Retrieve animation names
 	for index in range(len(glob['animations'])):
 		str_id = ('animation_00%d' if index < 10 else 'animation_0%d' if index < 100 else 'animation_%d') % index
 		animation_real_name = glob['animations'][index][0]
@@ -322,6 +459,9 @@ def preprocess_entities(glob):
 			except:
 				pass
 
+	for cur_mission in glob['mission_templates']:
+		cur_mission[5].extend(triggers)
+
 # New string operations.
 
 def str_store_attribute_name(string_reg, value, *argl):
@@ -360,10 +500,20 @@ def str_store_damage_type_adjective(string_reg, value, *argl):
 		(str_store_string, string_reg, l._cached_),
 	]
 def str_store_anim_name(string_reg, value, *argl):
-  return [
-    (store_add, l._cached_, s.animation_000, value),
-    (str_store_string, string_reg, l._cached_),
-  ]
+	return [
+		(store_add, l._cached_, s.animation_000, value),
+		(str_store_string, string_reg, l._cached_),
+	]
+def str_store_human_bone_name(string_reg, value, *argl):
+	return [
+		(store_add, l._cached_, s.hb_abdomen, value),
+		(str_store_string, string_reg, l._cached_),
+	]
+def str_store_horse_bone_name(string_reg, value, *argl):
+	return [
+		(store_add, l._cached_, s.hrsb_pelvis, value),
+		(str_store_string, string_reg, l._cached_),
+	]
 
 # Global stack operations
 
@@ -410,6 +560,41 @@ def store_mission_timer(destination, timer_index, *argl):
 def store_script_params(*argl):
 	return [(store_script_param, argl[index], index + 1) for index in range(len(argl))]
 
+def get_params(*argl):
+	result = [(store_script_param, l._slot_, 1)]
+	for index in range(len(argl)):
+		result.append((val_add, l._slot_, 1))
+		result.append((troop_get_slot, argl[index], "trp_scripts_handler_params", l._slot_))
+	return result
+
+def push_script_with_params(*argl):
+	size = len(argl) - 2
+	result = [
+		(troop_get_slot, l._num_scripts_, "trp_mission_scripts_handler", 0),
+		(store_mul, l._slot_, l._num_scripts_, 4),
+		(val_add, l._slot_, 1),
+		(store_mission_timer_a_msec, l._time_),
+		(troop_set_slot, "trp_mission_scripts_handler", l._slot_, l._time_),
+		(val_add, l._slot_, 1),
+		(troop_set_slot, "trp_mission_scripts_handler", l._slot_, argl[0]), # time_out_msec
+		(val_add, l._slot_, 1),
+		(troop_set_slot, "trp_mission_scripts_handler", l._slot_, argl[1]), # script_callback
+		(val_add, l._slot_, 1),
+		(troop_get_slot, l._last_slot_, "trp_scripts_handler_params", 0),
+		(troop_set_slot, "trp_mission_scripts_handler", l._slot_, l._last_slot_),
+		(troop_set_slot, "trp_scripts_handler_params", l._last_slot_, size),
+	]
+	for index in range(2, len(argl)):
+		result.append((val_add, l._last_slot_, 1))
+		result.append((troop_set_slot, "trp_scripts_handler_params", l._last_slot_, argl[index]))
+	result.extend([
+		(val_add, l._last_slot_, 1),
+		(troop_set_slot, "trp_scripts_handler_params", 0, l._last_slot_),
+		(val_add, l._num_scripts_, 1),
+		(troop_set_slot, "trp_mission_scripts_handler", 0, l._num_scripts_),
+	])
+	return result
+
 # Mathematical operations
 
 def get_fixed_point_multiplier(destination, *argl):
@@ -431,6 +616,44 @@ def position_aim_at_position(position, target, *argl):
 	return [
 		(call_script, script.point_y_toward_position, position, target), # in formations code
 	]
+
+def get_distance_between_positions_fixed_point(destination, position1, position2, *argl):
+	return [
+		(position_get_x, l._cached_1_, position1),
+		(position_get_x, l._cached_2_, position2),
+		(val_sub, l._cached_1_, l._cached_2_),
+		(val_mul, l._cached_1_, l._cached_1_),
+		(assign, destination, l._cached_1_),
+		(position_get_y, l._cached_1_, position1),
+		(position_get_y, l._cached_2_, position2),
+		(val_sub, l._cached_1_, l._cached_2_),
+		(val_mul, l._cached_1_, l._cached_1_),
+		(val_add, destination, l._cached_1_),
+		(position_get_z, l._cached_1_, position1),
+		(position_get_z, l._cached_2_, position2),
+		(val_sub, l._cached_1_, l._cached_2_),
+		(val_mul, l._cached_1_, l._cached_1_),
+		(val_add, destination, l._cached_1_),
+		(convert_from_fixed_point, destination),
+		(store_sqrt, destination, destination),
+	]
+
+def position_move_y_fp(position, y_fp, *argl):
+	return [
+		(init_position, position_move_xyz_fp_pos),
+		(position_set_y, position_move_xyz_fp_pos, y_fp),
+		(position_transform_position_to_parent, position, position, position_move_xyz_fp_pos),
+	]
+
+def position_move_xyz_fp(position, x_fp, y_fp, z_fp, *argl):
+	return [
+		(init_position, position_move_xyz_fp_pos),
+		(position_set_x, position_move_xyz_fp_pos, x_fp),
+		(position_set_y, position_move_xyz_fp_pos, y_fp),
+		(position_set_z, position_move_xyz_fp_pos, z_fp),
+		(position_transform_position_to_parent, position, position, position_move_xyz_fp_pos),
+	]
+
 
 # Troop operations
 
@@ -555,33 +778,33 @@ def item_modifier_get_value_multiplier(destination, modifier, *argl):
 		(store_mul, destination, modifier, 10),
 		(val_add, destination, _imod_offset_value),
 		(troop_get_slot, destination, trp.static_data_array, destination), # value multiplied by 1000000
-	  (assign, l._cached_, 1),
-	  (convert_to_fixed_point, l._cached_),
-	  (val_mul, destination, l._cached_),
-	  (val_div, destination, 1000000), # convert to current fixed point
+		(assign, l._cached_, 1),
+		(convert_to_fixed_point, l._cached_),
+		(val_mul, destination, l._cached_),
+		(val_div, destination, 1000000), # convert to current fixed point
 	]
 def item_modifier_get_rarity_multiplier(destination, modifier, *argl):
 	return [
 		(store_mul, destination, modifier, 10),
 		(val_add, destination, _imod_offset_rarity),
 		(troop_get_slot, destination, trp.static_data_array, destination), # value multiplied by 1000000
-	  (assign, l._cached_, 1),
-	  (convert_to_fixed_point, l._cached_),
-	  (val_mul, destination, l._cached_),
-	  (val_div, destination, 1000000), # convert to current fixed point
+		(assign, l._cached_, 1),
+		(convert_to_fixed_point, l._cached_),
+		(val_mul, destination, l._cached_),
+		(val_div, destination, 1000000), # convert to current fixed point
 	]
 def try_for_party_group(destination, source_party, *argl):
 	return [
 		(party_get_num_attached_parties, l._cached_, source_party),
-    (store_add, l._end_, l._cached_, 1),
-    (try_for_range, l._rank_, 0, l._end_),
-    	(try_begin),
-    		(eq, l._rank_, 0),
-    		(assign, destination, source_party),
-    	(else_try),
-    	  (val_sub, l._rank_, 1),
-    	  (party_get_attached_party_with_rank, destination, source_party, l._rank_),
-    	(try_end),
+		(store_add, l._end_, l._cached_, 1),
+		(try_for_range, l._rank_, 0, l._end_),
+			(try_begin),
+				(eq, l._rank_, 0),
+				(assign, destination, source_party),
+			(else_try),
+				(val_sub, l._rank_, 1),
+				(party_get_attached_party_with_rank, destination, source_party, l._rank_),
+			(try_end),
 	]
 
 def val_divup(destination, value, *argl):
@@ -593,9 +816,53 @@ def val_divup(destination, value, *argl):
 
 def store_divup(destination, value1, value2, *argl):
 	return [
-		(store_add, l._x_, value1, value2),
-		(val_sub, l._x_, 1),
-		(store_div, destination, l._x_, value2),
+		(store_add, l._cached_, value1, value2),
+		(val_sub, l._cached_, 1),
+		(store_div, destination, l._cached_, value2),
+	]
+
+def val_div_round(destination, value, *argl):
+	return [
+		(store_div, l._cached_, value, 2),
+		(val_add, destination, l._cached_),
+		(val_div, destination, value),
+	]
+
+def store_div_round(destination, value1, value2, *argl):
+	return [
+		(store_div, l._cached_, value2, 2),
+		(val_add, l._cached_, value1),
+		(store_div, destination, l._cached_, value2),
+	]
+
+def val_not(destination, *argl):
+	return [
+		(val_add, destination, 1),
+		(val_mul, destination, -1),
+	]
+
+def store_not(destination, value, *argl):
+	return [
+		(store_add, destination, value, 1),
+		(val_mul, destination, -1),
+	]
+
+def val_xor(destination, value, *argl):
+	return [
+		(store_and, l._cached_, destination, value),
+		(val_add, l._cached_, 1), # not l._cached_
+		(val_mul, l._cached_, -1),
+		(val_or, destination, value),
+		(val_and, destination, l._cached_),
+	]
+
+def store_xor(destination, value1, value2, *argl):
+	return [
+		(store_and, l._cached_, value1, value2),
+		(val_add, l._cached_, 1), # not l._cached_
+		(val_mul, l._cached_, -1),
+		(store_or, destination, value1, value2),
+		(val_and, destination, l._cached_),
 	]
 
 def get_animation_duration(destination, animation_id, *argl):
@@ -620,7 +887,8 @@ extend_syntax(str_store_damage_type_adjective) # (str_store_damage_type_adjectiv
                                                # Stores specified damage type adjective to string register.
 extend_syntax(str_store_anim_name)             # (str_store_anim_name, <string_reg_no>, <animation_id>),
                                                # Stores specified animation name to string register, as specified in module_animations.py.
-
+extend_syntax(str_store_human_bone_name)       # (str_store_human_bone_name, <string_reg>, <bone>),
+extend_syntax(str_store_horse_bone_name)       # (str_store_horse_bone_name, <string_reg>, <bone>),
 extend_syntax(push_value)                 # (push_value, <value>),
                                           # Saves a single value to stack.
 extend_syntax(pop_value)                  # (pop_value, <destination>),
@@ -635,12 +903,24 @@ extend_syntax(store_mission_timer)        # (store_mission_timer, <destination>,
                                           # Stores current value (in milliseconds) for specified mission timer.
 extend_syntax(store_script_params)        # (store_script_params, <param1>, <param2>...),
                                           # Retrieves arbitrary number of script parameters with a single line.
+extend_syntax(push_script_with_params)    # (push_script_with_params, <time_out_msec>, <script_callback>, <param1>, <param2>...),
+                                          # Pushes timeout and script with arbitrary number of script parameters with a single line.
+                                          # This script will be executed after timeout milliseconds. Timeout 0 executes in the same frame.
+extend_syntax(get_params)                 # (get_params, <param1>, <param2>...),
+                                          # Retrieves arbitrary number of script handler parameters with a single line.
+                                          # Used in the script given in the previous operand.
 extend_syntax(get_fixed_point_multiplier) # (get_fixed_point_multiplier, <destination>),
                                           # Retrieves current fixed point multiplier value.
 extend_syntax(position_set_coordinates)   # (position_set_coordinates, <pos>, <x_fixed_point>, <y_fixed_point>, <z_fixed_point>),
                                           # Sets all 3 position coordinates with a single line.
 extend_syntax(position_aim_at_position)   # (position_aim_at_position, <position_reg>, <aim_position_reg>),
                                           # Rotates the position so it's Y axis points at specified aim position.
+extend_syntax(get_distance_between_positions_fixed_point) # (get_distance_between_positions_fixed_point, distance_fp, position1, position2),
+                                          # Gets distance with fixed point specified before operation.
+extend_syntax(position_move_y_fp)         # (position_move_y_fp, position, y_fixed_point),
+                                          # Moves position with fixed point value.
+extend_syntax(position_move_xyz_fp)       # (position_move_xyz_fp, position, x_fixed_point, y_fixed_point, z_fixed_point),
+                                          # Moves position with fixed point values XYZ.
 extend_syntax(troop_set_attribute)        # (troop_set_attribute, <troop_id>, <attribute_id>, <value>),
                                           # Sets troop attribute to specified value.
 extend_syntax(troop_set_skill)            # (troop_set_skill, <troop_id>, <skill_id>, <value>),
@@ -665,11 +945,23 @@ extend_syntax(item_modifier_get_horse_maneuver)    # (item_modifier_get_horse_ma
 extend_syntax(item_modifier_get_rarity_multiplier) # (item_modifier_get_rarity_multiplier, <destination_fixed_point>, <imod_value>),
 extend_syntax(item_modifier_get_value_multiplier)  # (item_modifier_get_value_multiplier, <destination_fixed_point>, <imod_value>),
 
-extend_syntax(try_for_party_group)				# (try_for_party_group, <destination>, <source_party>),
-																					# Loops for all parties in the group including source party.
-extend_syntax(val_divup)									# (val_divup, <destination>, <value>),
-																					# Divide destination with round up. Only positive values.
-extend_syntax(store_divup)								# (store_divup, <destination>, <value1>, <value2>),
-																					# Divide destination := value1/value2 with round up. Only positive values.
+extend_syntax(try_for_party_group)        # (try_for_party_group, <destination>, <source_party>),
+                                          # Loops for all parties in the group including source party.
+extend_syntax(val_divup)                  # (val_divup, <destination>, <value>),
+                                          # Divide destination with round up. Only positive values.
+extend_syntax(store_divup)                # (store_divup, <destination>, <value1>, <value2>),
+                                          # Divide destination := value1/value2 with round up. Only positive values.
+extend_syntax(val_div_round)              # (val_div_round, <destination>, <value>),
+                                          # Divide with math rounding to nearest integer. Only positive values.
+extend_syntax(store_div_round)            # (store_div_round, <destination>, <value1>, <value2>),
+                                          # Divide with math rounding to nearest integer. Only positive values.
+extend_syntax(val_not)                    # (val_not, <destination>),
+                                          # Logical NOT (compl, ~). Inverts bits in destination.
+extend_syntax(store_not)                  # (store_not, <destination>, <value>),
+                                          # Logical NOT (compl, ~). Stores inverted bits of value in destination.
+extend_syntax(val_xor)                    # (val_xor, <destination>, <value>),
+                                          # Logical XOR (exclusive OR). It's like logical OR but excludes when both bits are TRUE.
+extend_syntax(store_xor)                  # (store_xor, <destination>, <value1>, <value2>),
+                                          # Logical XOR (exclusive OR). It's like logical OR but excludes when both bits are TRUE.
 extend_syntax(get_animation_duration)     # (get_animation_duration, <destination>, <animation_id>),
-																					# Get animation duration in milliseconds. Only minimal duration of different variants is counted.
+                                          # Get animation duration in milliseconds. Only minimal duration of different variants is counted.

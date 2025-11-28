@@ -166,7 +166,7 @@ meshes = [
 def ui_create_label(destination, text, x, y, alignment = 0, scale = None, color = None, rotation = None, *argl):
 	result = [(create_text_overlay, destination, text, alignment),]
 	
-	if scale is None: scale = -1
+	if not scale: scale = -1
 	else: result.extend([
 		(position_set_x, ui_position, scale),
 		(position_set_y, ui_position, scale),
@@ -188,11 +188,11 @@ def ui_create_label(destination, text, x, y, alignment = 0, scale = None, color 
 		(overlay_set_mesh_rotation, destination, ui_position),
 	])
 
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_label, x, y, scale, scale, 0, 0, color, alignment, rotation)])
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_label, x, y, scale, scale, 0, 0, color, alignment, rotation, 0, 0)])
 	
 	return result
 
-def ui_create_mesh(destination, mesh, x, y, scale_x = None, scale_y = None, *argl):
+def ui_create_mesh(destination, mesh, x, y, scale_x = None, scale_y = None, color = None, *argl):
 	result = [(create_mesh_overlay, destination, mesh),]
 
 	if scale_x is None: scale_x = scale_y = -1
@@ -202,13 +202,17 @@ def ui_create_mesh(destination, mesh, x, y, scale_x = None, scale_y = None, *arg
 		result.append((position_set_y, ui_position, scale_y))
 		result.append((overlay_set_size, destination, ui_position))
 
+	if color is not None:
+		result.append((overlay_set_color, destination, color))
+	else: color = 0
+
 	result.extend([
 		(position_set_x, ui_position, x),
 		(position_set_y, ui_position, y),
 		(overlay_set_position, destination, ui_position),
 	])
 
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_mesh, x, y, scale_x, scale_y, 0, 0, 0, 0, 0)])
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_mesh, x, y, scale_x, scale_y, 0, 0, color, 0, 0,0,0)])
 
 	return result
 
@@ -232,7 +236,7 @@ def ui_create_button(destination, caption, x, y, alignment = 0, size_x = None, s
 	else: color = -1
 	if hilight_color is not None: result.append((overlay_set_hilight_color, destination, hilight_color))
 
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_button, x, y, size_x, size_y, 0, 0, color, alignment, 0)])
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_button, x, y, size_x, size_y, 0, 0, color, alignment, 0, 0, 0)])
 	
 	return result
 
@@ -252,7 +256,7 @@ def ui_create_game_button(destination, caption, x, y, size_x = None, size_y = No
 		(overlay_set_position, destination, ui_position),
 	])
 
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_game_button, x, y, size_x, size_y, 0, 0, 0, 0, 0)])
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_game_button, x, y, size_x, size_y, 0, 0, 0, 0, 0, 0, 0)])
 	
 	return result
 
@@ -272,11 +276,11 @@ def ui_create_in_game_button(destination, caption, x, y, size_x = None, size_y =
 		(overlay_set_position, destination, ui_position),
 	])
 
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_in_game_button, x, y, size_x, size_y, 0, 0, 0, 0, 0)])
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_in_game_button, x, y, size_x, size_y, 0, 0, 0, 0, 0, 0, 0)])
 	
 	return result
 
-def ui_create_image_button(destination, mesh, mesh_pressed, x, y, scale_x = None, scale_y = None, *argl):
+def ui_create_image_button(destination, mesh, mesh_pressed, x, y, scale_x = None, scale_y = None, color = None, *argl):
 	result = [(create_image_button_overlay, destination, mesh, mesh_pressed),]
 
 	if scale_x is None: scale_x = scale_y = -1
@@ -292,7 +296,10 @@ def ui_create_image_button(destination, mesh, mesh_pressed, x, y, scale_x = None
 		(overlay_set_position, destination, ui_position),
 	])
 
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_image_button, x, y, scale_x, scale_y, 0, 0, 0, 0, 0)])		
+	if color is None: color = -1
+	else: result.append((overlay_set_color, destination, color))
+
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_image_button, x, y, scale_x, scale_y, 0, 0, color, 0, 0, 0, 0)])
 	
 	return result
 
@@ -312,7 +319,7 @@ def ui_create_image_button_with_tableau_material(destination, mesh, tableau_mate
 		(overlay_set_position, destination, ui_position),
 	])
 
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_image_button_with_tableau_material, x, y, scale_x, scale_y, 0, 0, 0, 0, 0)])	
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_image_button_with_tableau_material, x, y, scale_x, scale_y, 0, 0, 0, 0, 0, 0, 0)])	
 	
 	return result
 
@@ -333,7 +340,7 @@ def ui_create_checkbox(destination, mesh_off, mesh_on, x, y, value = 0, scale = 
 		(overlay_set_val, destination, value),
 	])
 
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_checkbox, x, y, scale, scale, 0, 0, 0, 0, 0)])	
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_checkbox, x, y, scale, scale, 0, 0, 0, 0, 0, 0, 0)])	
 
 	return result
 
@@ -348,7 +355,7 @@ def ui_create_container(destination, x, y, width = 0, height = 0, *argl):
 		(overlay_set_area_size, destination, ui_position),
 	]
 
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_container, x, y, 0, 0, width, height, 0, tf_scrollable, 0)])	
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_container, x, y, 0, 0, width, height, 0, tf_scrollable, 0, 0, 0)])	
 
 	return result
 
@@ -360,7 +367,7 @@ def ui_create_numberbox(destination, x, y, min_value, max_value, *argl):
 		(overlay_set_position, destination, ui_position),
 	]
 
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_numberbox, x, y, 0, 0, 0, 0, 0, 0, 0)])
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_numberbox, x, y, 0, 0, 0, 0, 0, 0, 0,0,0)])
 
 	return result
 
@@ -380,7 +387,7 @@ def ui_create_textbox(destination, x, y, size_x = None, scale_y = None, *argl):
 		(overlay_set_position, destination, ui_position),
 	])
 
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_textbox, x, y, size_x, scale_y, 0, 0, 0, 0, 0)])
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_textbox, x, y, size_x, scale_y, 0, 0, 0, 0, 0,0,0)])
 
 	return result
 
@@ -402,7 +409,7 @@ def ui_create_combo_label(destination, x, y, scale_x = None, scale_y = None, *ar
 
 	result.extend([(overlay_add_item, destination, item) for item in argl])
 
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_combo_label, x, y, scale_x, scale_y, 0, 0, 0, 0, 0)])
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_combo_label, x, y, scale_x, scale_y, 0, 0, 0, 0, 0,0,0)])
 
 	return result
 
@@ -424,7 +431,7 @@ def ui_create_combobox(destination, x, y, scale_x = None, scale_y = None, *argl)
 
 	result.extend([(overlay_add_item, destination, item) for item in argl])
 
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_combobox, x, y, scale_x, scale_y, 0, 0, 0, 0, 0)])
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_combobox, x, y, scale_x, scale_y, 0, 0, 0, 0, 0,0,0)])
 
 	return result
 
@@ -463,7 +470,7 @@ def ui_create_listbox(destination, x, y, scale_x = None, scale_y = None, alpha =
 	result.append((overlay_set_alpha, destination, alpha))
 	if value != 0: result.append((overlay_set_val, destination, value))
 
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_listbox, x, y, scale_x, scale_y, 0, 0, 0, 0, 0)])
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_listbox, x, y, scale_x, scale_y, 0, 0, 0, 0, 0,0,0)])
 
 	return result
 
@@ -483,7 +490,7 @@ def ui_create_item(destination, item, x, y, scale_x = None, scale_y = None, *arg
 		(overlay_set_position, destination, ui_position),
 	])
 
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_item, x, y, scale_x, scale_y, 0, 0, 0, 0, 0)])
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_item, x, y, scale_x, scale_y, 0, 0, 0, 0, 0,0,0)])
 	
 	return result
 
@@ -503,7 +510,7 @@ def ui_create_horslider(destination, x, y, min_value, max_value, scale_x = None,
 		(overlay_set_position, destination, ui_position),
 	])
 	
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_horslider, x, y, scale_x, scale_y, 0, 0, 0, 0, 0)])
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_horslider, x, y, scale_x, scale_y, 0, 0, 0, 0, 0,0,0)])
 	
 	return result
 
@@ -523,14 +530,14 @@ def ui_create_mesh_with_tableau_material(destination, mesh, tableau_material, va
 		(overlay_set_position, destination, ui_position),
 	])
 	
-	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_mesh_with_tableau_material, x, y, scale_x, scale_y, 0, 0, 0, 0, 0)])
+	if compiler_store_overlay_data: result.extend([(call_script, "script_store_overlay_data", destination, s.ui_create_mesh_with_tableau_material, x, y, scale_x, scale_y, 0, 0, 0, 0, 0,0,0)])
 	
 	return result
 
 #Optional parameters should be used as 'None' if not used but needed for syntax.
 extend_syntax(ui_create_label)        # (ui_create_label, <destination>, <string>, <x>, <y>, [<alignment>], [<scale>], [<color>], [<rotation>]),
                                       # See header_presentations.py file for text alignment constants.
-extend_syntax(ui_create_mesh)         # (ui_create_mesh, <destination>, <mesh>, <x>, <y>, [<scale_x>], [<scale_y>]),
+extend_syntax(ui_create_mesh)         # (ui_create_mesh, <destination>, <mesh>, <x>, <y>, [<scale_x>], [<scale_y>], [<color>]),
                                       # If only <scale_x> is provided, it will be used for both dimensions.
 extend_syntax(ui_create_button)  	  # (ui_create_button, <destination>, <string>, <x>, <y>, <alignment>, [<scale_x>], [<scale_y>], [<color>], [<hilight_color>]),
                                       # If only <scale_x> is provided, it will be used for both dimensions.
@@ -538,7 +545,7 @@ extend_syntax(ui_create_game_button)  # (ui_create_game_button, <destination>, <
                                       # If only <scale_x> is provided, it will be used for both dimensions.
 extend_syntax(ui_create_in_game_button) # (ui_create_in_game_button, <destination>, <string>, <x>, <y>, [<scale_x>], [<scale_y>]),
                                       # If only <scale_x> is provided, it will be used for both dimensions.
-extend_syntax(ui_create_image_button) # (ui_create_image_button, <destination>, <mesh_base>, <mesh_clicked>, <x>, <y>, [<scale_x>], [<scale_y>]),
+extend_syntax(ui_create_image_button) # (ui_create_image_button, <destination>, <mesh_base>, <mesh_clicked>, <x>, <y>, [<scale_x>], [<scale_y>], [color]),
                                       # If only <scale_x> is provided, it will be used for both dimensions.
 extend_syntax(ui_create_image_button_with_tableau_material) # (ui_create_image_button_with_tableau_material, <destination>, <mesh>, <tableau_material>, <value> x, y, [<scale_x], [<scale_y]),
                                       # If only <scale_x> is provided, it will be used for both dimensions.
@@ -985,7 +992,9 @@ scripts = [
 (store_script_param, ":area_size_y", 8),
 (store_script_param, ":color", 9),
 (store_script_param, ":alignment", 10),
-(store_script_param, ":rotation", 11),
+(store_script_param, ":rotation_z", 11),
+(store_script_param, ":rotation_x", 12),
+(store_script_param, ":rotation_y", 13),
 (troop_get_slot, ":free_offset", "trp_overlay_storage", 0),
 (store_add, ":slot_no", ":free_offset", 1),	(troop_set_slot, "trp_overlay_storage", ":slot_no", ":overlay_id"),
 (val_add, ":slot_no", 1),						(troop_set_slot, "trp_overlay_storage", ":slot_no", ":string_id"),
@@ -997,7 +1006,9 @@ scripts = [
 (val_add, ":slot_no", 1),						(troop_set_slot, "trp_overlay_storage", ":slot_no", ":area_size_y"),
 (val_add, ":slot_no", 1),						(troop_set_slot, "trp_overlay_storage", ":slot_no", ":color"),
 (val_add, ":slot_no", 1),						(troop_set_slot, "trp_overlay_storage", ":slot_no", ":alignment"),
-(val_add, ":slot_no", 1),						(troop_set_slot, "trp_overlay_storage", ":slot_no", ":rotation"),
+(val_add, ":slot_no", 1),						(troop_set_slot, "trp_overlay_storage", ":slot_no", ":rotation_z"),
+(val_add, ":slot_no", 1),						(troop_set_slot, "trp_overlay_storage", ":slot_no", ":rotation_x"),
+(val_add, ":slot_no", 1),						(troop_set_slot, "trp_overlay_storage", ":slot_no", ":rotation_y"),
 (val_add, ":slot_no", 1), 
 (store_sub, ":length", ":slot_no", ":free_offset"),
 (troop_set_slot, "trp_overlay_storage", ":free_offset", ":length"), #data size
@@ -1078,3 +1089,6 @@ def preprocess_entities(glob):
 						cur_trigger[1].insert(2, (assign, value_string, reg1))
 				if cur_trigger[0] == ti_on_presentation_mouse_press:
 					if add_scripted_code_for_combobox == True: cur_trigger[1].append((call_script, "script_combobox_mouse_press"))
+
+	#glob['strings'][4:4] = [("register_s%d" % i, "{!}{s%d}" % i) for i in range(4, 128)]
+	#calculate_identifiers(strings, s)
